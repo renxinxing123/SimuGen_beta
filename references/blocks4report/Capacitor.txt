@@ -1,0 +1,30 @@
+## Capacitor
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Capacitor'`
+
+**Description:**  
+The **Capacitor** block models a linear **capacitor**, described with the following equation:
+
+I(t) = C * dV/dt
+
+where,
+I(t): current through the capacitor
+C: capacitance (farads)
+V: voltage across the capacitor
+dV/dt: time derivative of voltage
+
+
+Connections **+** and **−** are conserving electrical ports corresponding to the positive and negative terminals of the **capacitor**, respectively. The current is positive if it flows from positive to negative, and the voltage across the **capacitor** is equal to the difference between the voltage at the positive and the negative terminal, \( V(+) - V(-) \).
+
+**Ports:**
+
+- **Positive terminal:**  
+  - **Port Name:** **LConn1**
+  - **Note:** *Electrical conserving port associated with the capacitor positive terminal.*
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn1**
+  - **Note:** *Electrical conserving port associated with the capacitor negative terminal.*
+  
+---
+

@@ -1,0 +1,189 @@
+Below is the comprehensive report addressing the four key questions regarding the artificial_algebraic_loops simulation.
+
+──────────────────────────────
+1. What Is the Simulation About?
+──────────────────────────────
+This simulation models a simple closed-loop control system that intentionally embeds an artificial algebraic loop. In the simulated system, a fixed step input is generated and combined with the plant output through a summation operation. The resulting signal is scaled by a controller with a constant gain before being fed back into the plant, which is represented by a continuous transfer function. The overall objective is to study the behavior of a dynamic system with feedback and observe its time response through the scope display. This setup is typical in control systems analysis, where the interaction between the controller and the plant (and the interplay of algebraic loops) is essential to understand system stability and performance.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?
+──────────────────────────────
+The simulation is structured into the following distinct stages:
+
+a. Signal Generation and Input  
+ • A Step block generates a step input signal, which serves as the external excitation.
+
+b. Signal Summation  
+ • A Sum block takes two inputs (the step signal and the plant output) and combines them. The configuration (using the '+-' parameter) indicates that the first input is added while the second is subtracted. This summation forms part of the algebraic loop by feeding back the plant’s output.
+
+c. Control Action  
+ • A Gain block represents the controller. It multiplies the summation output by a constant controller gain, modifying the signal before it is applied to the plant.
+
+d. Plant Dynamics  
+ • A Transfer Function block models the plant dynamics using a continuous transfer function formulation. This block simulates the system behavior defined by numerator and denominator coefficients, representing the system’s differential equations.
+
+e. Output Observation  
+ • A Scope block captures and displays the time-domain response of the plant output, providing a visual representation of the system’s dynamics.
+
+──────────────────────────────
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?
+──────────────────────────────
+a. Signal Generation and Input  
+ Theory: The Step input is based on the Heaviside step function (u(t)) which is defined as:  
+   u(t) = 0 for t < 0, and u(t) = 1 for t ≥ 0.  
+ Modelling: This simple discontinuous function is frequently used to test system response and analyze transient behavior in control systems.
+
+b. Signal Summation  
+ Theory: The summation operation is linear in nature and is underpinned by the superposition principle.  
+ Modelling: In a typical control loop, the combination of signals (typically error signals) is crucial in determining the corrective action. The algebraic loop created here implies that there exists a direct instantaneous relationship between the plant output and the controller input, necessitating careful numerical handling.
+
+c. Control Action  
+ Theory: The Gain block applies a linear scaling operation. The mathematical model is:  
+   y(t) = K · e(t)  
+ where K is the controller gain and e(t) is the input error signal.  
+ Modelling: This simple proportional controller is often the first control strategy implemented in classical control theory.
+
+d. Plant Dynamics  
+ Theory: The plant is represented by a transfer function in the Laplace domain:  
+   G(s) = N(s)/D(s)  
+ where N(s) represents the numerator and D(s) the denominator polynomial in s.  
+ Modelling: This representation corresponds to the system’s differential equations and facilitates analysis of stability and frequency response through poles and zeros.
+
+e. Output Observation  
+ Theory: Signal visualization in the time domain helps in observing transient and steady-state behaviors, as predicted by time-domain analysis in system dynamics.  
+ Modelling: The Scope block does not alter the signal but acts as a real-time observer of the system’s output characteristics.
+
+──────────────────────────────
+4. How Is It Implemented in Code?
+──────────────────────────────
+The simulation is built using MATLAB’s Simulink engine accessed via the MATLAB Engine API for Python. The code is structured to mirror the stepwise construction of the simulation:
+
+––––––––––––––––––––––––––––––––––––––
+a. Creating the Model and Adding the Step Block  
+––––––––––––––––––––––––––––––––––––––
+The following code initializes a new Simulink model and inserts a Step block to produce a step input signal.
+
+----------------------------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+# Start the MATLAB engine and create a new Simulink model.
+eng = matlab.engine.start_matlab()
+model_name = 'simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add the Step block which represents the step input.
+eng.add_block('simulink/Sources/Step', model_name + '/Step', 'MakeNameUnique', 'on', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• A new system is created where the Step block, based on the Heaviside function, is added without any input port.  
+• This forms the source of the simulation’s external excitation.
+
+––––––––––––––––––––––––––––––––––––––
+b. Adding and Configuring the Sum Block  
+––––––––––––––––––––––––––––––––––––––
+The Sum block is added next with its operation configuration set to '+-', meaning it will add the first input and subtract the second.
+
+----------------------------------------------------------------------
+# Add the Sum block with the Inputs parameter set to '+-' to define two input ports.
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/sum', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/sum', 'Inputs', '+-', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• This block executes the linear algebraic sum described by the superposition principle in theory.  
+• It sets up the artificial algebraic loop by subtracting the plant output from the step input.
+
+––––––––––––––––––––––––––––––––––––––
+c. Adding the Controller Gain Block  
+––––––––––––––––––––––––––––––––––––––
+The Gain block (controller) multiplies the sum output by a predefined constant.
+
+----------------------------------------------------------------------
+# Add the Gain block (Controller) that implements the proportional control law.
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Controller', 'MakeNameUnique', 'on', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• In theory, the Gain multiplies the error signal by a constant K, as per proportional control.  
+• The code places the Gain block between the summing operation and the plant block.
+
+––––––––––––––––––––––––––––––––––––––
+d. Adding the Plant Transfer Function Block  
+––––––––––––––––––––––––––––––––––––––
+The plant is modeled using a Transfer Function block that encapsulates its continuous-time dynamics.
+
+----------------------------------------------------------------------
+# Add the Transfer Function block (Plant) that simulates the plant dynamics.
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Plant', 'MakeNameUnique', 'on', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• This block takes in the controller output and produces the plant response using the transfer function formulation G(s) = N(s)/D(s).  
+• It reflects the mathematical modelling of system dynamics through differential equations.
+
+––––––––––––––––––––––––––––––––––––––
+e. Adding the Scope Block for Output Observation  
+––––––––––––––––––––––––––––––––––––––
+To observe the simulation results, a Scope block is added to the model.
+
+----------------------------------------------------------------------
+# Add the Scope block to display the time-domain signals for the plant output.
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope', 'MakeNameUnique', 'on', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• The Scope block is used as an observer similar to a measurement instrument in an experimental setup, showing real-time system output.
+
+––––––––––––––––––––––––––––––––––––––
+f. Interconnecting the Blocks  
+––––––––––––––––––––––––––––––––––––––
+After adding the blocks, the next series of commands connect them to form the closed-loop structure.
+
+----------------------------------------------------------------------
+# Connect the blocks according to their defined ports.
+
+# Connect Step block's output to the first input of the Sum block.
+eng.add_line(model_name, 'Step/1', 'sum/1', nargout=0)
+
+# Connect the Plant block's output to the second input of the Sum block.
+eng.add_line(model_name, 'Plant/1', 'sum/2', nargout=0)
+
+# Connect the output of the Sum block to the input of the Controller (Gain block).
+eng.add_line(model_name, 'sum/1', 'Controller/1', nargout=0)
+
+# Connect the Controller block's output to the Plant block's input.
+eng.add_line(model_name, 'Controller/1', 'Plant/1', nargout=0)
+
+# Connect the Plant block's output to the Scope block for signal visualization.
+eng.add_line(model_name, 'Plant/1', 'Scope/1', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• These lines establish the feedback loop. The Step and Plant blocks feed into the Sum block (implementing the algebraic loop), then the adjusted signal is processed by the Gain block, and finally, the modified signal drives the Plant again.  
+• The final connection sends the plant output to the Scope for visualization, tying together the theory of feedback control with its practical implementation.
+
+––––––––––––––––––––––––––––––––––––––
+g. Finalizing the System  
+––––––––––––––––––––––––––––––––––––––
+The simulation concludes with commands to arrange, save, and finalize the system configuration.
+
+----------------------------------------------------------------------
+# Automatically arrange the blocks for clarity.
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save the configured system as an SLX file.
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+----------------------------------------------------------------------
+
+Explanation:  
+• The arrangeSystem command helps in auto-organizing the layout for easier readability.  
+• Saving the system persists the simulation model for future execution or analysis.
+
+──────────────────────────────
+Conclusion
+──────────────────────────────
+This report detailed an artificial_algebraic_loops simulation that combines theoretical control system principles with practical block-diagram implementation in Simulink. Each simulation stage—from generating a step input, combining signals, applying a controller gain, modelling plant dynamics, to observing the overall output—is grounded in well-established mathematical and theoretical concepts. The provided code illustrates how MATLAB’s Simulink engine API is used to systematically build and interconnect these components, thereby transforming theoretical concepts into a working simulation model suitable for dynamic systems analysis.

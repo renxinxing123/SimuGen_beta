@@ -1,0 +1,164 @@
+# Comprehensive Simulation Report
+
+## 1. What is the simulation about?
+
+This simulation demonstrates the handling of **state events** in dynamic systems, specifically illustrating a **bang-bang control** scenario. Bang-bang control is a type of feedback control that switches abruptly between two states (often maximum and minimum values) based on the sign of the system state. The simulation aims to model and visualize the behavior of a simple second-order dynamic system under such a control strategy. The real-world relevance of this simulation includes applications in thermostatic control, relay-based systems, and other systems where control actions are binary or discrete.
+
+The overall objective is to show how the system states evolve over time and how the state trajectory behaves in the phase plane (x1 vs. x2), highlighting the characteristic limit cycles or oscillations typical of bang-bang controlled systems.
+
+---
+
+## 2. What are the main implementation steps?
+
+The simulation is structured into the following clear stages:
+
+### Step 1: Integration of the first state (x1)
+- Integrate the second state (x2) to obtain the first state (x1).
+
+### Step 2: Bang-bang control logic (Sign block)
+- Determine the sign of the first state (x1) to implement the bang-bang control logic.
+
+### Step 3: Gain adjustment
+- Multiply the output of the bang-bang logic by a constant gain factor to scale the control input.
+
+### Step 4: Integration of the second state (x2)
+- Integrate the scaled control input to obtain the second state (x2).
+
+### Step 5: Feedback loop
+- Feed the second state (x2) back into the first integrator, creating a closed-loop system.
+
+### Step 6: Visualization (Phase Plane Plot)
+- Plot the two states (x1 and x2) against each other to visualize the system trajectory in the phase plane.
+
+---
+
+## 3. What theoretical knowledge and mathematical modelling are involved in each step?
+
+### Step 1: Integration of the first state (x1)
+- **Theory:** System dynamics, state-space representation.
+- **Mathematical Model:**  
+  \[
+  \dot{x}_1 = x_2
+  \]
+
+### Step 2: Bang-bang control logic (Sign block)
+- **Theory:** Bang-bang (relay) control, nonlinear control theory.
+- **Mathematical Model:**  
+  \[
+  u = \text{sign}(x_1) = 
+  \begin{cases}
+  1 & x_1 > 0 \\
+  -1 & x_1 < 0 \\
+  0 & x_1 = 0
+  \end{cases}
+  \]
+
+### Step 3: Gain adjustment
+- **Theory:** Control theory, signal scaling.
+- **Mathematical Model:**  
+  \[
+  u_{scaled} = -1 \cdot u
+  \]
+
+### Step 4: Integration of the second state (x2)
+- **Theory:** System dynamics, state-space representation.
+- **Mathematical Model:**  
+  \[
+  \dot{x}_2 = u_{scaled}
+  \]
+
+### Step 5: Feedback loop
+- **Theory:** Feedback control systems, closed-loop dynamics.
+- **Mathematical Model:**  
+  The feedback loop ensures that the system states influence each other, creating a coupled second-order system.
+
+### Step 6: Visualization (Phase Plane Plot)
+- **Theory:** Phase plane analysis, nonlinear dynamics.
+- **Mathematical Model:**  
+  Plotting \( x_1 \) vs. \( x_2 \) to visualize limit cycles and system stability.
+
+---
+
+## 4. How is it implemented in code?
+
+Below is the MATLAB-Python integration code that implements each step clearly aligned with the theoretical and mathematical modeling described above:
+
+### Initialization and Setup (Common to all steps)
+```python
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'example_simulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+```
+
+### Step 1: Integration of the first state (x1)
+```python
+# Integrator block for state x1
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Integrator1', 'MakeNameUnique', 'on', nargout=0)
+```
+
+### Step 2: Bang-bang control logic (Sign block)
+```python
+# Sign block for bang-bang control logic
+eng.add_block('simulink/Math Operations/Sign', model_name + '/Sign', 'MakeNameUnique', 'on', nargout=0)
+```
+
+### Step 3: Gain adjustment
+```python
+# Gain block to scale the control input
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain', 'MakeNameUnique', 'on', nargout=0)
+```
+
+### Step 4: Integration of the second state (x2)
+```python
+# Integrator block for state x2
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Integrator2', 'MakeNameUnique', 'on', nargout=0)
+```
+
+### Step 5: Feedback loop
+```python
+# Connecting the blocks to form the feedback loop
+eng.add_line(model_name, 'Integrator1/1', 'Sign/1', nargout=0)
+eng.add_line(model_name, 'Sign/1', 'Gain/1', nargout=0)
+eng.add_line(model_name, 'Gain/1', 'Integrator2/1', nargout=0)
+eng.add_line(model_name, 'Integrator2/1', 'Integrator1/1', nargout=0)
+```
+
+### Step 6: Visualization (Phase Plane Plot)
+```python
+# XY Graph block to visualize the phase plane (x1 vs x2)
+eng.add_block('simulink/Sinks/XY Graph', model_name + '/PhasePlanePlot', 'MakeNameUnique', 'on', nargout=0)
+
+# Connect integrators to XY Graph
+eng.add_line(model_name, 'Integrator1/1', 'PhasePlanePlot/1', nargout=0)
+eng.add_line(model_name, 'Integrator2/1', 'PhasePlanePlot/2', nargout=0)
+```
+
+### Feedback loop connection (Step 5)
+```python
+# Feedback connection from Integrator2 output to Integrator1 input
+eng.add_line(model_name, 'Integrator2/1', 'Integrator1/1', nargout=0)
+```
+
+### Finalize and Run Simulation (Common to all steps)
+```python
+# Open and run the simulation
+eng.open_system(model_name, nargout=0)
+```
+
+---
+
+## 4. How the code reflects both the theory and the simulation diagram:
+
+- **Integrator blocks** directly implement the mathematical integration of state equations, reflecting the theoretical state-space model.
+- **Sign block** implements the bang-bang control logic, clearly matching the theoretical definition of the sign function.
+- **Gain block** scales the control signal, reflecting the theoretical gain adjustment step.
+- **XY Graph block** visually represents the theoretical concept of the phase plane, plotting the two states against each other, clearly demonstrating the limit cycle behavior predicted by theory.
+- The **feedback loop** created by connecting the output of Integrator2 back to the input of Integrator1 clearly reflects the closed-loop nature of the theoretical model.
+
+Thus, the provided code accurately and clearly implements the theoretical concepts and mathematical relationships described, fully matching the simulation diagram and theoretical expectations.

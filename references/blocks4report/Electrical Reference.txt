@@ -1,0 +1,14 @@
+## Electrical Reference
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Electrical Reference'`
+
+**Description:**  
+Represents an electrical ground. All electrical conserving ports of blocks directly connected to ground must be connected to an Electrical Reference block. A model with electrical elements must contain at least one Electrical Reference block.
+
+**Ports:**
+
+- **Input/Output Port:** **LConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Voltage is zero.
+
+---

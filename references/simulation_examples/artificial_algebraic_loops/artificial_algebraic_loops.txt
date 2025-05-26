@@ -1,0 +1,3 @@
+artificial_algebraic_loops
+
+This example shows a model of a artificial_algebraic_loops. 

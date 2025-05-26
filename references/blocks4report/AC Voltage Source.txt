@@ -1,0 +1,31 @@
+## AC Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/AC Voltage Source'`
+
+**Description:**  
+The AC Voltage Source block represents an ideal voltage source that maintains sinusoidal voltage across its output terminals, independent of the current flowing through the source.
+
+The output voltage is defined by the following equation:
+
+V(t) = V0 * sin(2π * f * t + φ)
+
+where,
+V(t): output voltage
+V0: peak amplitude
+f: frequency (Hz)
+φ: phase shift (radians)
+t: time (seconds) 
+
+Connections **+** and **−** are conserving electrical ports corresponding to the positive and negative terminals of the voltage source, respectively. The current is positive if it flows from positive to negative, and the voltage across the source is equal to the difference between the voltage at the positive and the negative terminal, \( V(+) - V(-) \).
+
+**Ports:**
+
+- **Positive terminal:**  
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn1**
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+  
+---

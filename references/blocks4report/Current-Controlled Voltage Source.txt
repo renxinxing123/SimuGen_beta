@@ -1,0 +1,27 @@
+## Current-Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Current-Controlled Voltage Source'`
+
+**Description:**  
+The Current-Controlled Voltage Source block models a linear current-controlled voltage source, described with the following equation:
+
+V=K·I1
+
+**Ports:**
+
+- **Positive control port**  
+  - **Port Name:** **LConn1**  
+  - **Note:** The port that current flow come in.
+
+- **Negative control port**  
+  - **Port Name:** **RConn1**  
+  - **Note:** The port that current flow come out.
+  
+- **Positive terminal**  
+  - **Port Name:** **LConn2**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+  
+- **Negative terminal**  
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+---

@@ -1,0 +1,32 @@
+## Integrator
+
+**Path:** `'simulink/Commonly Used Blocks/Integrator'`
+
+**Description:**  
+The Integrator block integrates an input signal with respect to time and outputs the resulting value. 
+
+**Ports:**
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **internal**: (Default)
+  - **Input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **internal**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is an upward arrow)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **external**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **external**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is an upward arrow)  
+  - **Third input port:** **3** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **Specially**, when 'ShowStatePort' is set as 1 (just a number not string), an **extra output port named state** is available.
+  
+ ---

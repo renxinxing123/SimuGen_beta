@@ -1,0 +1,9 @@
+## Pulse Generator
+
+**Path:** `'simulink/Sources/Pulse Generator'`
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---

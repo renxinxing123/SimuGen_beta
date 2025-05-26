@@ -1,0 +1,16 @@
+## Capacitor
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Capacitor'`
+
+**Ports:**
+
+- **Positive terminal:**  
+  - **Port Name:** **LConn1**
+  - **Note:** *Electrical conserving port associated with the capacitor positive terminal.*
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn1**
+  - **Note:** *Electrical conserving port associated with the capacitor negative terminal.*
+  
+---
+

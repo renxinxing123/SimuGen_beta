@@ -1,0 +1,22 @@
+## Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Controlled Voltage Source'`
+
+**Description:**  
+The block represents an ideal voltage source that is powerful enough to maintain the specified voltage at its output regardless of the current passing through it. The output voltage is given by **V = Vs**, where **Vs** is the numerical value presented at the physical signal port.
+
+**Ports:**
+
+- **Positive Terminal:**  
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+
+- ** Voltage control signal, V:**  
+  - **Port Name:** **RConn1**  
+  - **Note:** Input physical signal that specifies the voltage value.
+
+- **Negative Terminal:**  
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+  
+---

@@ -1,0 +1,5 @@
+Accurate Zero-Crossing Detection
+
+This example shows how zero-crossing detection works in Simulink®. Simulink uses zero-crossing detection to accurately simulate an abrupt model change or discontinuity without decreasing the solver time steps. 
+
+https://www.mathworks.com/help/simulink/slref/accurate-zero-crossing-detection.html

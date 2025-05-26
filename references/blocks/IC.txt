@@ -1,0 +1,12 @@
+## IC
+
+**Path:** `'simulink/Signal Attributes/IC'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1** 
+- **Output Port:**
+  - **Port name:** **1**
+---
+

@@ -1,0 +1,54 @@
+# INPUT #
+
+- **Simulation Blocks Description:**  
+  {simulation_blocks_list}
+
+# TASK #
+According to the **block you identified in the simulation diagram**, you will receive an identified block's **Simulation Blocks Description** that includes their block type and port description. Your tasks are to:
+
+- Clearly describe the connections and data flow among these blocks in the simulation diagram using their block types. First, determine which port labels are connected, then match them to the corresponding real port names from the **Simulation Blocks Description**. **MUST STRICTLY Format** each connection description as:  
+
+  BlockA (BlockA's block type) PortX (**related parameter setting to match the port number if necessary**)<-> BlockB (BlockB's block type) PortY (**related parameter setting to match the port number if necessary**)
+  
+   **Note:** 
+  1.Left side of '<->' is output port, while right side of '<->' is input port, never flip the relationship. **In most of cases, the same Input port MUST NOT be connected more than one time (with **ONLY** the exception of Electrical Reference and Solver Configuration).** For example, if you identify there is a Constant block that is connected to 2 different Gain block, you should describe them as:
+  
+  '''
+  Constant 1 (Constant) 1 <-> Gain 1 (Gain) 1
+  Constant 1 (Constant) 1 <-> Gain 2 (Gain) 1
+  '''
+  
+  rather than,
+  
+  '''
+  Gain 1 (Gain) 1 <-> Constant 1 (Constant)
+  Gain 2 (Gain) 1 <-> Constant 1 (Constant)
+  '''
+  
+  similarly, if you see the port LConn2 of a Current-Controlled Current Source are connected to both the port LConn 1 of a Resistor and the port LConn1 of a Voltage Sensor, you should describe these connections as:
+  
+  '''
+  CCCS 1 (Current-Controlled Current Source) LConn2 <-> Resistor 1 (Resistor) LConn1
+  CCCS 1 (Current-Controlled Current Source) LConn2 <-> Voltage Sensor 1 (Voltage Sensor) LConn1
+  '''
+  
+  rather than,
+  
+  '''
+  Resistor 1 (Resistor) LConn1 <-> CCCS 1 (Current-Controlled Current Source) LConn2
+  Voltage Sensor 1 (Voltage Sensor) LConn1 <-> CCCS 1 (Current-Controlled Current Source) LConn2
+  '''
+  
+  
+  2.PortX and PortY are the real internal port names, BlockA and BlockB are the block name shown in the diagram.
+  
+  3.Any **parameters related to the number of port** need to be declared, for example:
+  
+     Gain 2 (Gain) 1 <-> Sum (Sum) 1 (`Inputs` = `++-`), where the port number of Sum depends on `Inputs`, so it needs to be clarified, while the port number of Gain is fixed, so no parameters need to be clarified.
+   
+
+**IMPORTANT:** 
+- **ONLY** use the below listed blocks, and **ALL** listed blocks should be used.
+  
+ # Response #
+Do not ask any clarifying questions or confirmations. Directly provide a complete answer.

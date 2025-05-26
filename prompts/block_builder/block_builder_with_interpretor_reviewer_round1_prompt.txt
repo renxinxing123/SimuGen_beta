@@ -1,0 +1,17 @@
+# TASK #
+Carefully read the **error message** and the **response from Debug_locator** then fix the error.
+
+# Error Message #
+ {error_message}
+
+# Response from the Debug_locator #
+ {Debug_locator_response}
+ 
+ **Important Guidelines:**
+- Follow the provided code template exactly.
+- Use only the provided functions and blocks.
+- **Adhere strictly to the PATH, port naming and connection instructions as described in the blocks description.** Ensure that you use the exact port names specified, and that all calls to add_line utilize these correct port names.
+- Do not set any block parameters except those that affect port count or connections.
+
+# RESPONSE #
+Please generate the **complete and fully detailed** MATLAB/Simulink code using `matlab.engine` based on the above instructions. **ONLY** generate the full Python code without omitting **any** parts or using **any** ellipsis (`...`) or placeholder symbols. **DO NOT** include explanations or any content other than the Python code.

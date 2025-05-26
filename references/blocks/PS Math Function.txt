@@ -1,0 +1,13 @@
+## PS Math Function
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Math Function'`
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **LConn1** (no visual label)
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---

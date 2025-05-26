@@ -1,0 +1,438 @@
+[Investigator] Controlled Voltage Source (Controlled Voltage Source)  
+Solver Configuration (Solver Configuration)  
+Simulink-PS Converter (Simulink-PS Converter)  
+Resistor (Resistor)  
+Capacitor (Capacitor)  
+Electrical Reference (Electrical Reference)  
+Voltage Sensor (Voltage Sensor)  
+PS-Simulink Converter (PS-Simulink Converter)  
+Pulse Generator (Pulse Generator)  
+Sum (Sum)  
+num(s) den(s) (Transfer Fcn)  
+Mux (Mux)  
+Scope (Scope)  
+
+{"request_blocks": [
+  "Controlled Voltage Source",
+  "Solver Configuration",
+  "Simulink-PS Converter",
+  "Resistor",
+  "Capacitor",
+  "Electrical Reference",
+  "Voltage Sensor",
+  "PS-Simulink Converter",
+  "Pulse Generator",
+  "Sum",
+  "Transfer Fcn",
+  "Mux",
+  "Scope"
+]}
+[Investigator] Pulse Generator 1 (Pulse Generator) 1 <-> Simulink-PS Converter 1 (Simulink-PS Converter) 1  
+Simulink-PS Converter 1 (Simulink-PS Converter) RConn1 <-> Controlled Voltage Source 1 (Controlled Voltage Source) RConn2  
+Controlled Voltage Source 1 (Controlled Voltage Source) LConn1 <-> Resistor 1 (Resistor) LConn1  
+Resistor 1 (Resistor) RConn1 <-> Capacitor 1 (Capacitor) LConn1  
+Resistor 1 (Resistor) RConn1 <-> Voltage Sensor 1 (Voltage Sensor) LConn1  
+Capacitor 1 (Capacitor) RConn1 <-> Electrical Reference 1 (Electrical Reference) LConn1  
+Electrical Reference 1 (Electrical Reference) LConn1 <-> Voltage Sensor 1 (Voltage Sensor) RConn2  
+Electrical Reference 1 (Electrical Reference) LConn1 <-> Solver Configuration 1 (Solver Configuration) RConn1  
+Electrical Reference 1 (Electrical Reference) LConn1 <-> Controlled Voltage Source 1 (Controlled Voltage Source) RConn1  
+Voltage Sensor 1 (Voltage Sensor) RConn1 <-> PS-Simulink Converter 1 (PS-Simulink Converter) LConn1  
+PS-Simulink Converter 1 (PS-Simulink Converter) 1 <-> Mux 1 (Mux) 1 (`Inputs` = 2)  
+Pulse Generator 1 (Pulse Generator) 1 <-> Sum 1 (Sum) 1 (`Inputs` = "+-")  
+Sum 1 (Sum) 1 <-> Transfer Fcn 1 (Transfer Fcn) 1  
+Transfer Fcn 1 (Transfer Fcn) 1 <-> Sum 1 (Sum) 2 (`Inputs` = "+-")  
+Transfer Fcn 1 (Transfer Fcn) 1 <-> Mux 1 (Mux) 2 (`Inputs` = 2)  
+Mux 1 (Mux) 1 <-> Scope 1 (Scope) 1
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'ElectricalSimulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add blocks to the model
+eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model_name + '/Controlled Voltage Source1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Simulink-PS Converter', model_name + '/Simulink-PS Converter1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/Resistor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/Capacitor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Sources/Pulse Generator', model_name + '/Pulse Generator1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Transfer Fcn1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope1', 'MakeNameUnique', 'on', nargout=0)
+
+# Set block parameters for port configurations
+eng.set_param(model_name + '/Mux1', 'Inputs', '2', nargout=0)
+eng.set_param(model_name + '/Sum1', 'Inputs', '+-', nargout=0)
+
+# Connect blocks with lines
+eng.add_line(model_name, 'Pulse Generator1/1', 'Simulink-PS Converter1/1', nargout=0)
+eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn2', nargout=0)
+eng.add_line(model_name, 'Controlled Voltage Source1/LConn1', 'Resistor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Resistor1/RConn1', 'Capacitor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Resistor1/RConn1', 'Voltage Sensor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Capacitor1/RConn1', 'Electrical Reference1/LConn1', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Voltage Sensor1/RConn2', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Solver Configuration1/RConn1', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor1/RConn1', 'PS-Simulink Converter1/LConn1', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter1/1', 'Mux1/1', nargout=0)
+eng.add_line(model_name, 'Pulse Generator1/1', 'Sum1/1', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Transfer Fcn1/1', nargout=0)
+eng.add_line(model_name, 'Transfer Fcn1/1', 'Sum1/2', nargout=0)
+eng.add_line(model_name, 'Transfer Fcn1/1', 'Mux1/2', nargout=0)
+eng.add_line(model_name, 'Mux1/1', 'Scope1/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Debug_locator] Below is our analysis and diagnosis:
+
+──────────────────────────────
+Diagnosis Summary:
+──────────────────────────────
+The error:
+
+  "The points input must only create line connections that follow connection rules of the appropriate Physical Modeling domains"
+
+indicates that one or more connections violate the physical signal (or “conserving”) connection rules required by Simscape (physical modeling). In this code, the connection between the output port of the PS‐converter and the Controlled Voltage Source block is most suspect.
+
+──────────────────────────────
+Error-Causing Lines:
+──────────────────────────────
+Examine these lines (about 5–10 lines starting with the immediately preceding connection):
+
+ 1. eng.add_line(model_name, 'Pulse Generator1/1', 'Simulink-PS Converter1/1', nargout=0)
+ 2. eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn2', nargout=0) ← Error triggers here!
+ 3. eng.add_line(model_name, 'Controlled Voltage Source1/LConn1', 'Resistor1/LConn1', nargout=0)
+ 4. eng.add_line(model_name, 'Resistor1/RConn1', 'Capacitor1/LConn1', nargout=0)
+ 5. eng.add_line(model_name, 'Resistor1/RConn1', 'Voltage Sensor1/LConn1', nargout=0)
+
+The second line tries to connect the PS-Simulink Converter’s output port labeled "RConn1" to the Controlled Voltage Source’s port named "RConn2". According to the blocks description:
+
+• The Controlled Voltage Source has:
+ – RConn1: a physical signal input (intended to receive the control signal)
+ – RConn2: an electrical conserving port (usually used for connecting to the negative terminal)
+
+• The PS-Simulink Converter’s output (port RConn1) provides a physical signal.
+
+Thus, connecting a physical signal output (from the converter) to an electrical conserving port (RConn2) violates the connection rules of the physical modeling domain. The connection should probably be made to the Controlled Voltage Source’s RConn1 so that both ends are of the compatible type (physical signal input).
+
+──────────────────────────────
+Related Lines (Context):
+──────────────────────────────
+These additional lines lead into or follow the problematic connection and are part of the physical network:
+ • eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model_name + '/Controlled Voltage Source1', …)
+ • eng.add_block('nesl_utility/Simulink-PS Converter', model_name + '/Simulink-PS Converter1', …)
+ • eng.set_param(model_name + '/Mux1', 'Inputs', '2', nargout=0)
+ • eng.add_line(model_name, 'Controlled Voltage Source1/LConn1', 'Resistor1/LConn1', nargout=0)
+ • eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Voltage Sensor1/RConn2', nargout=0)
+These lines show that the intended network interconnects electrical conserving ports (for grounding/reference or terminal connections) separately from physical signal ports. The misconnection between the converter’s physical signal and a conserving electrical port is the root cause of the error.
+
+──────────────────────────────
+Recommended Fix:
+──────────────────────────────
+Change the connection from:
+  eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn2', nargout=0)
+to
+  eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+
+This ensures that the physical signal output from the PS-Simulink Converter properly feeds the voltage input (RConn1) of the Controlled Voltage Source block, and the overall connection adheres to the rules set by the physical modeling domains.
+
+──────────────────────────────
+Conclusion:
+──────────────────────────────
+The error is likely triggered by the misconnection in the second add_line call. Revising that connection to use the Controlled Voltage Source’s RConn1 (which is correctly defined as the physical signal input) should resolve the violation of physical connection rules.
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'ElectricalSimulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add blocks to the model
+eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model_name + '/Controlled Voltage Source1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Simulink-PS Converter', model_name + '/Simulink-PS Converter1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/Resistor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/Capacitor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Sources/Pulse Generator', model_name + '/Pulse Generator1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Transfer Fcn1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope1', 'MakeNameUnique', 'on', nargout=0)
+
+# Set block parameters for port configurations
+eng.set_param(model_name + '/Mux1', 'Inputs', '2', nargout=0)
+eng.set_param(model_name + '/Sum1', 'Inputs', '+-', nargout=0)
+
+# Connect blocks with lines
+eng.add_line(model_name, 'Pulse Generator1/1', 'Simulink-PS Converter1/1', nargout=0)
+eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+eng.add_line(model_name, 'Controlled Voltage Source1/LConn1', 'Resistor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Resistor1/RConn1', 'Capacitor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Resistor1/RConn1', 'Voltage Sensor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Capacitor1/RConn1', 'Electrical Reference1/LConn1', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Voltage Sensor1/RConn2', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Solver Configuration1/RConn1', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor1/RConn1', 'PS-Simulink Converter1/LConn1', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter1/1', 'Mux1/1', nargout=0)
+eng.add_line(model_name, 'Pulse Generator1/1', 'Sum1/1', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Transfer Fcn1/1', nargout=0)
+eng.add_line(model_name, 'Transfer Fcn1/1', 'Sum1/2', nargout=0)
+eng.add_line(model_name, 'Transfer Fcn1/1', 'Mux1/2', nargout=0)
+eng.add_line(model_name, 'Mux1/1', 'Scope1/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Debug_locator] ──────────────────────────────
+Diagnostic Summary:
+──────────────────────────────
+The error:
+  "The points input must only create line connections that follow connection rules of the appropriate Physical Modeling domains"
+indicates that a connection violates Simscape’s physical-domain rules. In this case, a block with a conserving (ground) port is being connected to a block’s physical signal input port.
+
+──────────────────────────────
+Primary Error Location (5–10 Lines):
+──────────────────────────────
+Examine these lines around the error trigger (lines 8–9 in the connections section):
+
+8. eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Solver Configuration1/RConn1', nargout=0)
+9. eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Controlled Voltage Source1/RConn1', nargout=0)  ← ERROR
+
+The error specifically occurs in line 9. The Electrical Reference block’s port (LConn1), which is an electrical conserving port used to provide ground (0 V), is being connected to the Controlled Voltage Source’s port RConn1. However, according to the block description, RConn1 of the Controlled Voltage Source is meant for a physical signal input (the control signal), not for a conserving port. In addition, note that in an earlier connection (line 2) the PS-Simulink Converter already drives RConn1. Therefore, connecting the Electrical Reference to the same RConn1 violates physical modeling connection rules.
+
+──────────────────────────────
+Related Lines (Additional 5–10 Lines):
+──────────────────────────────
+The following nearby lines provide context that helps understand the intended network:
+• Line 2: eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+  – This connects the physical signal (from the PS-Simulink Converter) to Controlled Voltage Source’s RConn1.
+• Earlier block additions show that the Controlled Voltage Source has two distinct ports:
+  – RConn1: Input physical signal.
+  – RConn2: Electrical conserving port for the negative terminal.
+• Later connections like:
+  eng.add_line(model_name, 'Capacitor1/RConn1', 'Electrical Reference1/LConn1', nargout=0)
+  eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Voltage Sensor1/RConn2', nargout=0)
+indicate that the Electrical Reference is intended to serve as ground (or zero voltage reference) for other blocks.
+
+──────────────────────────────
+Conclusion & Recommendation:
+──────────────────────────────
+Line 9 is the primary source of the error. Instead of connecting
+  Electrical Reference1/LConn1 → Controlled Voltage Source1/RConn1
+(which incorrectly ties a ground reference to the physical signal input),
+the intended connection is likely to ground the negative terminal of the Voltage Source. To do this, revise line 9 so that the Electrical Reference connects to Controlled Voltage Source’s RConn2:
+
+  eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Controlled Voltage Source1/RConn2', nargout=0)
+
+This change will correctly tie the ground (zero voltage) to the negative terminal of the Controlled Voltage Source and comply with the physical modeling connection rules.
+
+──────────────────────────────
+Summary:
+──────────────────────────────
+• Error Trigger Line: 
+  eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+• Cause: An improper connection of an electrical conserving port (ground) to a physical signal input.
+• Fix: Connect the Electrical Reference to the Controlled Voltage Source’s RConn2 port instead.
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'ElectricalSimulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model_name + '/Controlled Voltage Source1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Simulink-PS Converter', model_name + '/Simulink-PS Converter1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/Resistor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/Capacitor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Sources/Pulse Generator', model_name + '/Pulse Generator1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Transfer Fcn1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope1', 'MakeNameUnique', 'on', nargout=0)
+
+eng.set_param(model_name + '/Mux1', 'Inputs', '2', nargout=0)
+eng.set_param(model_name + '/Sum1', 'Inputs', '+-', nargout=0)
+
+eng.add_line(model_name, 'Pulse Generator1/1', 'Simulink-PS Converter1/1', nargout=0)
+eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn1', nargout=0)
+eng.add_line(model_name, 'Controlled Voltage Source1/LConn1', 'Resistor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Resistor1/RConn1', 'Capacitor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Resistor1/RConn1', 'Voltage Sensor1/LConn1', nargout=0)
+eng.add_line(model_name, 'Capacitor1/RConn1', 'Electrical Reference1/LConn1', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Voltage Sensor1/RConn2', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Solver Configuration1/RConn1', nargout=0)
+eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Controlled Voltage Source1/RConn2', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor1/RConn1', 'PS-Simulink Converter1/LConn1', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter1/1', 'Mux1/1', nargout=0)
+eng.add_line(model_name, 'Pulse Generator1/1', 'Sum1/1', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Transfer Fcn1/1', nargout=0)
+eng.add_line(model_name, 'Transfer Fcn1/1', 'Sum1/2', nargout=0)
+eng.add_line(model_name, 'Transfer Fcn1/1', 'Mux1/2', nargout=0)
+eng.add_line(model_name, 'Mux1/1', 'Scope1/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the comprehensive report that integrates theoretical analysis with clear code explanations while addressing the four key questions.
+
+─────────────────────────────  
+1. What Is the Simulation About?  
+─────────────────────────────  
+This simulation models an RC electrical circuit using both Simulink and Simscape approaches. The purpose is to compare a model built with signal‐based Simulink input/output blocks and a model built with physical network blocks from Simscape. In the simulation, a voltage square wave (generated by a Pulse Generator) drives one branch of the circuit. The RC circuit uses ideal components – a resistor (governed by Ohm’s law) and a capacitor (governed by a differential relationship between current and voltage). Two different representations are explored:  
+• One model uses explicit signal flow and numerical transformations (via converters) to simulate the circuit behavior.  
+• The other, using the Simscape physical network, relies on physical connections that allow bidirectional energy flow and ease the expansion of the circuit.  
+
+The overall objective is to demonstrate how circuit equations can be implemented and analyzed under both frameworks, showing that physical connections simplify model extension without the need for rederiving circuit equations.
+
+─────────────────────────────  
+2. What Are the Main Simulation Steps?  
+─────────────────────────────  
+The simulation is structured into the following high-level modules or steps:  
+A. Signal Generation and Conversion:  
+ • A Pulse Generator produces a square wave voltage signal.  
+ • A Simulink-to-Physical Signal Converter translates the discrete signal into a physical signal suitable for the Simscape domain.  
+
+B. Driving the Physical Network:  
+ • A Controlled Voltage Source receives the physical signal and injects it into the network.  
+ • This element is connected to a resistor, capturing the idea that the circuit elements are interacting via physical electrical ports.  
+
+C. RC Circuit Implementation:  
+ • The resistor and capacitor are arranged in series. The resistor follows Ohm’s law (V = I·R) and the capacitor follows its differential relationship (I(t) = C·dV/dt).  
+ • An Electrical Reference (ground) sets the reference potential, ensuring proper simulation of measured voltages.  
+ • A Voltage Sensor is used to monitor the voltage across the resistor or capacitor.  
+
+D. Measurement and Signal Feedback:  
+ • The physical measurement from the Voltage Sensor is converted back from a physical signal into a Simulink signal (using a PS–Simulink Converter).  
+ • This measured signal is merged with other signals via a Mux block (after additional processing with Sum and Transfer Function blocks) to demonstrate system dynamics and possible feedback or further signal conditioning.  
+
+E. Visualization:  
+ • Finally, a Scope block collects and displays the output signal for time-domain analysis.  
+
+─────────────────────────────  
+3. What Theoretical Knowledge and Mathematical Modeling Are Involved in Each Step?  
+─────────────────────────────  
+A. Signal Generation and Conversion:  
+ • The Pulse Generator outputs a square wave that serves as a step input. This step input is common in testing dynamic systems, providing insight into transient response.  
+ • The conversion of a Simulink signal to a physical signal (via the Simulink-PS Converter) ensures that the numerical signal is accurately represented in the Simscape domain. This bridges the gap between abstract numerical simulation and physical network depiction.
+
+B. Driving the Physical Network:  
+ • The Controlled Voltage Source acts as an ideal driver, maintaining a set voltage regardless of current drawn. Its behavior is defined by the fundamental voltage equation, V = Vs, where Vs is provided by the input signal.
+ • The mathematical abstraction here is that of an ideal source capable of imposing the controlled voltage onto the network.
+
+C. RC Circuit Implementation:  
+ • The Resistor follows Ohm’s law (V = I·R), which is a linear relationship used to model energy dissipation through resistive elements.  
+ • The Capacitor is modeled by the differential equation I(t) = C·dV/dt, a fundamental relationship governing storage of energy in an electric field. This introduces time-dependent dynamics typical of first-order systems.  
+ • The Electrical Reference block grounds the circuit (defining zero potential), which is essential for solving circuit equations.
+ • The Voltage Sensor uses the concept of potential difference measurement. It outputs a physical signal that represents the voltage reading across the component.
+
+D. Measurement and Signal Feedback:  
+ • The PS–Simulink Converter reintroduces the measured physical signal into the Simulink environment for further digital processing.  
+ • The Sum block mathematically adds or subtracts signals; here it is used to combine the pulse signal with processed signals from the RC network.  
+ • The Transfer Function block represents the dynamic response of certain parts of the circuit. Typically, the transfer function for an RC circuit appears as 1/(RC·s + 1), emphasizing the low-pass filter characteristics of the circuit. This block directly applies Laplace-domain analysis.
+ • The Mux block groups signals together into vector format, facilitating simultaneous visualization and further signal processing.
+
+E. Visualization:  
+ • The Scope block displays the time-domain evolution of the signals (voltage, current, etc.). This final step allows for empirical validation of the theoretical system dynamics.
+
+─────────────────────────────  
+4. How Is It Implemented in Code?  
+─────────────────────────────  
+The previously described simulation steps are directly reflected in the MATLAB engine code provided. For clarity, the code implementation is presented stepwise below:
+
+Step A. Signal Generation and Conversion  
+ • Create the Pulse Generator and convert its output to a physical signal:  
+
+  # Create Pulse Generator  
+  eng.add_block('simulink/Sources/Pulse Generator', model_name + '/Pulse Generator1', 'MakeNameUnique', 'on', nargout=0)  
+
+  # Create Simulink-PS Converter to convert the pulse to a physical signal  
+  eng.add_block('nesl_utility/Simulink-PS Converter', model_name + '/Simulink-PS Converter1', 'MakeNameUnique', 'on', nargout=0)  
+
+  # Connect Pulse Generator output to the Simulink-PS Converter input  
+  eng.add_line(model_name, 'Pulse Generator1/1', 'Simulink-PS Converter1/1', nargout=0)  
+
+Step B. Driving the Physical Network  
+ • Add the Controlled Voltage Source and connect the physical output of the PS Converter to its control port:  
+
+  eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model_name + '/Controlled Voltage Source1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_line(model_name, 'Simulink-PS Converter1/RConn1', 'Controlled Voltage Source1/RConn2', nargout=0)  
+
+Step C. RC Circuit Implementation  
+ • Add resistor, capacitor, electrical reference, and voltage sensor blocks:  
+
+  eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/Resistor1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/Capacitor1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor1', 'MakeNameUnique', 'on', nargout=0)  
+
+ • Connect these blocks to reflect the RC network:
+  - The Controlled Voltage Source is connected to the Resistor.
+  - The Resistor connects to both the Capacitor and the Voltage Sensor.
+  - The Capacitor is connected to the Electrical Reference (forming the ground return).
+  - The Voltage Sensor has one terminal tied to the resistor and its other terminal connected to the Electrical Reference.
+  For example:  
+   eng.add_line(model_name, 'Controlled Voltage Source1/LConn1', 'Resistor1/LConn1', nargout=0)  
+   eng.add_line(model_name, 'Resistor1/RConn1', 'Capacitor1/LConn1', nargout=0)  
+   eng.add_line(model_name, 'Resistor1/RConn1', 'Voltage Sensor1/LConn1', nargout=0)  
+   eng.add_line(model_name, 'Capacitor1/RConn1', 'Electrical Reference1/LConn1', nargout=0)  
+   eng.add_line(model_name, 'Electrical Reference1/LConn1', 'Voltage Sensor1/RConn2', nargout=0)  
+
+Step D. Measurement and Signal Feedback  
+ • Convert the measured physical signal back to a Simulink signal and process it:  
+  eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_line(model_name, 'Voltage Sensor1/RConn1', 'PS-Simulink Converter1/LConn1', nargout=0)  
+
+ • Further processing is done by combining signals using Sum, applying system dynamics via the Transfer Function, and grouping outputs with a Mux:  
+
+  eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Transfer Fcn1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux1', 'MakeNameUnique', 'on', nargout=0)  
+
+  # Set block parameters (e.g., Mux to combine 2 signals, Sum to perform "+-" operations)  
+  eng.set_param(model_name + '/Mux1', 'Inputs', '2', nargout=0)  
+  eng.set_param(model_name + '/Sum1', 'Inputs', '+-', nargout=0)  
+
+  # Connect processed signal paths (demonstrating the feedback and dynamic response)
+  eng.add_line(model_name, 'Pulse Generator1/1', 'Sum1/1', nargout=0)  
+  eng.add_line(model_name, 'Sum1/1', 'Transfer Fcn1/1', nargout=0)  
+  eng.add_line(model_name, 'Transfer Fcn1/1', 'Sum1/2', nargout=0)  
+  eng.add_line(model_name, 'Transfer Fcn1/1', 'Mux1/2', nargout=0)  
+  eng.add_line(model_name, 'PS-Simulink Converter1/1', 'Mux1/1', nargout=0)  
+
+Step E. Visualization  
+ • Add a Scope block to display the results:  
+  eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope1', 'MakeNameUnique', 'on', nargout=0)  
+  eng.add_line(model_name, 'Mux1/1', 'Scope1/1', nargout=0)  
+
+Finally, the system’s layout is arranged and the model is saved:
+  eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)  
+  eng.save_system(model_name, model_name + '.slx', nargout=0)
+
+─────────────────────────────  
+Conclusion  
+─────────────────────────────  
+The simulation demonstrates a classic RC circuit by employing both voltage and physical signal domains and emphasizes the interplay between theoretical electrical principles and their practical implementation in a simulation environment. Each simulation step—from signal generation to visualization—is backed by theoretical models (Ohm’s law, capacitor dynamics, and Laplace-domain transfer functions) and accurately mapped into a systematic block-diagram structure via MATLAB code. This integrated approach facilitates both rigorous analysis and clarity in implementation.

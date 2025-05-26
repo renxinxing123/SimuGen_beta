@@ -1,0 +1,16 @@
+## Clock
+
+**Path:** `'simulink/Sources/Clock'`
+
+**Description:**  
+The Clock block outputs the current simulation time at each simulation step. This block is useful for other blocks that need the simulation time.
+
+When you need the current time within a discrete system, use the Digital Clock block.
+
+**Ports:**
+
+- **Output Port:**
+  - **Port name:** **1**
+    - **Note:** **Sample time, specified as the current simulation time at each simulation time step.**
+
+---

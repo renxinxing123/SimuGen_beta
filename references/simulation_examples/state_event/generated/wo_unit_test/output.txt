@@ -1,0 +1,158 @@
+Below is a comprehensive report that integrates the theory, simulation structure, and code implementation details for the given “State Events” simulation example. The report is organized into four sections corresponding to the task questions.
+
+──────────────────────────────
+1. What is the simulation about?
+
+This simulation is designed to demonstrate how state events—specifically bang–bang type switching events—are handled within a Simulink model. The simulation models a system with two interconnected dynamic states. The system comprises integrators (to model state evolution) and a state event detector (via a Compare To Zero block) that triggers a switching event. By combining these elements with a gain stage (to mirror the bang–bang control law), the simulation represents a simplified real-world control process in which the control input switches abruptly based on state thresholds. The overall objective is to replicate a dynamic process where state events (zero crossings, for instance) drive the system’s behavior, which is characteristic of many nonlinear control applications.
+
+──────────────────────────────
+2. What are the main simulation steps?
+
+The simulation is structured into the following distinct steps (functional modules) without referring directly to the underlying code:
+  
+A. Initialization and State Evolution (First Integrator)  
+   • The first integrator block integrates the input signal over time. In this simulated system, it accumulates the state variable that is later used for event detection.  
+  
+B. State Event Detection (Compare To Zero Block)  
+   • The integrated signal is passed to a “Compare To Zero” block. This block continuously examines the state value and determines when a key threshold (zero) is crossed. Such crossings indicate the occurrence of a state event (bang–bang switch).  
+  
+C. Bang–Bang Control Signal Generation (Gain Block)  
+   • When the state event is detected, the output from the Compare To Zero block is fed into a Gain block with a constant of –1. The use of a negative gain reverses the sign of the signal, effectively implementing a simple bang–bang control law where the control input toggles between two values.
+  
+D. State Update via Feedback (Second Integrator)  
+   • The output of the Gain block is integrated by the second integrator block. This further evolves the state and, importantly, constitutes the feedback loop by routing the output back to the first integrator. This closed-loop configuration simulates continuous interaction between state evolution and event-triggered control.
+  
+E. Visualization (XY Graph)  
+   • Finally, both state variables (outputs of the integrators) are plotted on an XY graph. This phase‑plane plot helps visualize the limit cycles and state trajectories that emerge as a result of the bang–bang control dynamics.
+
+──────────────────────────────
+3. What theoretical knowledge and mathematical modelling are involved in each step?
+
+A. Initialization and State Evolution  
+   • Theoretically, this step is based on ordinary differential equations, where the integrator models the relationship:  
+     dx/dt = u(t)  
+     y(t) = x(t)  
+   • The integrator block reifies the physical concept of accumulating an effect over time. With an initial condition provided (x(t₀) = x₀), it integrates the input u(t) to produce the state x(t).
+
+B. State Event Detection  
+   • The Compare To Zero block embodies the concept of “event detection” in dynamical systems. Mathematically, it performs a sign test on the state variable, outputting a binary (0 or 1) signal when the state crosses the zero boundary.  
+   • This represents a discrete switch condition in numerous control systems, leading to nonlinearity and necessitating the handling of discontinuities.
+
+C. Bang–Bang Control Signal Generation  
+   • In bang–bang control, the control law typically switches abruptly between two extreme values. By multiplying the binary output (0 or 1) from the comparator by –1, the Gain block generates the necessary control input that forces the state variable in the opposite direction.  
+   • This is reflective of a simplified switching control mechanism often used in control theory.
+
+D. State Update via Feedback  
+   • The second integrator further processes the bang–bang signal, updating the state of the system using the same principle of integration (as per dx/dt = u(t)).  
+   • The feedback from this stage to the first integrator creates a closed-loop system, which is common in control and dynamical system analysis, allowing the study of limit cycles, stability, and nonlinearity in system behavior.
+
+E. Visualization  
+   • The XY Graph block is used to generate a phase‑plane plot which is a common method in dynamical systems theory for visualizing the state-space trajectories.  
+   • Such plots are essential for analyzing behaviors like oscillations, periodicity, and the overall structure of the limit cycle induced by bang–bang control.
+
+──────────────────────────────
+4. How is it implemented in code?
+
+The simulation is built by programmatically creating a Simulink model using MATLAB’s engine API for Python. The following annotated code corresponds to each simulation step:
+
+──────────────────────────────
+A. Initialization and State Evolution (First Integrator)
+
+Code:
+------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+# Start MATLAB engine and create a new Simulink model
+eng = matlab.engine.start_matlab()
+model_name = 'simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add the first integrator block (represents integration dx/dt = u(t))
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/1 over s 1', nargout=0)
+------------------------------------------------
+Explanation:
+• This segment initializes the MATLAB engine, creates a new Simulink system, and adds an Integrator block named “1 over s 1”.  
+• The first integrator embodies the accumulation of the state variable following dx/dt = u(t).
+
+──────────────────────────────
+B. State Event Detection (Compare To Zero Block)
+
+Code:
+------------------------------------------------
+# Add the Compare To Zero block for detecting when state crosses zero
+eng.add_block('simulink/Logic and Bit Operations/Compare To Zero', model_name + '/Compare To Zero', nargout=0)
+------------------------------------------------
+Explanation:
+• The Compare To Zero block is added next. This block continuously assesses whether its input signal (from the first integrator) reaches or surpasses zero.  
+• It outputs a binary value (0 or 1), signifying the occurrence of a state event.
+
+──────────────────────────────
+C. Bang–Bang Control Signal Generation (Gain Block)
+
+Code:
+------------------------------------------------
+# Add the Gain block with a gain of -1 to implement bang-bang control logic
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/-1', nargout=0)
+------------------------------------------------
+Explanation:
+• This block multiplies the output of the Compare To Zero block by -1.  
+• The negative gain implements the switch in control input as dictated by bang–bang control theory.
+
+──────────────────────────────
+D. State Update via Feedback (Second Integrator)
+
+Code:
+------------------------------------------------
+# Add the second integrator block which will update the state based on the control signal
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/1 over s 2', nargout=0)
+------------------------------------------------
+Explanation:
+• The second integrator block integrates the bang–bang control signal output (from the Gain block).  
+• This updated state is fed back to the first integrator, creating the closed-loop feedback necessary for the system’s dynamics.
+
+──────────────────────────────
+E. Visualization (XY Graph)
+
+Code:
+------------------------------------------------
+# Add the XY Graph block for phase plane plotting
+eng.add_block('simulink/Sinks/XY Graph', model_name + '/Phase Plane Plot', nargout=0)
+------------------------------------------------
+Explanation:
+• The XY Graph block is added at the end to visualize the dynamic behavior of the simulation.  
+• Its inputs are connected to the outputs of the integrator blocks, which provide the two state variables for plotting the phase plane.
+
+──────────────────────────────
+F. Connecting the Blocks and Finalizing the Model
+
+Code:
+------------------------------------------------
+# Create connections between the blocks to mirror the block diagram structure
+eng.add_line(model_name, '1 over s 1/1', 'Compare To Zero/1', nargout=0)
+eng.add_line(model_name, 'Compare To Zero/1', '-1/1', nargout=0)
+eng.add_line(model_name, '-1/1', '1 over s 2/1', nargout=0)
+eng.add_line(model_name, '1 over s 2/1', '1 over s 1/1', nargout=0)
+eng.add_line(model_name, '1 over s 1/1', 'Phase Plane Plot/1', nargout=0)
+eng.add_line(model_name, '1 over s 2/1', 'Phase Plane Plot/2', nargout=0)
+
+# Arrange the blocks for visual clarity
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save the model
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+------------------------------------------------
+Explanation:
+• These code lines establish internal connections that reflect the simulation steps.  
+  - The output of the first integrator is routed to the Compare To Zero block.  
+  - The output from the comparator is processed through the Gain block.  
+  - The resulting signal is integrated by the second integrator and then loops back to the first integrator.  
+  - Finally, both states are forwarded to the XY Graph for phase plane visualization.  
+• The call to arrangeSystem ensures that the blocks are laid out clearly, and the model is saved for execution.
+
+──────────────────────────────
+Conclusion
+
+This report detailed the simulation’s purpose—to model state-event driven dynamics using a bang–bang control scheme—and broke down the process into five key steps ranging from state evolution to visualization. The theoretical underpinnings, which include ordinary differential equations, event detection in nonlinear systems, and feedback dynamics, are closely mirrored in the code implementation. Each block in the Simulink model is represented in code, and the connections between blocks implement the overall closed-loop system dynamics. This comprehensive integration of theory and implementation encapsulates the simulation’s aims and execution methodology.

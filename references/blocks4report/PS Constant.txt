@@ -1,0 +1,19 @@
+## PS Constant
+
+**Path:** `'fl_lib/Physical Signals/Sources/PS Constant'`
+
+**Description:**  
+This block creates a physical signal constant:
+
+$$
+y = \text{constant}
+$$
+
+The Constant parameter accepts both positive and negative values. The block output is a physical signal port.
+
+**Ports:**
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---

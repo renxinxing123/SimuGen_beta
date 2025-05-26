@@ -1,0 +1,27 @@
+## PS Subtract
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Subtract'`
+
+**Description:**  
+This block performs subtraction on two inputs according to:
+
+$$
+y = u_1 - u_2
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port (Positive Input):**  
+  - **Port Label:** **+**  
+  - **Port Name:** **LConn1**
+
+- **Input Port (Negative Input):**  
+  - **Port Label:** **-**  
+  - **Port Name:** **LConn2**
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---

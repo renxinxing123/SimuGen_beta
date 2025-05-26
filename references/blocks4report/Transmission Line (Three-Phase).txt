@@ -1,0 +1,15 @@
+## Transmission Line (Three-Phase)
+
+**Path:** `'ee_lib/Passive/Lines/Transmission Line (Three-Phase)'`
+
+**Description:**  
+Models a three-phase transmission line using a lumped-parameter pi-line model. The block accounts for phase resistance, self-inductance, mutual inductance and resistance, line-line capacitance, and line-ground capacitance by employing Clarke’s transformation. It supports segmentation to improve fidelity and offers options for parasitics.
+
+**Ports:**
+
+The block provides a total of four ports:
+- **LConn1:** First port (typically representing the sending-end phase connection).
+- **RConn1:** Second port (typically representing the sending-end phase connection).
+- **LConn2:** Third port (ONLY ground connection).
+- **RConn2:** Fourth port (ONLY ground connection).
+---

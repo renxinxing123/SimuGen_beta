@@ -1,0 +1,18 @@
+## Relational Operator
+
+**Path:** `'simulink/Commonly Used Blocks/Relational Operator'`
+
+**Description:**  
+The Relational Operator block performs the specified relational operation on the input. The value you choose for the Relational operator parameter determines whether the block accepts one or two input signals.
+
+**Ports:**
+- **Input Port:**
+  - **Port name:** **1**
+    - **Note:** **First input signal, specified as a scalar, vector, or matrix.**
+  - **Port name:** **2**
+    - **Note:** **Second input signal, specified as a scalar, vector, or matrix.**
+
+- **Output Port:**
+  - **Port name:** **1**
+    - **Note:** **Output signal, consisting of zeros and ones, with the same dimensions as the input. You control the output data type with the Output data type parameter.**
+---

@@ -1,0 +1,14 @@
+## Scope
+
+**Path:** `'simulink/Commonly Used Blocks/Scope'`
+
+**Description:**  
+The Simulink® Scope block and DSP System Toolbox™ Time Scope block display time domain signals.
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** None
+ 
+ ---

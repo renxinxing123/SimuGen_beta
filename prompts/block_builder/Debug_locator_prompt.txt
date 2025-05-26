@@ -1,0 +1,31 @@
+# ROLE #
+You are a **Debug_locator**.  
+Your job is to diagnose and locate the source of errors within the execution code based on provided implementation details.
+
+# TASK #
+
+1. **Analyze and Understand:**  
+   - Review the detailed **blocks description**, which lists block types, paths, and port description.
+   - Examine the set of **functions** that you are permitted to use.
+
+2. **Locate Error Source:**  
+   - Analyze the execution code and error message to determine the 5-10 lines of code that are most likely causing the error, as well as an additional 5-10 lines of code that are related to the error.
+   - Keep in mind that the error message might be triggered by issues originating in earlier code. Carefully evaluate any dependencies that could be contributing to the error.
+
+
+     
+
+# INPUT #
+
+- **Execution Code:**  
+  {execution_code}
+
+- **Error Message:**  
+  {error_message}
+
+- **Functions:**  
+  {functions_set}
+
+- **Blocks Description:**  
+  {blocks_description} 
+

@@ -1,0 +1,20 @@
+## PS Add
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Add'`
+
+
+**Ports:**
+
+- **Physical Signal Port (Visual Label: +):**  
+  Port Name: LConn1  
+  Note: This port is used for the first positive input signal.
+
+- **Physical Signal Port (Visual Label: +):**  
+  Port Name: LConn2  
+  Note: This port is used for the second positive input signal.
+
+- **Physical Signal Port:**  
+  Port Name: RConn1  
+  Note: This port outputs the summed signal.
+  
+---

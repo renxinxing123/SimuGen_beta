@@ -1,0 +1,17 @@
+## Relay
+
+**Path:** `'simulink/Discontinuities/Relay'`
+
+**Description:**  
+The output for the Relay block switches between two specified values. When the relay is on, it remains on until the input drops below the value of the Switch off point parameter. When the relay is off, it remains off until the input exceeds the value of the Switch on point parameter. The block accepts one input and generates one output.
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+    - **Note:** **The input signal that switches the relay on or off.**
+- **Output Port:** 
+  - **Port name:** **1**
+    - **Note:** **The output signal switches between two values determined by the parameters Output when on and Output when off.**
+
+---

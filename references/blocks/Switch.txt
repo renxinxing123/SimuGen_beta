@@ -1,0 +1,17 @@
+ ## Switch
+
+**Path:** `'simulink/Commonly Used Blocks/Switch'`
+
+**Ports:**
+- **Input Port:**
+  - **Port name:** **1**
+    - **Note:** **First of two data inputs. The block propagates either the first or second data input to the output. The block selects which input to pass based on the control input. Specify the condition for the control input to pass the first input using the Criteria for passing first input and Threshold parameters.**
+  - **Port name:** **2**
+    - **Note:** **Control signal the block uses to determine whether to pass the first or second data input to the output. If the control input meets the condition set in the Criteria for passing first input parameter, then the block passes the first data input. Otherwise, the block passes the second data input.**
+  - **Port name:** **3**
+    - **Note:** **Second of two data inputs. The block propagates either the first or second data input to the output. The block selects which input to pass based on the control input. Specify the condition for the control input to pass the first or second input using the Criteria for passing first input and Threshold parameters.**
+    
+- **Output Port:**
+  - **Port name:** **1**
+    - **Note:** **Output signal propagated from either the first or second input signal, based on the control signal value.**
+---

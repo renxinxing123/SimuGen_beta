@@ -1,0 +1,14 @@
+## Solver Configuration
+
+**Path:** `'nesl_utility/Solver Configuration'`
+
+**Description:**  
+The Solver Configuration block provides the physical network environment and solver settings required for simulating a connected Simscape™ block diagram. Each topologically distinct physical network must have exactly one Solver Configuration block. This block lets you specify options such as the treatment of sinusoidal variables, index reduction methods, tolerance settings, local solver options, and multithreading parameters to optimize simulation accuracy and performance.
+
+**Ports:**
+
+- **Input/Output Port:** **RConn1:**  
+  - **Type:** Untyped conserving port  
+  - **Note:** Represents the connection point for solver configuration. This port provides the solver settings to the entire physical network.
+
+---

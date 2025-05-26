@@ -1,0 +1,122 @@
+1. What is the simulation about?  
+The model “bounceSim” implements a one‐dimensional bouncing ball under constant gravity. It uses a second‐order integrator to solve the ball’s equations of motion (position x and velocity v) subject to:  
+  • Continuous acceleration d²x/dt² = –g (gravity).  
+  • The ground at x = 0 as a hard stop (saturation).  
+  • Instantaneous velocity reset on impact via a coefficient of restitution (e), so that v⁺ = –e·v⁻.  
+Scopes record the time evolution of x(t) and v(t). The goal is to replicate the kinematics of a bouncing ball: free‐fall under gravity, impact with a rigid surface, and rebound with energy loss.
+
+2. Main simulation steps  
+  Step 1. Define Inputs and Initial Conditions  
+    – Generate a constant gravitational acceleration (–g).  
+    – Specify the ball’s initial velocity via an IC block.  
+
+  Step 2. Integrate Ball Dynamics  
+    – Use a Second‐Order Integrator block to solve d²x/dt² = u, where u = –g.  
+    – Internally, the block holds two states: x and v = dx/dt.  
+
+  Step 3. Detect Collisions and Compute Rebound  
+    – Impose a lower saturation limit x ≥ 0 in the integrator.  
+    – When x hits zero, capture the pre‐impact velocity v⁻ using a Memory block.  
+    – Multiply v⁻ by the coefficient of restitution e (via a Gain block) to get v⁺.  
+    – Reinitialize the integrator’s velocity state to v⁺ at the moment of impact.  
+
+  Step 4. Record Outputs  
+    – Route x(t) to a Scope labeled “Position.”  
+    – Route v(t) to a Scope labeled “Velocity.”  
+
+3. Theoretical knowledge and mathematical modeling  
+  Step 1 Theory:  
+    • Gravity as a constant force: Newton’s second law m d²x/dt² = –m g ⇒ d²x/dt² = –g.  
+    • Initial condition specification for v at t=0.  
+
+  Step 2 Theory:  
+    • Second‐order ordinary differential equation.  
+    • The Second‐Order Integrator numerically integrates v̇ = –g to get v(t), and ẋ = v to get x(t).  
+
+  Step 3 Theory:  
+    • Impact when x = 0 is treated as an inelastic collision.  
+    • Pre‐impact velocity v⁻ = lim_{t⁻→t_imp} v(t).  
+    • Post‐impact velocity v⁺ = –e·v⁻, where 0 ≤ e ≤ 1 is the restitution coefficient.  
+    • The integrator’s “Reinitialize dx/dt when x reaches saturation” feature enforces the instantaneous state update v(t_imp⁺) = v⁺.  
+
+  Step 4 Theory:  
+    • Time‐domain signal visualization.  
+    • Scopes graph x(t) and v(t) for analysis of bounce heights and energy loss.
+
+4. How it is implemented in code  
+Below, the Python code using the MATLAB Engine API is reorganized to match the simulation steps:
+
+Step 1. Create System and Define Inputs/Initial Conditions  
+```python
+import matlab.engine
+eng = matlab.engine.start_matlab()
+
+model = 'bounceSim'
+eng.new_system(model, nargout=0)
+eng.open_system(model, nargout=0)
+
+# Gravitational acceleration block (–9.81 m/s² by default)
+eng.add_block('simulink/Sources/Constant', f'{model}/Gravitational acceleration', nargout=0)
+# (Optionally set g value)
+eng.set_param(f'{model}/Gravitational acceleration', 'Value', '-9.81', nargout=0)
+
+# Initial velocity IC block (e.g., v(0) = 5 m/s)
+eng.add_block('simulink/Signal Attributes/IC', f'{model}/Initial Velocity IC', nargout=0)
+eng.set_param(f'{model}/Initial Velocity IC', 'InitialCondition', '5', nargout=0)
+```
+
+Step 2. Add Second‐Order Integrator for Ball Dynamics  
+```python
+eng.add_block('simulink/Continuous/Integrator, Second-Order', f'{model}/Second-Order Integrator', nargout=0)
+# Configure to use internal x₀, external v₀
+eng.set_param(f'{model}/Second-Order Integrator',
+              'ICSourceX', 'internal',
+              'ICSourceDXDT', 'external',
+              nargout=0)
+```
+
+Step 3. Collision Handling via Memory and Gain  
+```python
+# Memory block captures v⁻ one timestep before saturation event
+eng.add_block('simulink/Discrete/Memory', f'{model}/Memory 1', nargout=0)
+
+# Gain block as coefficient of restitution e (e.g. 0.8)
+eng.add_block('simulink/Commonly Used Blocks/Gain', f'{model}/Coefficient of Restitution', nargout=0)
+eng.set_param(f'{model}/Coefficient of Restitution', 'Gain', '0.8', nargout=0)
+```
+
+Step 4. Output Scopes  
+```python
+eng.add_block('simulink/Commonly Used Blocks/Scope', f'{model}/Position', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', f'{model}/Velocity', nargout=0)
+```
+
+Step 5. Wire Blocks According to the Diagram  
+```python
+# Gravity → Integrator input u = –g
+eng.add_line(model, 'Gravitational acceleration/1', 'Second-Order Integrator/1', nargout=0)
+# Initial velocity → Integrator v₀
+eng.add_line(model, 'Initial Velocity IC/1', 'Second-Order Integrator/2', nargout=0)
+
+# Integrator outputs: x → Position scope; v → Velocity scope
+eng.add_line(model, 'Second-Order Integrator/1', 'Position/1', nargout=0)
+eng.add_line(model, 'Second-Order Integrator/2', 'Velocity/1', nargout=0)
+
+# Capture v⁻ and compute v⁺ = –e·v⁻
+eng.add_line(model, 'Second-Order Integrator/2', 'Memory 1/1', nargout=0)
+eng.add_line(model, 'Memory 1/1', 'Coefficient of Restitution/1', nargout=0)
+eng.add_line(model, 'Coefficient of Restitution/1', 'Initial Velocity IC/1', nargout=0)
+```
+
+Finalization  
+```python
+# Auto‐arrange and save
+eng.Simulink.BlockDiagram.arrangeSystem(model, nargout=0)
+eng.save_system(model, model + '.slx', nargout=0)
+```
+
+In this implementation:  
+– The Constant and IC blocks generate the forcing term and initial state.  
+– The Second‐Order Integrator performs the numerical integration of ẍ = –g.  
+– The Memory + Gain + IC feedback loop enforces the coefficient of restitution law at each ground impact.  
+– Scopes visualize x(t) and v(t) through successive bounces.

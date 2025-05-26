@@ -1,0 +1,18 @@
+## Trigonometric Function
+
+**Path:** `'simulink/Math Operations/Trigonometric Function'`
+
+**Description:**  
+Trigonometric and hyperbolic functions. When the function has more than one argument, the first argument corresponds to the top (or left) input port. For sin, cos, sincos, cos +j sin, and atan2 functions, a CORDIC approximation can also be used to compute the output.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port receives the input signal for the trigonometric or hyperbolic function.
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port outputs the result of the trigonometric or hyperbolic function.
+  
+---

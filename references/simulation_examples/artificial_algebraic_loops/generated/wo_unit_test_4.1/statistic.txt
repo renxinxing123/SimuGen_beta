@@ -1,0 +1,20 @@
+Agent run times summary:
+Investigator: 5.94 seconds
+Unit_test_reviewer: 0.00 seconds
+Block_builder: 44.80 seconds
+Debug_locator: 0.00 seconds
+Report_writer: 24.16 seconds
+
+Agent call counts summary:
+Investigator: 1 calls
+Unit_test_reviewer: 0 calls
+Block_builder: 1 calls
+Debug_locator: 0 calls
+Report_writer: 1 calls
+
+Agent token costs summary:
+Investigator           | Model: gpt-4.1-2025-04-14 | Input: 3115     | Output: 130      | Total: 3245     | InCost: $0.0062   | OutCost: $0.0010   | TotalCost: $0.0073
+Unit_test_reviewer     | Model: o3-mini           | Input: 0        | Output: 0        | Total: 0        | InCost: $0.0000   | OutCost: $0.0000   | TotalCost: $0.0000
+Block_builder          | Model: o3-mini           | Input: 3719     | Output: 5472     | Total: 9191     | InCost: $0.0041   | OutCost: $0.0241   | TotalCost: $0.0282
+Debug_locator          | Model: o3-mini           | Input: 0        | Output: 0        | Total: 0        | InCost: $0.0000   | OutCost: $0.0000   | TotalCost: $0.0000
+Report_writer          | Model: o3-mini           | Input: 1779     | Output: 2116     | Total: 3895     | InCost: $0.0020   | OutCost: $0.0093   | TotalCost: $0.0113

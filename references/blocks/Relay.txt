@@ -1,0 +1,14 @@
+## Relay
+
+**Path:** `'simulink/Discontinuities/Relay'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+    - **Note:** **The input signal that switches the relay on or off.**
+- **Output Port:** 
+  - **Port name:** **1**
+    - **Note:** **The output signal switches between two values determined by the parameters Output when on and Output when off.**
+
+---

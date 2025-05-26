@@ -1,0 +1,154 @@
+## Busbar
+
+**Path:** `'ee_lib/Connectors & References/Busbar'`
+
+**Description:**  
+A connector for load‐flow analysis in three‐phase Simscape Electrical™ networks. The block displays voltage, phase, active power, and reactive power at its ports (if enabled) after simulation.
+
+**Applicable Libraries:**  
+Simscape / Electrical / Connectors & References
+
+**Parameters:**
+
+- **`n_nodes` (Number of connections):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the number of port connections that are exposed on the block. Options include **2 (default)**, **1**, **3**, or **4**. The number of exposed ports directly corresponds to this parameter.  
+  **Important:** Ensure that the value of `n_nodes` matches the number of blocks you intend to connect. Do not connect multiple blocks to the same port.
+
+**Ports:**
+
+- When **`n_nodes`** is set to **1**, the exposed port is:  
+  - **LConn1**
+
+- When **`n_nodes`** is set to **2**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**
+
+- When **`n_nodes`** is set to **3**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**
+
+- When **`n_nodes`** is set to **4**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**  
+  - **RConn2**
+
+**Note:**  
+Ensure that the number of ports (`n_nodes`) is configured to match the number of blocks that need to be connected. Multiple blocks should not be connected to the same port.
+
+---
+
+## Transmission Line (Three-Phase)
+
+**Path:** `'ee_lib/Passive/Lines/Transmission Line (Three-Phase)'`
+
+**Description:**  
+Models a three-phase transmission line using a lumped-parameter pi-line model. The block accounts for phase resistance, self-inductance, mutual inductance and resistance, line-line capacitance, and line-ground capacitance by employing Clarke’s transformation. It supports segmentation to improve fidelity and offers options for parasitics.
+
+**Applicable Libraries:**  
+Simscape Electrical / Passive / Lines
+
+**Parameters:**
+
+**Ports:**
+
+The block provides a total of four ports:
+- **LConn1:** First port (typically representing the sending-end phase connection).
+- **RConn1:** Second port (typically representing the sending-end phase connection).
+- **LConn2:** Third port (ONLY ground connection).
+- **RConn2:** Fourth port (ONLY ground connection).
+
+---
+
+## Electrical Reference
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Electrical Reference'`
+
+**Description:**  
+Represents an electrical ground. All electrical conserving ports of blocks directly connected to ground must be connected to an Electrical Reference block. A model with electrical elements must contain at least one Electrical Reference block.
+
+**Applicable Libraries:**  
+- Simscape / Foundation Library / Electrical / Electrical Elements  
+- Simscape / Electrical / Connectors & References
+
+**Parameters:**  
+*None*
+
+**Ports:**
+
+- **LConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Voltage is zero.
+
+---
+
+## Load Flow Source
+
+**Path:** `'ee_lib/Sources/Load Flow Source'`
+
+**Description:**  
+The Load Flow Source block is a three-phase voltage source designed for load-flow analysis in three-phase Simscape Electrical™ networks compatible with frequency-time simulation mode. It can be used with the Busbar block to implement a swing bus, PV bus, or PQ bus. When the Source impedance parameter is set to **None**, the block models an ideal voltage source that maintains a sinusoidal voltage (of specified magnitude) regardless of the load. The source uses a wye configuration, where the neutral point is provided at the n port and the three phase connections are provided at the ~ port. The voltage of each phase is measured relative to the neutral (V(+) – Vn).
+
+**Applicable Libraries:**  
+Simscape / Electrical / Sources
+
+**Parameters:**
+
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver.  
+
+---
+
+## Wye-Connected Load
+
+**Path:** `'ee_lib/Passive/RLC Assemblies/Wye-Connected Load'`
+
+**Description:**  
+The Wye-Connected Load block models a three-phase load wired in a wye configuration. Each limb of the load can include any combination of a resistor (R), capacitor (C), and inductor (L) arranged in series or parallel. You can specify the load values either by rated power and voltage (default) or directly in terms of component values. When parameterized by rated power and voltage, initial conditions are provided as an initial voltage, voltage phase, and frequency; when specified directly, initial capacitor voltages and inductor currents must be provided. Small parasitic resistances or conductances may be added to aid numerical convergence.
+
+**Applicable Libraries:**  
+Simscape / Electrical / Passive / RLC Assemblies
+
+**Parameters:**
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver. 
+
+---
+
+## Solver Configuration
+
+**Path:** `'nesl_utility/Solver Configuration'`
+
+**Description:**  
+The Solver Configuration block provides the physical network environment and solver settings required for simulating a connected Simscape™ block diagram. Each topologically distinct physical network must have exactly one Solver Configuration block. This block lets you specify options such as the treatment of sinusoidal variables, index reduction methods, tolerance settings, local solver options, and multithreading parameters to optimize simulation accuracy and performance.
+
+**Applicable Libraries:**  
+Simscape / Utilities
+
+**Parameters:**
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Untyped conserving port  
+  - **Description:** Represents the connection point for solver configuration. This port provides the solver settings to the entire physical network.
+
+---

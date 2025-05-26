@@ -1,0 +1,27 @@
+## PS Integrator
+
+**Path:** `'fl_lib/Physical Signals/Linear Operators/PS Integrator'`
+
+**Ports:**
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.None** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.Internal**:  
+  - **Input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.Rising** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.Internal**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is **R**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.None** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.External**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.Rising** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.External**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is **R**)  
+  - **Third input port:** **LConn3** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+---

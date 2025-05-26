@@ -1,0 +1,17 @@
+## Product
+
+**Path:** `'simulink/Commonly Used Blocks/Product'`
+
+**Parameters:**
+
+- **`Inputs` (Input Configuration):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the number of input ports. The number of symbols in the `Inputs` parameter determines the number of input ports, with corresponding port names from **1** to **x** (x should be a number like 1, 2, 3, 4, 5...).
+
+**Ports:**
+
+- **Input Ports:**  
+  The number of input ports is determined by the **`Inputs`** parameter. Each input port is sequentially numbered (e.g., if **Inputs** is set to `x`, the input port names are **1** to **x**; no visual labels).
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)

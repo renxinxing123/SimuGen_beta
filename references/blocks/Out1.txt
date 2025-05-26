@@ -1,0 +1,16 @@
+## Out1
+
+**Path:** `'simulink/Commonly Used Blocks/Out1'`
+
+**Parameters:**
+
+- **`Port` (Output Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this output within the subsystem. This parameter defines which output port the block represents.
+
+**Ports:**
+
+- **Input Port:**
+  - **Port name:** **1**
+
+---

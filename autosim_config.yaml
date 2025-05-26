@@ -1,0 +1,33 @@
+# autosim_config.yaml
+
+# 模型设定（仅写 model_type 名称）
+Investigator_model_type: "GPT_4_1"
+Investigator_reviewer_model_type: "O3_MINI"
+Block_builder_model_type: "O3_MINI"
+Debug_locator_model_type: "O3_MINI"
+Report_writer_model_type: "O3_MINI"
+
+# 其他路径配置（保持不变）
+simulation_explanation_path: "./references/simulation_examples/zero_crossing_detection/zero_crossing_detection.txt"
+simulation_diagram_path: "./references/simulation_examples/zero_crossing_detection/zero_crossing_detection.png"
+Blocks_list_path: "./references/blocks/blocks_list.txt"
+Code_templates_path: "./references/code_templates/code_templates_.txt"
+Functions_path: "./references/functions/functions.txt"
+Block_root_path: "./references/blocks"
+Block_4_report_root_path: "./references/blocks4report"
+Block_images_root_path: "./references/blocks/blocks_images"
+
+Investigator_round0_prompt_path: "./prompts/Investigator/0.1/Investigator_round0_prompt.txt"
+Investigator_round1_prompt_path: "./prompts/Investigator/0.1/Investigator_round1_prompt.txt"
+Investigator_round2_prompt_path: "./prompts/Investigator/0.1/Investigator_round2_prompt.txt"
+Investigator_round3_prompt_path: "./prompts/Investigator/0.1/Investigator_round3_prompt.txt"
+Investigator_round4_prompt_path: "./prompts/Investigator/0.1/Investigator_round4_prompt.txt"
+Investigator_vote_prompt_path: "./prompts/Investigator/0.1/Investigator_vote_prompt.txt"
+Investigator_reviewer_prompt_path: "./prompts/Investigator/0.1/Investigator_Reviewer.txt"
+Investigator_reviewer_round1_prompt_path: "./prompts/Investigator/0.1/Investigator_Reviewer_round1.txt"
+
+
+Block_builder_with_interpretor_reviewer_prompt_path: "./prompts/block_builder/block_builder_with_interpretor_reviewer_prompt.txt"
+Block_builder_with_interpretor_reviewer_round1_prompt_path: "./prompts/block_builder/block_builder_with_interpretor_reviewer_round1_prompt.txt"
+Debug_locator_prompt_path: "./prompts/block_builder/Debug_locator_prompt.txt"
+Report_writer_prompt_path: "./prompts/data_generator/report_writer_prompt.txt"

@@ -1,0 +1,96 @@
+1. What is the simulation about?  
+   The model “sine_abs_switch_model” demonstrates how Simulink’s zero‑crossing detection mechanism handles abrupt changes or discontinuities without forcing the solver to take very small fixed time steps. Concretely, it generates a continuous sine wave, processes it through two nonlinear paths (absolute‐value and saturation), and then switches between them at a precise time instant (t = 5 s). The abrupt change in the signal path at t = 5 s is located accurately by the solver via zero‑crossing events, ensuring both efficiency and fidelity.  
+
+2. Main simulation steps (functional modules)  
+   Step 1. Sine‐wave generation  
+   Step 2. Two nonlinear transformations:  
+     • Absolute‐value path (|u|)  
+     • Saturation path (clamped to [–1, +1] by default)  
+   Step 3. Time comparison (< 5 s) to produce a Boolean control signal  
+   Step 4. Conditional switching: if t ≤ 5 s, select |u|; otherwise select the saturated sine  
+   Step 5. Signal bundling and visualization: Mux into a 3‑element vector and display in Scope  
+
+3. Theoretical foundations and mathematical modelling  
+   Step 1: Sine‐wave source  
+     • Model: u(t)=A·sin(ωt+φ)+Bias  
+     • Theory: Solution of the harmonic oscillator; continuous, infinitely differentiable.  
+   Step 2a: Absolute‐value operation  
+     • Model: y1(t)=|u(t)| = {+u(t), u(t)≥0; –u(t), u(t)<0}  
+     • Theory: Nonsmooth, piecewise‐linear transformation. Zero crossing in u(t) causes nondifferentiability in y1.  
+   Step 2b: Saturation  
+     • Model: y2(t)=min(max(u(t), Lower), Upper)  
+     • Theory: Bounded linear segment with “kinks” at the bounds. Another source of nondifferentiability.  
+   Step 3: Relational operator (step event at t=5 s)  
+     • Model: c(t) = (t ≤ T0) ? 1 : 0, with T0 = 5  
+     • Theory: A Heaviside‐like step function implemented via zero‑crossing detection on (t–T0). Precisely localizes the event time.  
+   Step 4: Switch  
+     • Model: y(t)=c(t)·y1(t) + (1–c(t))·y2(t)  
+     • Theory: Implements a piecewise‐defined function. The solver treats changes in c(t) as events and relocates the integration point there.  
+   Step 5: Mux & Scope  
+     • Mux: groups signals into a vector—pure signal management.  
+     • Scope: real‐time plotting; no dynamics.  
+
+4. Code implementation per simulation step  
+   The Python code below (using MATLAB Engine API) recreates each module and connects them consistent with the theoretical block diagram.  
+
+   ```python
+   import matlab.engine
+   eng = matlab.engine.start_matlab()
+   model = 'sine_abs_switch_model'
+   eng.new_system(model, nargout=0); eng.open_system(model, nargout=0)
+
+   # -- Step 1: Sine-wave block
+   eng.add_block('simulink/Sources/Sine Wave',
+                 f'{model}/Sine Wave',
+                 'Amplitude','1','Frequency','1','Phase','0','Bias','0', nargout=0)
+
+   # -- Step 2: Nonlinear paths
+   eng.add_block('simulink/Math Operations/Abs',
+                 f'{model}/Abs', nargout=0)
+   eng.add_block('simulink/Commonly Used Blocks/Saturation',
+                 f'{model}/Saturation',
+                 'UpperLimit','1','LowerLimit','-1', nargout=0)
+
+   # -- Step 3: Time comparison for switching
+   eng.add_block('simulink/Sources/Clock',
+                 f'{model}/Clock', nargout=0)
+   eng.add_block('simulink/Sources/Constant',
+                 f'{model}/Constant','Value','5', nargout=0)
+   eng.add_block('simulink/Commonly Used Blocks/Relational Operator',
+                 f'{model}/Relational Operator',
+                 'Operator','<=', nargout=0)
+
+   # -- Step 4: Switch (select |u| before t=5, else saturated u)
+   eng.add_block('simulink/Commonly Used Blocks/Switch',
+                 f'{model}/Switch',
+                 'Criteria','u2 >= Threshold','Threshold','0', nargout=0)
+
+   # -- Step 5: Mux and Scope
+   eng.add_block('simulink/Commonly Used Blocks/Mux',
+                 f'{model}/Mux','Inputs','3', nargout=0)
+   eng.add_block('simulink/Commonly Used Blocks/Scope',
+                 f'{model}/Scope', nargout=0)
+
+   # Connections
+   eng.add_line(model, 'Sine Wave/1','Abs/1', nargout=0)
+   eng.add_line(model, 'Sine Wave/1','Saturation/1', nargout=0)
+   eng.add_line(model, 'Sine Wave/1','Mux/1', nargout=0)
+   eng.add_line(model, 'Abs/1','Switch/1', nargout=0)
+   eng.add_line(model, 'Saturation/1','Switch/3', nargout=0)
+   eng.add_line(model, 'Clock/1','Relational Operator/1', nargout=0)
+   eng.add_line(model, 'Constant/1','Relational Operator/2', nargout=0)
+   eng.add_line(model, 'Relational Operator/1','Switch/2', nargout=0)
+   eng.add_line(model, 'Switch/1','Mux/2', nargout=0)
+   eng.add_line(model, 'Saturation/1','Mux/3', nargout=0)
+   eng.add_line(model, 'Mux/1','Scope/1', nargout=0)
+
+   # Auto-arrange and save
+   eng.Simulink.BlockDiagram.arrangeSystem(model, nargout=0)
+   eng.save_system(model, model+'.slx', nargout=0)
+   eng.close_system(model, nargout=0)
+   ```
+
+   In this implementation:  
+   - The Relational Operator block’s output changes sign exactly when t–5=0.  
+   - Simulink’s zero‑crossing algorithm detects that root and refines the time step so that the Switch flips precisely at t=5 s.  
+   - Downstream blocks then continue integration with the new active path.

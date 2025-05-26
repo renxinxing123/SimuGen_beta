@@ -1,0 +1,40 @@
+## Busbar
+
+**Path:** `'ee_lib/Connectors & References/Busbar'`
+
+**Description:**  
+A connector for load‐flow analysis in three‐phase Simscape Electrical™ networks. The block displays voltage, phase, active power, and reactive power at its ports (if enabled) after simulation.
+
+**Parameters:**
+
+- **`n_nodes`**
+  - **type:** **string**
+
+**Ports:**
+
+- When **`n_nodes`** is set to **1**, the exposed port is:  
+  - **LConn1**
+
+- When **`n_nodes`** is set to **2**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**
+
+- When **`n_nodes`** is set to **3**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**
+
+- When **`n_nodes`** is set to **4**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**  
+  - **RConn2**
+
+*In the visual simulation blocks, the port labels correspond as follows:*  
+- **LConn1** appears as **~1**.  
+- **RConn1** appears as **~2**.  
+- **LConn2** appears as **~3**.  
+- **RConn2** appears as **~4**.
+
+**~1, ~2, ~3, ~4 are just port label for recognition, NOT port name, only use **LConn1** ,**RConn1** ,**LConn2**  ,**RConn2****.
+---

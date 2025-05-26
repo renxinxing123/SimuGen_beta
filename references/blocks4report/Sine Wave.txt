@@ -1,0 +1,25 @@
+## Sine Wave
+
+**Path:** `'simulink/Sources/Sine Wave'`
+
+**Description:**  
+Output a sine wave:
+
+```
+O(t) = Amp * sin(Freq * t + Phase) + Bias
+```
+
+**Where:**
+- `O(t)`: output value at time `t`  
+- `Amp`: amplitude  
+- `Freq`: frequency (in radians/second)  
+- `Phase`: phase shift (in radians)  
+- `Bias`: vertical offset  
+
+**Ports:**
+
+- **Output Port:**  
+  - **Port Name:** **1**
+    - **Note:** **Output sine wave signal created based on the block parameter values.**
+  
+---

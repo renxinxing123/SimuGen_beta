@@ -1,0 +1,15 @@
+## IC
+
+**Path:** `'simulink/Signal Attributes/IC'`
+
+**Description:**  
+The IC block sets the initial condition for its input signal. At the start of the simulation, it outputs a specified initial value regardless of the input. After that, it simply passes through the actual input signal. For blocks with a nonzero sample time offset, the initial value is output at the first execution time after the simulation starts.
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1** 
+- **Output Port:**
+  - **Port name:** **1**
+---
+

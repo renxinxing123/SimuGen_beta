@@ -1,0 +1,17 @@
+## XY Graph
+
+**Path:** `'simulink/Sinks/XY Graph'`
+
+**Description:**  
+The XY Graph block displays an X-Y plot of its inputs in a MATLAB figure window. It has two scalar inputs: the first provides the x-axis data, and the second provides the y-axis data. This block is useful for examining limit cycles and other two-state data. Data outside the specified range is not displayed.
+
+**Ports:**
+
+- **Input Ports:**  
+  - **Port 1:** (no visual label)  
+  - **Port 2:** (no visual label)
+
+- **Output Ports:**  
+  - None
+
+---

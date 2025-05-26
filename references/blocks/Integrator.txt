@@ -1,0 +1,47 @@
+## Integrator
+
+**Path:** `'simulink/Commonly Used Blocks/Integrator'`
+
+**Ports:**
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **internal**: (Default)
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u(t)**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y(t)**
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **internal**:  
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u(t)**
+    - **Port Name:** **2**
+      - **Note:** **external signal that reset x to the specified initial condition x0, the reset will be triggered when the reset signal rises from a negative or zero value to a positive value.**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y(t)**
+  
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **external**:  
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u(t)**
+    - **Port Name:** **2**
+      - **Note:** **x0, the initial condition of x**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y(t)**
+  
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **external**:  
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u(t)**
+    - **Port Name:** **2**
+      - **Note:** **external signal that reset x to the specified initial condition x0, the reset will be triggered when the reset signal rises from a negative or zero value to a positive value.**
+    - **Port Name:** **3**
+      - **Note:** **x0, the initial condition of x**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y(t)**
+  
+ ---

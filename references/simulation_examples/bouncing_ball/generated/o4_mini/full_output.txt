@@ -1,0 +1,341 @@
+[Investigator] Used block 1: Gravitational acceleration (Constant)  
+Used block 2: Initial Velocity IC (IC)  
+Used block 3: Second-Order Integrator (Second-Order Integrator)  
+Used block 4: Memory (Memory)  
+Used block 5: Coefficient of Restitution (Gain)  
+Used block 6: Scope 1 (Scope)  
+Used block 7: Scope 2 (Scope)  
+
+{
+  "request_blocks": [
+    "Constant",
+    "IC",
+    "Second-Order Integrator",
+    "Memory",
+    "Gain",
+    "Scope"
+  ]
+}
+[Investigator] Constant (Constant) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 1  
+IC (IC) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 2 (ICSourceDXDT=external)  
+Second-Order Integrator (Second-Order Integrator) Port 1 <-> Scope 1 (Scope) Port 1  
+Second-Order Integrator (Second-Order Integrator) Port 2 <-> Scope 2 (Scope) Port 1  
+Second-Order Integrator (Second-Order Integrator) Port 2 <-> Memory (Memory) Port 1  
+Memory (Memory) Port 1 <-> Gain (Gain) Port 1
+[Unit_test_reviewer] Below is our review of the Investigator’s simulation information:
+
+1. Block List Existence  
+ • The used block list is provided in the expected format (e.g. “Used block 1: Gravitational acceleration (Constant)”, etc.).  
+ • All requested block types (Constant, IC, Second-Order Integrator, Memory, Gain, and Scope) are represented in the used list.
+
+2. Extra Blocks  
+ • Every block mentioned in the used block list appears in at least one connection.  
+ • However, note that “Coefficient of Restitution (Gain)” is named in the used list while the connection description refers only to “Gain (Gain)”. This naming discrepancy may be considered an inconsistency if the investigator was expected to use the same exact block name.
+
+3. Formatting of Block Names  
+ • None of the block names include a special symbol (such as '/') so that rule is met.
+
+4. Formatting of Connection Descriptions  
+ • Each connection line is in the correct left output/ right input format and follows the strict formatting conventions.  
+ • The parameter setting on “IC (IC) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 2 (ICSourceDXDT=external)” is positioned correctly.
+ • There is no extra explanation text in place of the (related parameter setting) where none is needed.
+
+5. Parameter Settings in Connections  
+ • The parameter “ICSourceDXDT=external” is applied on the Second-Order Integrator’s Port 2, which is valid given the simulation block description.  
+ • All other connections either require no parameter setting or are correctly formatted.
+
+6. Duplicate Connections  
+ • No single block’s dedicated input port appears to be connected more than once (the fact that the Second-Order Integrator’s Port 2 appears twice is acceptable because in one case it serves as an input [from IC] and in the others it is used as an output).
+
+7. Block Connection Types  
+ • No block that has only an output is connected to another output, and no block that has only an input is used as the source side.  
+ • All connections meet the directional requirements.
+
+8. Complete Port Connections  
+ • For the Second-Order Integrator, both input ports are connected (Port 1 by the Constant and Port 2 by the IC) and both output ports are used (Port 1 to Scope 1 and Port 2 to both Scope 2 and Memory).  
+ • The Constant, IC, and Memory blocks are correctly paired.  
+ • However, the Gain block (here used in place of “Coefficient of Restitution”) has its input port connected but its output port (Port 1) is not connected to any block. This is an incomplete port connection according to the requirement that every block’s available port should be connected.
+
+Summary of Inconsistencies and Errors:  
+ – Naming inconsistency: the used block “Coefficient of Restitution (Gain)” is not referenced by that same name in the connections (instead “Gain (Gain)” is used).  
+ – Not every available port is connected: the Gain block’s output port remains unconnected.
+
+Based on the issues found, the overall validation does not completely pass.
+
+{
+  "Investigator_unit_test_pass": False
+}
+[Investigator] Used block 1: Gravitational acceleration (Constant)  
+Used block 2: Initial Velocity (IC)  
+Used block 3: Second-Order Integrator (Second-Order Integrator)  
+Used block 4: Memory (Memory)  
+Used block 5: Coefficient of Restitution (Gain)  
+Used block 6: Position Scope (Scope)  
+Used block 7: Velocity Scope (Scope)  
+
+{
+  "request_blocks": [
+    "Constant",
+    "IC",
+    "Second-Order Integrator",
+    "Memory",
+    "Gain",
+    "Scope"
+  ]
+}
+[Investigator] Gravitational acceleration (Constant) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 1  
+Initial Velocity (IC) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 2 (ICSourceDXDT=external)  
+Second-Order Integrator (Second-Order Integrator) Port 1 <-> Position Scope (Scope) Port 1  
+Second-Order Integrator (Second-Order Integrator) Port 2 <-> Velocity Scope (Scope) Port 1  
+Second-Order Integrator (Second-Order Integrator) Port 2 <-> Memory (Memory) Port 1  
+Memory (Memory) Port 1 <-> Coefficient of Restitution (Gain) Port 1  
+Coefficient of Restitution (Gain) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 2 (ICSourceDXDT=external)
+[Unit_test_reviewer] Below is our review of the Investigator’s submission:
+
+1. Presence of the Block List  
+ • The used blocks are listed in the expected format (e.g. “Used block 1: Gravitational acceleration (Constant)”, etc.) and all requested block types (Constant, IC, Second-Order Integrator, Memory, Gain, Scope) are present.
+
+2. Extra Blocks Check  
+ • Every block named in the “blocks used in the simulation” appears in at least one connection. No extra block (i.e. a used block missing from any connection) was identified.
+
+3. Formatting of Block Names  
+ • No block name includes forbidden special symbols (such as “/”), so the naming format is acceptable.
+
+4. Formatting of Connection Descriptions  
+ • The connections follow the prescribed format: each connection is listed with the block’s name, its type in parentheses, then the port number.  
+ • Parameter settings (when provided) are appended correctly (e.g. “(ICSourceDXDT=external)”).  
+ • However, note that the formatting conflates the two roles of the Gain block’s single port—as input in one connection and as output in a subsequent connection—which is not allowed. Each connection must refer to the proper port of the block (input ports versus output ports).
+
+5. Parameter Settings & Duplicate/Complete Connection Checks  
+ • Parameters provided (ICSourceDXDT=external on Second-Order Integrator port 2) match the simulation block list expectations.  
+ • Duplicate Connection Issue: The Second-Order Integrator’s input Port 2 (in the external ICSourceDXDT configuration) is connected twice. First, it is connected from “Initial Velocity (IC)” and then from “Coefficient of Restitution (Gain)” – this violates the rule that a dedicated input port (with the exception of Electrical Reference or Solver Configuration) may be connected only once.  
+ • In addition, the Gain block (Coefficient of Restitution) is used in two roles on the same port number 1: it first appears on the right side of a connection (serving as its input port) and then as the left side (serving as its output port). Given that a Gain block’s input port and output port are distinct, this indicates that the connections have not been assigned to the proper ports.  
+ • Also, some blocks do not have all their ports connected. For example, the IC block’s input port is left unconnected, and the Gain block’s output port is never separately connected. Every available port should have a connection.
+
+Summary of Inconsistencies and Errors:
+ – The Second-Order Integrator’s input Port 2 is connected twice (duplicate connection error).  
+ – The Gain block (“Coefficient of Restitution”) is misconfigured with its single port used as both input and output across different connections.  
+ – Some ports (e.g. IC’s input port and Gain’s dedicated output port) remain unconnected, which violates the complete port connection requirement.
+
+Based on the above, the overall submission does not pass the unit test.
+
+{
+  "Investigator_unit_test_pass": False
+}
+[Investigator] Used block 1: Gravitational acceleration (Constant)  
+Used block 2: Initial Velocity (IC)  
+Used block 3: Second-Order Integrator (Second-Order Integrator)  
+Used block 4: Memory (Memory)  
+Used block 5: Coefficient of Restitution (Gain)  
+Used block 6: Position Scope (Scope)  
+Used block 7: Velocity Scope (Scope)  
+
+{
+  "request_blocks": [
+    "Constant",
+    "IC",
+    "Second-Order Integrator",
+    "Memory",
+    "Gain",
+    "Scope"
+  ]
+}
+[Investigator] Gravitational acceleration (Constant) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 1  
+Coefficient of Restitution (Gain) Port 1 <-> Initial Velocity (IC) Port 1  
+Initial Velocity (IC) Port 1 <-> Second-Order Integrator (Second-Order Integrator) Port 2 (ICSourceDXDT=external)  
+Second-Order Integrator (Second-Order Integrator) Port 1 <-> Position Scope (Scope) Port 1  
+Second-Order Integrator (Second-Order Integrator) Port 2 <-> Velocity Scope (Scope) Port 1  
+Second-Order Integrator (Second-Order Integrator) Port 2 <-> Memory (Memory) Port 1  
+Memory (Memory) Port 1 <-> Coefficient of Restitution (Gain) Port 1
+[Unit_test_reviewer] Below is our review:
+
+1. Existence of Block List  
+ • The “Used block” list is present and provided in the proper “Used block N: Block Name (Block Type)” format, and it lists the expected block types (Constant, IC, Second-Order Integrator, Memory, Gain, Scope).
+
+2. Extra Blocks  
+ • Every block listed in the “blocks used in the simulation” also appears in the connections description. There are no extra blocks that are unused in the connections.
+
+3. Formatting of Block Names  
+ • None of the block names include any disallowed special symbol (e.g., “/”), so they meet the naming requirements.
+
+4. Formatting of Connection Description  
+ • Each connection line is formatted strictly as “BlockName (BlockType) PortX (parameter if needed)” on each side with the left being the output and the right being the input.  
+ • The parameter setting (ICSourceDXDT=external) is appended correctly where needed.  
+ • No extraneous descriptive text is included in place of the parameter setting.
+
+5. Parameter Settings, Duplicate Connections, Block Connection Types, and Complete Port Connections  
+ • The parameter provided on the connection to Second-Order Integrator Port 2 is valid for the case when ICSourceDXDT is external.  
+ • No dedicated input port is connected more than once (the apparent reuse of a port on Second-Order Integrator’s output side is acceptable).  
+ • All connections are between blocks that support the respective input or output roles.  
+ • Every available input and output port of each block (based on its specified configuration) is connected appropriately.
+
+Overall, all responsibilities are met without any detected inconsistencies or errors.
+
+{
+  "Investigator_unit_test_pass": True
+}
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'MySimModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Sources/Constant', model_name + '/Gravitational acceleration', nargout=0)
+eng.add_block('simulink/Signal Attributes/IC', model_name + '/Initial Velocity', nargout=0)
+eng.add_block('simulink/Continuous/Integrator, Second-Order', model_name + '/Second-Order Integrator', nargout=0)
+eng.add_block('simulink/Discrete/Memory', model_name + '/Memory', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Coefficient of Restitution', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Position Scope', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Velocity Scope', nargout=0)
+
+eng.set_param(model_name + '/Second-Order Integrator', 'ICSourceDXDT', 'external', nargout=0)
+
+eng.add_line(model_name, 'Gravitational acceleration/1', 'Second-Order Integrator/1', nargout=0)
+eng.add_line(model_name, 'Coefficient of Restitution/1', 'Initial Velocity/1', nargout=0)
+eng.add_line(model_name, 'Initial Velocity/1', 'Second-Order Integrator/2', nargout=0)
+eng.add_line(model_name, 'Second-Order Integrator/1', 'Position Scope/1', nargout=0)
+eng.add_line(model_name, 'Second-Order Integrator/2', 'Velocity Scope/1', nargout=0)
+eng.add_line(model_name, 'Second-Order Integrator/2', 'Memory/1', nargout=0)
+eng.add_line(model_name, 'Memory/1', 'Coefficient of Restitution/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the comprehensive report that explains the simulation from its conceptual foundation to its practical coding implementation, addressing each of the four key questions.
+
+─────────────────────────────  
+1. WHAT IS THE SIMULATION ABOUT?  
+─────────────────────────────
+
+The simulation models the dynamics of a bouncing ball. Its purpose is to replicate the real-world behavior of a ball subject to gravitational acceleration and impacts with the ground. In the simulated setup, the ball is represented by its position (x) and velocity (dx/dt). When the ball reaches the ground (position x reaches the lower saturation limit of zero), the model reinitializes the velocity (representing an inelastic collision) using a coefficient of restitution. In essence, the simulation unites continuous dynamics (from gravity and motion) with discrete event handling (impact and rebound), thus serving as an excellent example of a hybrid dynamic system where both continuous integration and instantaneous state updates are required.
+
+─────────────────────────────  
+2. WHAT ARE THE MAIN SIMULATION STEPS?  
+─────────────────────────────
+
+The simulation is structured into several distinct stages or functional modules:
+
+A. Initialization of Physical Parameters and Initial Conditions  
+ • A constant gravitational acceleration is provided as the input force.  
+ • An initial velocity value is specified (adjusted by the coefficient of restitution) that determines the starting conditions for the simulation.
+
+B. Continuous Dynamics Computation by the Second-Order Integrator  
+ • A Second-Order Integrator is used to compute both the position (x) and the velocity (dx/dt) over time.  
+ • This integrator internally applies the equations of motion based on the acceleration input.
+
+C. Collision Detection and Velocity Reinitialization  
+ • A Memory block captures the velocity immediately before impact (v⁻), and a calculation loop (through a Gain block representing the coefficient of restitution) computes the new velocity (v⁺) after the collision.  
+ • The reinitialization occurs when the integrator’s state hits the saturation limit (x = 0), effectively simulating a bounce.
+
+D. Visualization of Output Signals  
+ • The computed position and velocity are sent to display blocks (Scopes) for real-time visualization of the ball’s motion and impact dynamics.
+
+─────────────────────────────  
+3. WHAT THEORETICAL KNOWLEDGE AND MATHEMATICAL MODELLING ARE INVOLVED?  
+─────────────────────────────
+
+For each simulation step, the underlying theoretical and mathematical foundations are as follows:
+
+A. Initialization of Physical Parameters and Initial Conditions  
+ • Theory: Newton’s laws of motion with gravity as the primary acceleration.  
+ • Mathematical Model:  
+  – Gravitational acceleration “g” is represented as a constant (for example, g = 9.81 m/s²).  
+  – The initial conditions are defined and set through blocks that mimic Dirac-delta function initialization.
+
+B. Continuous Dynamics Computation  
+ • Theory: Second-order ordinary differential equations (ODEs) govern the ball’s motion.  
+ • Mathematical Model:  
+  – The integration process solves:  
+    d²x/dt² = u (where u = gravitational acceleration)  
+    dx/dt |_(t=0) = v₀ (initial velocity)  
+    x |_(t=0) = x₀ (initial position)  
+ – The Second-Order Integrator block numerically integrates these equations over time.
+
+C. Collision Detection and Velocity Reinitialization  
+ • Theory: Impact dynamics, where collisions cause an instantaneous change in velocity due to energy loss.  
+ • Mathematical Model:  
+  – Capture v⁻ (velocity immediately before collision) using a Memory block.  
+  – Apply the coefficient of restitution (a factor less than 1) via a Gain block:  
+    v⁺ = e × v⁻  
+    where e represents the energy loss upon impact.  
+ – This resetting mechanism simulates the instantaneous change described by impulse dynamics.
+
+D. Visualization of Output Signals  
+ • Theory: Signal processing and control systems visualization.  
+ • Mathematical Model:  
+  – The simulation extracts time-domain signals (x(t) and v(t)) from the integrated results and presents them graphically via Scope blocks.  
+  – No further mathematical transformation is applied during visualization; it is primarily for analysis and demonstration.
+
+─────────────────────────────  
+4. HOW IS IT IMPLEMENTED IN CODE?  
+─────────────────────────────
+
+The simulation is constructed programmatically using MATLAB’s Simulink engine. The code demonstrates how each physical concept and simulation module is represented using specific blocks, interconnected to reflect the theoretical block diagram. The code is organized in a way that mirrors the simulation steps:
+
+--------------------------------------------------------------------  
+A. Initialization of Physical Parameters and Initial Conditions  
+--------------------------------------------------------------------
+
+• Code creates a new model and adds blocks for gravitational acceleration and initial conditions.
+
+ • The “Constant” block represents gravitational acceleration:
+  eng.add_block('simulink/Sources/Constant', model_name + '/Gravitational acceleration', nargout=0)
+
+ • The “IC” (Initial Condition) block represents the initial velocity which is later adjusted by the coefficient of restitution:
+  eng.add_block('simulink/Signal Attributes/IC', model_name + '/Initial Velocity', nargout=0)
+
+ • The “Gain” block (Coefficient of Restitution) is added to adjust the pre-collision velocity:
+  eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Coefficient of Restitution', nargout=0)
+
+--------------------------------------------------------------------  
+B. Continuous Dynamics Computation with the Second-Order Integrator  
+--------------------------------------------------------------------
+
+• The Second-Order Integrator block is used to simulate the continuous integration of position and velocity:
+  eng.add_block('simulink/Continuous/Integrator, Second-Order', model_name + '/Second-Order Integrator', nargout=0)
+  • The parameter for external initial velocity input is set by:
+   eng.set_param(model_name + '/Second-Order Integrator', 'ICSourceDXDT', 'external', nargout=0)
+
+--------------------------------------------------------------------  
+C. Collision Detection and Velocity Reinitialization  
+--------------------------------------------------------------------
+
+• To capture the velocity just before impact (v⁻), a Memory block is introduced:
+  eng.add_block('simulink/Discrete/Memory', model_name + '/Memory', nargout=0)
+
+• The connection from the integrator’s velocity output to the Memory block (and subsequently to the Gain block) models the detection of a collision and subsequent reinitialization of the velocity:
+  eng.add_line(model_name, 'Second-Order Integrator/2', 'Memory/1', nargout=0)
+  eng.add_line(model_name, 'Memory/1', 'Coefficient of Restitution/1', nargout=0)
+
+--------------------------------------------------------------------  
+D. Visualization of the Results  
+--------------------------------------------------------------------
+
+• Two Scope blocks are added to visualize the ball’s position and velocity over time:
+  eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Position Scope', nargout=0)
+  eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Velocity Scope', nargout=0)
+
+• The outputs of the Second-Order Integrator are connected to these Scopes:
+  eng.add_line(model_name, 'Second-Order Integrator/1', 'Position Scope/1', nargout=0)
+  eng.add_line(model_name, 'Second-Order Integrator/2', 'Velocity Scope/1', nargout=0)
+
+--------------------------------------------------------------------  
+Final Code Assembly and Saving the Model  
+--------------------------------------------------------------------
+
+After adding all blocks and making the necessary connections, the code arranges the layout for clarity and saves the Simulink model:
+
+  eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)  
+  eng.save_system(model_name, model_name + '.slx', nargout=0)
+
+This code modularly reflects the simulation’s theoretical structure. Each block in the code corresponds directly to a component in the physical and mathematical model, ensuring that the simulation faithfully emulates the bouncing ball scenario with a clear representation of gravitational acceleration, continuous integration of motion, collision detection, and the application of restitution.
+
+─────────────────────────────  
+Conclusion  
+─────────────────────────────
+
+The report has detailed how the bouncing ball simulation encapsulates a split of continuous dynamic integration and discrete event handling through modular blocks. We discussed the theoretical underpinnings (Newton’s motion laws, ODE integration, impact dynamics) and broke down the simulation steps along with a thorough explanation of the corresponding MATLAB Simulink code. The result is a robust model that integrates theory with practical code implementation to effectively capture the physics of a bouncing ball.

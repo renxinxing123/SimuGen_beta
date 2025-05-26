@@ -1,0 +1,15 @@
+## Trigonometric Function
+
+**Path:** `'simulink/Math Operations/Trigonometric Function'`
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port receives the input signal for the trigonometric or hyperbolic function.
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port outputs the result of the trigonometric or hyperbolic function.
+  
+---

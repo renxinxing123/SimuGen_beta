@@ -1,0 +1,13 @@
+## Constant
+
+**Path:** `'simulink/Sources/Constant'`
+
+**Description:**  
+The Constant block generates a constant signal that can be real or complex. It produces scalar, vector, or matrix outputs based on the dimensions of the Constant value parameter and the "Interpret vector parameters as 1-D" setting. When the checkbox is selected, a vector is treated as a 1-D vector; otherwise, it is interpreted as a matrix.
+
+**Ports:**
+
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

@@ -1,0 +1,13 @@
+## AC Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/AC Voltage Source'`
+
+**Ports:**
+
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+ 
+  - **Port Name:** **RConn1**
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+  
+---

@@ -1,0 +1,17 @@
+## UnitDelay
+
+**Path:** `'simulink/Discrete/Unit Delay'`
+
+**Description:**  
+The Unit Delay block holds and delays its input by one sample period. When placed in an iterator subsystem, it holds and delays its input by one iteration. This block is equivalent to the z-1 discrete-time operator. The block accepts one input and generates one output. Each signal can be scalar or vector. If the input is a vector, the block holds and delays all elements of the vector by the same sample period.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port name:** **1**
+    - **Note:** **Input signal that the block delays by one sample period.**
+  
+- **Output Port:**  
+  - **Port Name:** **1**
+    - **Note:** **Output signal that is the input delayed by one sample period.**
+---

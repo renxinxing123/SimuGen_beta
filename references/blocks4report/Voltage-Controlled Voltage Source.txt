@@ -1,0 +1,38 @@
+## Current-Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Voltage-Controlled Voltage Source'`
+
+**Description:**  
+The **Voltage-Controlled Voltage Source** block models a linear **voltage-controlled voltage source**, described with the following equation:
+
+```
+V = K * (V(+) - V(-))
+```
+
+**where**
+
+- `V`       Output voltage  
+- `K`       Voltage gain  
+- `V(+)`, `V(-)` Voltages presented at the + and − control ports  
+
+To use the block, connect the + and − ports on the left side of the block (the control ports) to the control voltage source. The two ports on the right side of the block (the output ports) generate the output voltage. Polarity is indicated by the + and − signs.
+
+
+**Ports:**
+
+- **Positive control port**  
+  - **Port Name:** **LConn1**  
+  - **Note:** Positive of control port.
+
+- **Negative control port**  
+  - **Port Name:** **RConn1**  
+  - **Note:** Negative of control port.
+  
+- **Positive terminal**  
+  - **Port Name:** **LConn2**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+  
+- **Negative terminal**  
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+---

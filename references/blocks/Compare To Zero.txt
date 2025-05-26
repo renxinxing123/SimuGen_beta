@@ -1,0 +1,10 @@
+## Compare To Zero
+
+**Path:** `'simulink/Logic and Bit Operations/Compare To Zero'`
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Port:** **1** (no visual label)
+
+---

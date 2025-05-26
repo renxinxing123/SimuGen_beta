@@ -1,0 +1,12 @@
+## Sign
+
+**Path:** `'simulink/Math Operations/Sign'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

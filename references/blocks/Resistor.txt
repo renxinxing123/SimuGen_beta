@@ -1,0 +1,15 @@
+## Resistor
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Resistor'`
+
+**Ports:**
+
+- **Positive terminal:**  
+  - **Port Name:** **LConn1**
+  - **Note:** *Electrical conserving port associated with the resistor positive terminal.*
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn1**
+  - **Note:** *Electrical conserving port associated with the resistor negative terminal.*
+  
+---

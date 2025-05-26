@@ -1,0 +1,15 @@
+## Gain
+
+**Path:** `'simulink/Commonly Used Blocks/Gain'`
+
+**Description:**  
+The Gain block multiplies the input signal by a constant value (gain). Both the input and the gain can be scalar, vector, or matrix. The gain value is specified in the Gain parameter, while the Multiplication parameter lets you choose between element-wise and matrix multiplication. For matrix multiplication, you can also set the order of the multiplicands. The gain is converted from doubles to the specified data type using round-to-nearest and saturation, and then the multiplication result is converted to the output data type based on the chosen rounding and overflow modes.
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

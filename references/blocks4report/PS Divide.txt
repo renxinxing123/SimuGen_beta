@@ -1,0 +1,28 @@
+## PS Divide
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Divide'`
+
+**Description:**  
+This block divides the first input signal by the second one:
+
+$$
+y = u_1 ./ u_2
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port (Numerator, Visual Label: ×):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port is used for the numerator input signal.
+
+- **Input Port (Denominator, Visual Label: ÷):**  
+  - **Port Name:** **LConn2**  
+  - **Note:** This port is used for the denominator input signal.
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)  
+  - **Note:** This port outputs the division result.
+  
+---

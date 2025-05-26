@@ -1,0 +1,27 @@
+## Resistor
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Resistor'`
+
+**Description:**  
+The **Resistor** block models a linear **resistor**, described with the following equation:
+
+V = I * R
+
+where,
+V: voltage across the resistor
+I: current through the resistor
+R: resistance (ohms)
+
+Connections **+** and **−** are conserving electrical ports corresponding to the positive and negative terminals of the **resistor**, respectively. By convention, the voltage across the **resistor** is given by \( V(+) - V(-) \), and the sign of the current is positive when flowing through the device from the positive to the negative terminal. This convention ensures that the power absorbed by a **resistor** is always positive.
+
+**Ports:**
+
+- **Positive terminal:**  
+  - **Port Name:** **LConn1**
+  - **Note:** *Electrical conserving port associated with the resistor positive terminal.*
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn1**
+  - **Note:** *Electrical conserving port associated with the resistor negative terminal.*
+  
+---

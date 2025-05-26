@@ -1,0 +1,22 @@
+## Pulse Generator
+
+**Path:** `'simulink/Sources/Pulse Generator'`
+
+**Description:**  
+The Pulse Generator block outputs pulses based on the following logic:
+
+```
+if (t >= PhaseDelay) && (Pulse is on)
+   Y(t) = Amplitude
+else
+   Y(t) = 0
+end
+```
+
+The Pulse type parameter determines the computational technique used. Use Time-based for variable step solvers, and Sample-based for fixed step solvers or for discrete portions within a variable step solver model.
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---

@@ -1,0 +1,10 @@
+## Constant
+
+**Path:** `'simulink/Sources/Constant'`
+
+**Ports:**
+
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

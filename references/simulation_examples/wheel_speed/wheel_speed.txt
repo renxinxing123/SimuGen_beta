@@ -1,0 +1,34 @@
+wheel_speed
+
+### 🔸 Model Physics
+
+The wheel rotates with an initial angular speed that corresponds to the vehicle speed before the brakes are applied. The model uses separate integrators to compute wheel angular speed and vehicle speed. The model uses two speeds to calculate slip, which is determined by Equation 1. Note that vehicle speed is expressed as an angular velocity.
+
+\[
+\omega_v = \frac{V}{R} \quad \text{(equals the wheel angular speed if there is no slip)}
+\]
+
+#### Equation 1:
+
+\[
+\omega_v = \frac{V_v}{R_r}
+\]
+
+\[
+slip = 1 - \frac{\omega_w}{\omega_v}
+\]
+
+Where:  
+- \(\omega_v\) = vehicle speed divided by wheel radius  
+- \(V_v\) = vehicle linear velocity  
+- \(R_r\) = wheel radius  
+- \(\omega_w\) = wheel angular velocity  
+
+Slip is zero when wheel speed and vehicle speed are equal, and slip equals one when the wheel is locked. A desirable slip value is 0.2, which means that the number of wheel revolutions equals 0.8 times the number of revolutions under nonbraking conditions with the same vehicle velocity. This value maximizes the adhesion between the tire and road and minimizes the stopping distance with the available friction.
+
+---
+
+### 🔸 Model Analysis
+
+The friction coefficient between the tire and the road surface, mu, is an empirical function of slip, known as the mu-slip curve. The software creates mu-slip curves by passing MATLAB variables into the block diagram using a Simulink lookup table. The model multiplies the friction coefficient, mu, by the weight on the wheel, W, to yield the frictional force, Ff, acting on the circumference of the tire. Ff is divided by the vehicle mass to produce the vehicle deceleration, which the model integrates to obtain vehicle velocity.
+

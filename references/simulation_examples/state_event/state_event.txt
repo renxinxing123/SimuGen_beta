@@ -1,0 +1,5 @@
+State Events
+
+This example shows how to handle state events (bangbang).
+
+https://www.mathworks.com/help/simulink/slref/state-events.html

@@ -1,0 +1,18 @@
+ ## In1
+
+**Path:** `'simulink/Commonly Used Blocks/In1'`
+
+**Description:**  
+Provide an input port for a subsystem or model. For Triggered Subsystems, selecting **Latch input by delaying outside signal** produces the subsystem input value from the previous time step. For Function-Call Subsystems, enabling **Latch input for feedback signals of function-call subsystem outputs** prevents the input value from changing during execution. Other parameters allow you to explicitly specify the input signal attributes.
+
+**Parameters:**
+
+- **`Port` (Input Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this input within the subsystem. This parameter defines which input port the block represents.
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---

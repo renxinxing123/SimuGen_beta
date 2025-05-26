@@ -1,0 +1,24 @@
+## Voltage Sensor
+
+**Path:** `'fl_lib/Electrical/Electrical Sensors/Voltage Sensor'`
+
+**Description:**  
+The Voltage Sensor block represents an ideal voltage sensor, that is, a device that converts voltage measured between two points of an electrical circuit into a physical signal proportional to the voltage.
+
+Use the + and - ports to connect the sensor in parallel with the block (or several blocks) where you want to measure the voltage. Port V outputs the measurement result as a physical signal. Use a PS-Simulink Converter block to connect this port to Simulink® blocks, such as Scope or Display.
+
+**Ports:**
+
+- ** Positive terminal:**  
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the sensor positive terminal.
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the sensor negative terminal.
+
+- **Voltage:**  
+  - **Port Name:** **RConn1**  
+  - **Note:** Physical signal output port for the voltage measurement.
+  
+---

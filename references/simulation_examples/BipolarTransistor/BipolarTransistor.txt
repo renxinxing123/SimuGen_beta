@@ -1,0 +1,6 @@
+Small-Signal Bipolar Transistor
+This model shows the use of a small-signal equivalent transistor model to assess performance of a common-emitter amplifier. The 47K resistor is the bias resistor required to set nominal operating point, and the 470 Ohm resistor is the load resistor. The transistor is represented by a hybrid-parameter equivalent circuit with circuit parameters h_ie (base circuit resistance), h_oe (output admittance), h_fe (forward current gain), and h_re (reverse voltage transfer ratio). Parameters set are typical for a BC107 Group B transistor. The gain is approximately given by -h_fe*470/h_ie =-47. The 1uF decoupling capacitor has been chosen to present negligible impedance at 1KHz compared to the input resistance h_ie, so the output voltage should be 47*10mV = 0.47V peak.
+
+The model also shows how more complex elements (in this case a transistor) can be built up from the fundamental electrical elements in the Foundation library.
+
+https://uk.mathworks.com/help/simscape/ug/small-signal-bipolar-transistor.html

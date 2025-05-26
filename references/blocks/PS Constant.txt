@@ -1,0 +1,10 @@
+## PS Constant
+
+**Path:** `'fl_lib/Physical Signals/Sources/PS Constant'`
+
+**Ports:**
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---

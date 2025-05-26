@@ -1,0 +1,18 @@
+## PS Subtract
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Subtract'`
+
+**Ports:**
+
+- **Input Port (Positive Input):**  
+  - **Port Label:** **+**  
+  - **Port Name:** **LConn1**
+
+- **Input Port (Negative Input):**  
+  - **Port Label:** **-**  
+  - **Port Name:** **LConn2**
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---

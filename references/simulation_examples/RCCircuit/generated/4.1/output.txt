@@ -1,0 +1,211 @@
+Below is the complete technical report that integrates theoretical analysis with a step‐by‐step explanation of both the simulation structure and its MATLAB® code implementation.
+
+──────────────────────────────
+1. What Is the Simulation About?
+
+The simulation models an RC circuit using both Simulink® signal connections and Simscape™ physical networks. The purpose is to demonstrate two different modeling approaches:  
+• The Simulink model uses standard input/output blocks where signals are passed between blocks via mathematical equations derived from circuit theory.  
+• The Simscape model directly represents physical interconnections through bidirectional energy exchange, allowing later expansion by simple copy–paste methods.  
+
+In this example, the circuit is driven by a voltage square wave from a Pulse Generator, and the resistor and capacitor elements represent physical components with behavior described by Ohm’s law and the capacitor’s differential equation. This simulation stands as a real-world analog where electrical behavior under transient pulse excitation is studied, linking physical principles (e.g., V = IR and I = C·dV/dt) to simulation outputs that can be analyzed in the time domain.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?
+
+The simulation can be logically divided into several distinct steps (or modules) that outline how the RC circuit is structured:
+
+Step 1: Signal Generation  
+• A Pulse Generator block creates a square-wave voltage signal that acts as the input excitation.  
+
+Step 2: Signal Conversion for Physical Modeling  
+• The generated signal is converted from a Simulink signal into a physical signal using the Simulink-PS Converter. This prepares the voltage signal for use in the physical network.
+
+Step 3: Voltage Source and Electrical Connections  
+• A Controlled Voltage Source receives the physical signal and supplies the prescribed voltage to the network.  
+• This voltage drives the RC circuit built from a Resistor and a Capacitor arranged in series.
+
+Step 4: Circuit Elements Modeling  
+• The Resistor block implements Ohm’s law (V = I·R).  
+• The Capacitor block models the dynamic relationship I(t) = C·dV/dt, capturing transient response.
+
+Step 5: Grounding and Solver Settings  
+• Electrical Reference blocks are included to set the ground (zero voltage reference).  
+• A Solver Configuration block provides necessary environment settings for the physical simulation, ensuring that the network equations are solved accurately.
+
+Step 6: Voltage Measurement and Post-Processing  
+• A Voltage Sensor is placed in the circuit to measure the voltage across one of the RC elements.  
+• Its output is converted back to a Simulink signal by a PS-Simulink Converter.
+• The measured voltage is then processed via a Mux block, fed into a Sum block, and finally filtered or transformed by a Transfer Function block.
+
+Step 7: Output Visualization  
+• The final processed output (after summing and transfer function processing) is sent to a Scope block to plot the time evolution of the circuit voltage.
+
+──────────────────────────────
+3. Theoretical Knowledge and Mathematical Modelling in Each Step
+
+Step 1: Signal Generation  
+Theory:  
+• The Pulse Generator is based on a simple time-dependent logic where a square wave is generated. It uses conditional logic (“if t ≥ delay then output = amplitude”) to simulate a digital input.  
+• The design relates to time-domain signal processing.
+
+Mathematical Modeling:  
+• Logic-based mathematical conditions where signal amplitude is switched between 0 and a preset voltage level based on time.
+
+Step 2: Signal Conversion for Physical Modeling  
+Theory:  
+• Conversion of Simulink signals to physical signals bridges the gap between abstract simulation and physical analog modeling in Simscape.  
+• It ensures that the following blocks (which use physical laws) receive proper units and signal types.
+
+Mathematical Modeling:  
+• Consistency of signal types and unit conversion procedures to guarantee that voltages and currents follow physical units.
+
+Step 3: Voltage Source and Electrical Connections  
+Theory:  
+• The Controlled Voltage Source block implements the controlled source concept found in circuit theory.  
+• The source generates a voltage V = Vs regardless of current changes, mirroring an ideal source in theoretical models.
+
+Mathematical Modeling:  
+• The physical connection is governed by the controlled source equation and standard circuit nodal analysis.
+
+Step 4: Circuit Elements Modeling  
+Theory (Resistor):  
+• The resistor follows Ohm’s law (V = I·R), one of the fundamental equations in circuit analysis.  
+Theory (Capacitor):  
+• The capacitor is modeled with the relation I(t) = C·dV/dt, which is the basis for analyzing transient responses in circuits.
+
+Mathematical Modeling:  
+• Differential equations describe capacitor behavior.
+• Steady-state and transient analyses are supported by the resistor’s linear relationship.
+
+Step 5: Grounding and Solver Settings  
+Theory:  
+• Ground (Electrical Reference) sets the zero voltage potential; all voltage measurements become relative to this point.  
+• The Solver Configuration is based on numerical solution methods for differential-algebraic equations (DAEs) ensuring model stability and precision.
+
+Mathematical Modeling:  
+• The physical network requires correct boundary conditions (zero potential at ground).
+• Numerical methods (e.g., variable-step solvers) are applied to solve the differential equations of the circuit.
+
+Step 6: Voltage Measurement and Post-Processing  
+Theory:  
+• The Voltage Sensor block measures the potential difference, providing experimental data equivalent to measurements in physical systems.  
+• The conversion back to a Simulink signal and subsequent processing (Mux, Sum, Transfer Function) involve signal conditioning and linear systems analysis.
+
+Mathematical Modeling:  
+• The Transfer Function block represents a linear time-invariant (LTI) system characterized by numerator and denominator coefficients (typically used for filtering or dynamic response shaping).
+
+Step 7: Output Visualization  
+Theory:  
+• Displaying the result using a Scope block aids in time-domain analysis typical in experimental and simulation settings.  
+• Visualization confirms theoretical predictions against simulated data.
+
+Mathematical Modeling:  
+• Time-domain plot generation represents the integration of the circuit’s differential behavior over time.
+
+──────────────────────────────
+4. How Is It Implemented in Code?
+
+The provided Python script utilizes MATLAB® Engine to programmatically construct the Simulink model. The code is structured to align with the above simulation steps.
+
+Step 1: Signal Generation  
+• Code snippet creates a Pulse Generator block:
+
+--------------------------------------------------
+# Add Pulse Generator Block
+eng.add_block('simulink/Sources/Pulse Generator', model_name + '/Pulse Generator', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+Explanation:  
+This command adds a Pulse Generator block to the system. The generated square-wave serves as the excitation for the circuit.
+
+Step 2: Signal Conversion for Physical Modeling  
+• Code snippet for Simulink-PS Converter:
+
+--------------------------------------------------
+eng.add_block('nesl_utility/Simulink-PS Converter', model_name + '/Simulink-PS Converter 1', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+Explanation:  
+The block translates the generated Simulink signal into a physical Signal appropriate for the Simscape physical network.
+
+Step 3: Voltage Source and Electrical Connections  
+• Code snippet for Controlled Voltage Source:
+
+--------------------------------------------------
+eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model_name + '/Controlled Voltage Source', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+Explanation:  
+This creates a voltage source that accepts the physical signal. The code later connects the physical output from the Simulink-PS Converter to this block, ensuring that the voltage input is correctly routed.
+
+Step 4: Circuit Elements Modeling  
+• Code snippet for Resistor and Capacitor blocks:
+
+--------------------------------------------------
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/Resistor 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/Capacitor 1', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+Explanation:  
+These blocks represent the electrical elements of the circuit. Their behavior is defined by the theoretical equations (Ohm’s law for the resistor and the charging equation for the capacitor).
+
+Step 5: Grounding and Solver Settings  
+• Code snippet includes Electrical Reference blocks and the Solver Configuration:
+
+--------------------------------------------------
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference 2', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+Explanation:  
+These commands set up the physical environment and grounding, ensuring that the circuit solves with a defined reference (ground) and appropriate simulation parameters.
+
+Step 6: Voltage Measurement and Post-Processing  
+• Code snippet for Voltage Sensor, PS-Simulink Converter, Mux, Sum, and Transfer Function:
+
+--------------------------------------------------
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Transfer Fcn 1', 'MakeNameUnique', 'on', nargout=0)
+
+# Set Sum and Mux parameters
+eng.set_param(model_name + '/Sum 1', 'Inputs', '+-', nargout=0)
+eng.set_param(model_name + '/Mux 1', 'Inputs', '2', nargout=0)
+--------------------------------------------------
+Explanation:  
+• The Voltage Sensor captures the voltage across circuit elements.  
+• The PS-Simulink Converter brings the measured physical signal back into the Simulink domain.  
+• The Mux combines signals for further processing (here, two signals are merged).  
+• The Sum (configured with inputs “+-”) is used to perform signal algebra (e.g., subtracting a reference).  
+• The Transfer Function models an additional dynamic processing step (filtering or response shaping) as determined by its numerator and denominator coefficients.
+
+Step 7: Output Visualization  
+• Code snippet for Scope:
+
+--------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Output Voltage', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+Explanation:  
+The Scope block is added to display the time-domain response of the processed circuit output signal.
+
+Final Assembly – Adding Lines/Connections:  
+The remainder of the code uses eng.add_line() commands to connect the blocks as per the simulation block diagram. For example:
+
+--------------------------------------------------
+eng.add_line(model_name, 'Pulse Generator/1', 'Simulink-PS Converter 1/1', nargout=0)
+eng.add_line(model_name, 'Simulink-PS Converter 1/RConn1', 'Controlled Voltage Source/RConn1', nargout=0)
+...
+eng.add_line(model_name, 'Transfer Fcn 1/1', 'Output Voltage/1', nargout=0)
+--------------------------------------------------
+Explanation:  
+These commands physically connect the blocks—both for signal and electrical (physical) pathways. The code reflects the theoretical circuit topology by ensuring that the generated voltage, its manipulation through circuit elements, and final measurement are seamlessly integrated.
+
+Finally, the code arranges the system layout and saves it as a Simulink model:
+--------------------------------------------------
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+--------------------------------------------------
+This ensures that the simulated model is visually organized and stored for further analysis.
+
+──────────────────────────────
+Conclusion
+
+This report has detailed the simulation’s objective, broken down its main steps, identified the theoretical principles (from time-domain signal logic to differential circuit equations) underlying each step, and explained how these concepts are implemented in MATLAB code. The integrated approach demonstrates the synergy between physical modelling in Simscape and signal processing in Simulink, reinforcing the practical utility of simulation in the analysis of an RC circuit.

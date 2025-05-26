@@ -1,0 +1,142 @@
+Below is the comprehensive report that integrates the theoretical analysis with the code explanation. The report is organized according to the four required sections.
+
+─────────────────────────────  
+1. What is the simulation about?  
+─────────────────────────────
+
+This simulation is designed to demonstrate the handling of state events—in particular, a bangbang control scenario—in a dynamic system. The simulation models a simple closed-loop system that uses two integrators, a summing junction, a gain element, and an XY graph for visualizing the phase plane. In this context, “state events” refer to abrupt changes or resets in the state of a system that occur when certain criteria are met (for example, when an output “bangs” from one extreme to another). Here, the integrators are used to simulate the accumulation of state (integration of the input signal), and the feedback loop (through the summing and gain blocks) provides the mechanism for the state event behavior. Overall, the simulation represents a controlled dynamical process where the system’s state is monitored and reset based on a bangbang (on/off) control strategy, which can be analogous to switching control in real-world systems.
+
+─────────────────────────────  
+2. What are the main simulation steps?  
+─────────────────────────────
+
+The simulation can be decomposed into the following key functional stages (without referencing code details):
+
+A. Block Construction and Signal Definition  
+ • Create two integrator blocks to represent the dynamic states of the system.  
+ • Configure a summing block that takes two inputs and computes a difference (as suggested by the operation “+-”).  
+ • Introduce a gain block to multiply the summed signal by a constant (in this case, a negative gain is used).  
+ • Include an XY graph block to plot the phase plane by taking the outputs of the integrators as x and y coordinates.
+
+B. Signal Routing and Feedback Loop Formation  
+ • Route the output of the second integrator into the first integrator to ensure a coupling between the two state variables.  
+ • Connect the outputs of both integrators to the summing block, thus computing the difference between the state variables.  
+ • Pass the result from the summing block through the gain block.  
+ • Feed the gain block’s output back into the second integrator, establishing the closed-loop feedback.
+
+C. Visualization of State Dynamics  
+ • Connect the outputs of the two integrators to the XY graph block so that the evolution of the state variables can be visualized in a phase plane plot.  
+ • These visualizations help in observing limit cycles and other two-dimensional state behaviors that arise due to the bangbang control action.
+
+─────────────────────────────  
+3. What theoretical knowledge and mathematical modelling are involved in each step?  
+─────────────────────────────
+
+A. Block Construction and Signal Definition  
+ • Integrators:  
+  – The integrator blocks follow the basic differential equation dx/dt = u(t) with the output y(t) = x(t). This represents fundamental system dynamics where the state (x) is the time-integral of the input.  
+ • Summing Block:  
+  – The summing junction performs arithmetic operations—specifically subtraction in this model. In mathematical terms, if x₁ and x₂ are the signals from the integrators, the sum block computes x₁ – x₂. This operation is critical in comparing states and setting up the conditions for state events.  
+ • Gain Block:  
+  – The gain block implements a linear transformation by multiplying its input by a constant factor. The negative gain used implies that the control signal reverses the direction of the error, which is common in feedback control strategies.  
+ • XY Graph:  
+  – The phase plane plot captures the trajectory of the state vector (x₁, x₂) in a two-dimensional space. This graphical representation is used for qualitative analysis in dynamical systems theory, particularly for detecting oscillations and limit cycles.
+
+B. Signal Routing and Feedback Loop Formation  
+ • The integration of the outputs of the integrators and subsequent routing through the summing and gain blocks structurally forms a closed-loop differential equation describing the system.  
+ • The math behind feedback is rooted in control theory where the overall system dynamics can be expressed in state-space form. For instance, with the coupling of the integrators and the negative feedback, the resulting equations model a system that might exhibit switching behavior (bangbang control) when crossing certain state thresholds.  
+
+C. Visualization of State Dynamics  
+ • By plotting the results in the phase plane, one can analyze the stability and behavior of the system trajectories. This is a standard method in dynamical systems analysis used to physically interpret how state events or discontinuities affect the time evolution of a system.
+
+─────────────────────────────  
+4. How is it implemented in code?  
+─────────────────────────────
+
+The following Python code uses MATLAB Engine API for Python to build the Simulink model following the above simulation steps. The code is organized and explained step-by-step in correspondence with the simulation stages.
+
+A. Block Construction and Signal Definition  
+
+ 1. Create a new Simulink model and add necessary blocks.  
+
+  • The integrator blocks (“integrator 1” and “integrator 2”) are created to represent the state dynamics.
+  • The summing block (“sum”) is configured with the operation “+-” to subtract the second signal from the first.
+  • The gain block (“gain negative1”) is added to scale the summed signal, introducing the negative feedback.
+  • The XY graph block (“Phase Plane Plot”) is used to display state trajectories.
+
+Code snippet:
+--------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+# Create a new Simulink model
+model_name = 'simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add integrator blocks for state dynamics
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/integrator 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/integrator 2', 'MakeNameUnique', 'on', nargout=0)
+
+# Add the summing block for computing the difference (x1 - x2)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/sum', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/sum', 'Inputs', '+-', nargout=0)
+
+# Add the gain block to apply the negative feedback
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/gain negative1', 'MakeNameUnique', 'on', nargout=0)
+
+# Add the phase plane plot (XY graph) block to visualize state dynamics
+eng.add_block('simulink/Sinks/XY Graph', model_name + '/Phase Plane Plot', 'MakeNameUnique', 'on', nargout=0)
+--------------------------------------------------
+
+B. Signal Routing and Feedback Loop Formation  
+
+ 1. Connect the blocks to establish the desired signal flow and feedback loop.
+  • The output of “integrator 2” is fed to “integrator 1” to couple the states.
+  • The outputs from both integrators are connected to the summing block.
+  • The sum output is routed through the gain block.
+  • The output of the gain block is fed back into “integrator 2”, completing the feedback loop.
+
+Code snippet:
+--------------------------------------------------
+# Create lines to form the feedback loop
+eng.add_line(model_name, 'integrator 2/1', 'integrator 1/1', nargout=0)
+eng.add_line(model_name, 'integrator 1/1', 'sum/1', nargout=0)
+eng.add_line(model_name, 'integrator 2/1', 'sum/2', nargout=0)
+eng.add_line(model_name, 'sum/1', 'gain negative1/1', nargout=0)
+eng.add_line(model_name, 'gain negative1/1', 'integrator 2/1', nargout=0)
+--------------------------------------------------
+
+C. Visualization of State Dynamics  
+
+ 1. Route the outputs of the integrators into the XY graph block.
+  • “integrator 1” output is used as the x-axis data.
+  • “integrator 2” output is used as the y-axis data.
+
+Code snippet:
+--------------------------------------------------
+# Connect the integrator outputs to the XY Graph block for phase plane plotting
+eng.add_line(model_name, 'integrator 1/1', 'Phase Plane Plot/1', nargout=0)
+eng.add_line(model_name, 'integrator 2/1', 'Phase Plane Plot/2', nargout=0)
+--------------------------------------------------
+
+D. Finalizing the Model  
+
+ • The code uses an arrangement function to lay out the block diagram clearly.
+ • Finally, the model is saved as an .slx file so that it can be opened and executed later in Simulink.
+
+Code snippet:
+--------------------------------------------------
+# Arrange the blocks neatly and save the model
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+--------------------------------------------------
+
+─────────────────────────────  
+Conclusion  
+─────────────────────────────
+
+In summary, the simulation models a bangbang control scenario using fundamental blocks that implement integration, arithmetic summing, gain-based scaling, and feedback loops to affect state events. The theoretical grounding involves differential equations, control theory, and phase plane analysis. The MATLAB Engine Python code mirrors the conceptual block diagram by programmatically creating blocks, connecting them to form the closed-loop system, and finally arranging and saving the system for simulation. This integrated approach ensures that the code implementation is directly aligned with both the theoretical model and the simulation’s physical layout.

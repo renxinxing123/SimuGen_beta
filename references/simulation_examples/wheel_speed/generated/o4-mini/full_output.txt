@@ -1,0 +1,531 @@
+[Investigator] Controller out (In1 1)  
+Tire Torque (In1 2)  
+Hydraulic Lag (Transfer Fcn 1)  
+Wheel Speed (Transfer Fcn 2)  
+Brake pressure (Integrator)  
+Force & torque (Gain 1)  
+1/I (Gain 2)  
+Sum (Sum)  
+Unit Delay (UnitDelay)  
+WheelSpeed (outport) (Out1 1)  
+Wa (outport) (Out1 2)  
+
+Please provide a brief description (about half detail) for each of the following block types:
+
+{
+  "request_blocks": [
+    "In1",
+    "Transfer Fcn",
+    "Integrator",
+    "Gain",
+    "Sum",
+    "UnitDelay",
+    "Out1"
+  ]
+}
+[Investigator] Controller out (In1) 1 (`Port` = `1`) <-> Hydraulic Lag (Transfer Fcn) 1  
+Hydraulic Lag (Transfer Fcn) 1 <-> Brake pressure (Integrator) 1  
+Brake pressure (Integrator) 1 <-> Force & torque (Gain) 1  
+Brake pressure (Integrator) 1 <-> Bp (Out1) 1 (`Port` = `1`)  
+Force & torque (Gain) 1 <-> Sum (Sum) 1 (`Inputs` = `-+`)  
+Tire Torque (In1) 1 (`Port` = `2`) <-> Unit Delay (UnitDelay) 1  
+Unit Delay (UnitDelay) 1 <-> Sum (Sum) 2 (`Inputs` = `-+`)  
+Sum (Sum) 1 <-> 1/I (Gain) 1  
+1/I (Gain) 1 <-> Wheel Speed (Transfer Fcn) 1  
+1/I (Gain) 1 <-> Wa (Out1) 1 (`Port` = `2`)  
+Wheel Speed (Transfer Fcn) 1 <-> WheelSpeed (Out1) 1 (`Port` = `3`)
+[Unit_test_reviewer] Below is our review of the simulation information against the simulation blocks description:
+
+1. Block List Existence  
+• The Investigator’s list names eleven blocks. The expected blocks (In1, Transfer Fcn, Integrator, Gain, Sum, UnitDelay, Out1) are all represented—but note that two “In1” instances are used (Controller out and Tire Torque) and more than one Out1 instance is used.  
+• However, one connection refers to a block named “Bp (Out1)” that does not appear in the “blocks used” list, indicating an extra block name.
+
+2. Extra Blocks  
+• The appearance of “Bp (Out1)” in the connections – which is not mentioned in the simulation blocks used – is an extra block inconsistency.  
+• Moreover, the block names “WheelSpeed (outport) (Out1)” and “Wa (outport) (Out1)” include extra descriptive text (“outport”) that is not part of the standard naming.
+
+3. Formatting of Block Name  
+• None of the block names include the forbidden “/” symbol, which is acceptable.  
+• However, the additional “outport” string in names like “WheelSpeed (outport) (Out1)” is not part of the simulation blocks description and violates the expected plain naming.
+
+4. Formatting of Connection Description  
+• The required formatting is “BlockName (BlockType) PortNumber (if parameter setting exists)” with exactly that structure.  
+• Several connections are not strictly formatted. For example, the first connection is given as:  
+  Controller out (In1) 1 (`Port` = `1`) <-> Hydraulic Lag (Transfer Fcn) 1  
+  The “1” appears appended to the block name on the left side instead of after the block type. Also, one example in the instructions (“Current-Controlled Current Source (-h_feIb) …”) shows that the block name should not include extra text (such as “(-h_feIb)”).  
+• In addition, parameter settings for some connections (for example for Out1 blocks) are appended on the right but do not match the expected port numbering.
+
+5. Parameter Settings in Connections  
+• For In1 blocks, the setting for the parameter “Port” is provided (using values “1” and “2”) which is acceptable in that the In1 block uses its parameter to indicate which subsystem input is represented.  
+• In contrast, the Out1 block (expected to have one input port with port name “1”) is given parameter settings as “1”, “2” and even “3”. This does not match the expected configuration from the simulation blocks description.  
+• Also, the Transfer Fcn block is used with port “2” in one instance (“Wheel Speed (Transfer Fcn) 2”) while its ports are defined as only “1” for input and output.  
+
+6. Duplicate Connections  
+• Reviewing the connections shows that some input ports may be used more than once. In particular, the Out1 blocks appear to have multiple connections – for instance, one connection uses “Bp (Out1)” on port 1, while another Out1 instance (shown as “Wa” or “WheelSpeed”) is assigned different port numbers.  
+• Even if separate Out1 blocks are intended, using port numbers other than “1” is not valid per the description. Therefore, there is a duplicate connection concern on the Out1 side given the standard only has one input port per block (except in the allowed exceptions).
+
+7. Block Connection Types Validation  
+• The general rule – that an output-only block cannot be the recipient of a connection and an input-only block cannot serve as a source – is mostly followed.  
+• However, the connections to Out1 blocks (which only have an input port in the description) appear on both the right side of one connection and again as the right side elsewhere while using improper port parameter settings. Also, the Transfer Fcn block is referenced with a “2” for one instance even though it provides only port “1.”  
+• These indicate mismatches between the connection types expected from the description versus the provided connections.
+
+8. Complete Port Connections  
+• In the given connections, every block is assumed to have its ports “connected” (e.g. the Integrator’s one input and one output are both connected, the Sum block receives two inputs and gives one output).  
+• However, by using inappropriate port indices (for example, Out1 having connections claiming port “2” or “3” and a Transfer Fcn using port “2”), some ports are either “over‐connected” or “mis‐referenced.”  
+• This means the ports as defined in the simulation blocks description are not completely – or correctly – connected when the port numbers are taken into account.
+
+For completeness we also provide a brief description of each requested block type:
+
+• In1  
+ – This block represents an external input to a subsystem. It has a configurable parameter (“Port”) that specifies the sequential input position; it outputs the signal into the model via its single output port.
+
+• Transfer Fcn  
+ – Models a continuous-time linear system through its transfer function. It has a single input port and a single output port. Signals pass from the input through the dynamics described by the transfer function to the output.
+
+• Integrator  
+ – This block accumulates its input over time. With the default parameter settings (ExternalReset = none, InitialConditionSource = internal), it has one input port (for u(t)) and one output port (for y(t)). Other parameter settings yield additional inputs for an external reset or initial condition.
+
+• Gain  
+ – Multiplies the input signal by a specified numeric gain. It has one input port and one output port and applies a scaling factor to the signal.
+
+• Sum  
+ – Performs arithmetic addition or subtraction of multiple inputs. The number of input ports is determined by the “Inputs” parameter (a string of + and – symbols). It provides one output port containing the summed result.
+
+• UnitDelay  
+ – Delays the input signal by one sample period. It has one input port and one output port, with the output producing the delayed version of the input.
+
+• Out1  
+ – Serves as an output port of a subsystem. Its parameter (“Port”) designates the sequential output position. It accepts a signal through its single input port to be exported from the subsystem.
+
+Summary of issues:  
+• An extra block (“Bp (Out1)”) appears in the connections but not in the provided blocks used list.  
+• Block names such as “WheelSpeed (outport) (Out1)” and “Wa (outport) (Out1)” include extra descriptors that should not be incorporated.  
+• Multiple connections to Out1 blocks use invalid port parameter settings (e.g. ports “2” and “3” instead of the only valid “1”).  
+• The Transfer Fcn instance “Wheel Speed (Transfer Fcn) 2” is not consistent with the defined single port “1”.  
+• The formatting of connection descriptions does not adhere strictly to the required format, and parameter settings on some connections do not match the simulation blocks description.  
+• This also raises the possibility of duplicate input connections (or misassignment) on blocks that should have only a single input.
+
+Based on these findings, the Investigator’s simulation information does not fully conform to the simulation blocks description.
+
+{
+  "Investigator_unit_test_pass": False
+}
+[Investigator] Controller out (In1)  
+Tire Torque (In1)  
+Hydraulic Lag (Transfer Fcn)  
+Brake pressure (Integrator)  
+Force & torque (Gain)  
+Unit Delay (UnitDelay)  
+Sum (Sum)  
+1/I (Gain)  
+Wheel Speed (Transfer Fcn)  
+Bp (Out1)  
+Wa (Out1)  
+WheelSpeed (Out1)  
+
+{
+  "request_blocks": [
+    "In1",
+    "Transfer Fcn",
+    "Integrator",
+    "Gain",
+    "UnitDelay",
+    "Sum",
+    "Out1"
+  ]
+}
+[Investigator] Controller out (In1) Port 1 (`Port` = `1`) <-> Hydraulic Lag (Transfer Fcn) Port 1  
+Hydraulic Lag (Transfer Fcn) Port 1 <-> Brake pressure (Integrator) Port 1  
+Brake pressure (Integrator) Port 1 <-> Force & torque (Gain) Port 1  
+Brake pressure (Integrator) Port 1 <-> Bp (Out1) Port 1 (`Port` = `1`)  
+Force & torque (Gain) Port 1 <-> Sum (Sum) Port 1 (`Inputs` = `-+`)  
+Tire Torque (In1) Port 1 (`Port` = `2`) <-> Unit Delay (UnitDelay) Port 1  
+Unit Delay (UnitDelay) Port 1 <-> Sum (Sum) Port 2 (`Inputs` = `-+`)  
+Sum (Sum) Port 1 <-> 1/I (Gain) Port 1  
+1/I (Gain) Port 1 <-> Wheel Speed (Transfer Fcn) Port 1  
+1/I (Gain) Port 1 <-> Wa (Out1) Port 1 (`Port` = `2`)  
+Wheel Speed (Transfer Fcn) Port 1 <-> WheelSpeed (Out1) Port 1 (`Port` = `3`)
+[Unit_test_reviewer] Below is our review of the Investigator’s simulation information against the simulation blocks description:
+
+1. Block List Existence  
+ • The investigator’s “blocks used” list is provided and contains the following named blocks:  
+  – Controller out (In1)  
+  – Tire Torque (In1)  
+  – Hydraulic Lag (Transfer Fcn)  
+  – Brake pressure (Integrator)  
+  – Force & torque (Gain)  
+  – Unit Delay (UnitDelay)  
+  – Sum (Sum)  
+  – 1/I (Gain)  
+  – Wheel Speed (Transfer Fcn)  
+  – Bp (Out1)  
+  – Wa (Out1)  
+  – WheelSpeed (Out1)  
+ This meets the requirement of listing the blocks before specifying connections.
+
+2. Extra Blocks  
+ • All blocks in the “blocks used” list appear in the detailed connections description; there are no extra blocks mentioned that are not connected.
+
+3. Formatting of Block Name  
+ • None of the block names include the forbidden “/” character.  
+ • The investigator’s block names (e.g. “Controller out”, “Tire Torque”, etc.) follow the expected naming convention.
+
+4. Formatting of Connection Description  
+ • The provided connection lines are formatted as:  
+  BlockName (BlockType) Port X (`Parameter` = `value`) <-> BlockName (BlockType) Port Y  
+ • The structure is adhered to in most cases. For example:  
+  “Controller out (In1) Port 1 (`Port` = `1`) <-> Hydraulic Lag (Transfer Fcn) Port 1”  
+  This is correct per the required format.  
+ • Parameter details (if any) are inserted in parentheses immediately after the port.  
+ • Thus the connection formatting is acceptable.
+
+5. Validate Parameter Settings in Connections  
+ • In1 blocks correctly include a parameter setting for “Port” (with “Controller out” using “1” and “Tire Torque” using “2”).  
+ • Transfer Fcn, Integrator, Gain, UnitDelay, and Sum are used with their respective ports as defined.  
+ • However, for Out1 blocks the provided parameter settings are problematic. Out1 is defined to have a single input port with port name “1” and a parameter “Port” that specifies the sequential output position. In the connections:  
+  – “Bp (Out1)” uses (`Port` = `1`) which is valid.  
+  – “Wa (Out1)” uses (`Port` = `2`) and “WheelSpeed (Out1)” uses (`Port` = `3`), which do not match the expected configuration (Out1 should only use port 1).  
+ This is an error in parameter settings.
+
+6. Detect Duplicate Connections  
+ • None of the connections show the same block’s input port being connected more than once (exceptions for Electrical Reference and Solver Configuration are not applicable here).  
+ • There are no duplicate input ports in use according to the provided connection lines.
+
+7. Validate Block Connection Types  
+ • All connection directions conform to the rule that the left side is an output and the right side is an input.  
+ • Blocks with output ports (e.g. In1, Transfer Fcn, Gain, Integrator, UnitDelay) serve as sources, while blocks designed with only an input port (Out1) are used as sinks.  
+ • The connection types are proper; however, the usage of Out1 with parameter values other than “1” (in Wa and WheelSpeed) violates the defined interface since Out1 only provides a single input port.
+
+8. Verify Complete Port Connections  
+ • Every connection between ports appears to be made (e.g., the In1, Transfer Fcn, Integrator, Gain, UnitDelay, and Sum blocks have all of their available ports connected).  
+ • The exception is with Out1 blocks: while “Bp (Out1)” correctly connects using port 1, “Wa (Out1)” and “WheelSpeed (Out1)” use non-existent ports (“2” and “3”, respectively) since each Out1 block only has port 1. This means that these Out1 instances do not adhere to the complete port configuration requirement.
+
+Summary of findings:
+• The connection descriptions are formatted correctly with proper block names and ordering.
+• The main issue is with the Out1 blocks – although three instances are provided, the parameter settings for “Wa (Out1)” and “WheelSpeed (Out1)” are incorrect because Out1 supports only a single input port (port 1).  
+• This error in parameter configuration and complete port connection results in a failure to meet the simulation blocks description.
+
+{
+  "Investigator_unit_test_pass": False
+}
+[Investigator] Controller out (In1)  
+Tire Torque (In1)  
+Hydraulic Lag (Transfer Fcn)  
+Brake pressure (Integrator)  
+Force & torque (Gain)  
+Unit Delay (UnitDelay)  
+Sum (Sum)  
+1/I (Gain)  
+Wheel Speed (Transfer Fcn)  
+Bp (Out1)  
+Wa (Out1)  
+WheelSpeed (Out1)  
+
+{
+  "request_blocks": [
+    "In1",
+    "Transfer Fcn",
+    "Integrator",
+    "Gain",
+    "UnitDelay",
+    "Sum",
+    "Out1"
+  ]
+}
+[Investigator] Controller out (In1) Port 1 (`Port` = `1`) <-> Hydraulic Lag (Transfer Fcn) Port 1  
+Hydraulic Lag (Transfer Fcn) Port 1 <-> Brake pressure (Integrator) Port 1  
+Brake pressure (Integrator) Port 1 <-> Force & torque (Gain) Port 1  
+Brake pressure (Integrator) Port 1 <-> Bp (Out1) Port 1 (`Port` = `1`)  
+Force & torque (Gain) Port 1 <-> Sum (Sum) Port 1 (`Inputs` = `-+`)  
+Tire Torque (In1) Port 1 (`Port` = `2`) <-> Unit Delay (UnitDelay) Port 1  
+Unit Delay (UnitDelay) Port 1 <-> Sum (Sum) Port 2 (`Inputs` = `-+`)  
+Sum (Sum) Port 1 <-> 1/I (Gain) Port 1  
+1/I (Gain) Port 1 <-> Wheel Speed (Transfer Fcn) Port 1  
+1/I (Gain) Port 1 <-> Wa (Out1) Port 1 (`Port` = `2`)  
+Wheel Speed (Transfer Fcn) Port 1 <-> WheelSpeed (Out1) Port 1 (`Port` = `3`)  
+
+{
+  "request_blocks": [
+    "In1",
+    "Transfer Fcn",
+    "Integrator",
+    "Gain",
+    "UnitDelay",
+    "Sum",
+    "Out1"
+  ]
+}
+[Unit_test_reviewer] Below is our review of the Investigator’s simulation information against the simulation blocks description:
+
+1. Block List Existence  
+ • The investigator lists all blocks (Controller out (In1), Tire Torque (In1), Hydraulic Lag (Transfer Fcn), Brake pressure (Integrator), Force & torque (Gain), Unit Delay (UnitDelay), Sum (Sum), 1/I (Gain), Wheel Speed (Transfer Fcn), Bp (Out1), Wa (Out1), WheelSpeed (Out1)) before the connections are described.  
+ • All listed blocks appear in the Connections Description.
+
+2. Extra Blocks  
+ • There are no blocks mentioned in the “blocks used” list that do not appear in the connections. Each block in the list is used in at least one connection.
+
+3. Formatting of Block Name  
+ • None of the block names include the special symbol “/”.  
+ • The names (e.g., “Controller out”, “Tire Torque”, “Bp”, “Wa”, “WheelSpeed”) follow the expected convention.
+
+4. Formatting of Connection Description  
+ • Each connection is written in the required format:
+  BlockName (BlockType) Port X (if parameter exists) <-> BlockName (BlockType) Port Y (if parameter exists)
+ • For instance, “Controller out (In1) Port 1 (`Port` = `1`) <-> Hydraulic Lag (Transfer Fcn) Port 1” meets the requirement.  
+ • The connections are consistently formatted.
+
+5. Validate Parameter Settings in Connections  
+ • For In1 blocks, the parameter “Port” is appropriately set (e.g. “Controller out” uses Port = 1 and “Tire Torque” uses Port = 2), consistent with the description.  
+ • Out1 blocks have a “Port” parameter that represents the sequential output position. The three Out1 instances (Bp with value “1”, Wa with “2”, and WheelSpeed with “3”) are acceptable because each represents a different output of the subsystem.  
+ • All other blocks use the defined ports (Transfer Fcn, Integrator, Gain, UnitDelay, Sum), and any provided parameter details (like Sum’s `Inputs = '-+'`) are consistent with the simulation blocks description.
+
+6. Detect Duplicate Connections  
+ • No input port is connected more than once (each block’s input port receives just one connection).  
+ • There are no duplicate connections (only the allowed multiple outputs from one source occur).
+
+7. Validate Block Connection Types  
+ • All connections are correctly oriented: the left‐side blocks are being used as sources (output ports) and the right‐side blocks act as sinks (input ports).  
+ • In particular, Out1 blocks—which only have input ports—appear only on the right side.  
+ • The direction of each connection is properly maintained.
+
+8. Verify Complete Port Connections  
+ • Every required port on each block appears to be connected. For example, Sum’s two input ports are used (ports 1 and 2), and its single output port (port 1) is connected to 1/I (Gain).  
+ • Although three separate Out1 blocks are used with different “Port” parameter values (implying different outputs of the subsystem), each Out1 instance has its single input port fully connected.  
+ • All blocks have all their defined ports connected according to the simulation blocks description.
+
+Overall, no inconsistencies or errors were detected.
+
+{
+  "Investigator_unit_test_pass": True
+}
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'MySimulationModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add blocks
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Controller_out', nargout=0)
+eng.set_param(model_name + '/Controller_out', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Tire_Torque', nargout=0)
+eng.set_param(model_name + '/Tire_Torque', 'Port', '2', nargout=0)
+
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Hydraulic_Lag', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Brake_pressure', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Force_and_torque', nargout=0)
+
+eng.add_block('simulink/Discrete/Unit Delay', model_name + '/Unit_Delay', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum', nargout=0)
+eng.set_param(model_name + '/Sum', 'Inputs', '-+', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/One_over_I', nargout=0)
+
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Wheel_Speed', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Bp', nargout=0)
+eng.set_param(model_name + '/Bp', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Wa', nargout=0)
+eng.set_param(model_name + '/Wa', 'Port', '2', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/WheelSpeed', nargout=0)
+eng.set_param(model_name + '/WheelSpeed', 'Port', '3', nargout=0)
+
+# Add lines to connect blocks
+eng.add_line(model_name, 'Controller_out/1', 'Hydraulic_Lag/1', nargout=0)
+eng.add_line(model_name, 'Hydraulic_Lag/1', 'Brake_pressure/1', nargout=0)
+eng.add_line(model_name, 'Brake_pressure/1', 'Force_and_torque/1', nargout=0)
+eng.add_line(model_name, 'Brake_pressure/1', 'Bp/1', nargout=0)
+eng.add_line(model_name, 'Force_and_torque/1', 'Sum/1', nargout=0)
+eng.add_line(model_name, 'Tire_Torque/1', 'Unit_Delay/1', nargout=0)
+eng.add_line(model_name, 'Unit_Delay/1', 'Sum/2', nargout=0)
+eng.add_line(model_name, 'Sum/1', 'One_over_I/1', nargout=0)
+eng.add_line(model_name, 'One_over_I/1', 'Wheel_Speed/1', nargout=0)
+eng.add_line(model_name, 'One_over_I/1', 'Wa/1', nargout=0)
+eng.add_line(model_name, 'Wheel_Speed/1', 'WheelSpeed/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the comprehensive technical report integrating theoretical analysis and complete code explanations. Each section strictly addresses the specified questions.
+
+─────────────────────────────  
+1. What is the simulation about?  
+
+This simulation models the dynamic behavior of a wheel during braking. Its primary purpose is to represent the interplay between the vehicle’s deceleration and the tire’s slip phenomenon. In real-world terms, the simulation replicates how a wheel’s angular speed (ωw) and the related wheel slip evolve as the brakes are applied. The simulation includes computing the vehicle’s angular speed (ωv = V/R) and calculating the slip using the relationship
+
+  slip = 1 – (ωw/ωv).  
+
+A crucial aspect is determining the friction force produced at the tire-road interface. This friction force is obtained by multiplying an empirically determined friction coefficient (mu) from a mu–slip curve by the wheel load. The deceleration is then calculated by dividing this frictional force by the vehicle’s mass. Thus, the simulation captures both the physical and control aspects of braking dynamics that are critical for minimizing stopping distances while optimizing tire-road adhesion.
+
+─────────────────────────────  
+2. What are the main simulation steps?  
+
+The simulation is structured in distinct functional stages without referencing specific code details. The major steps are:
+
+a) Input Signal Acquisition  
+ • Two primary inputs are provided: a controller output signal (representing brake command) and a torque signal from the tire.
+
+b) Dynamic Response through the Hydraulic Lag  
+ • The controller’s output is processed by a transfer function block representing hydraulic lag. This models the delay between the brake command and the resulting brake pressure.
+
+c) Brake Pressure Integration  
+ • The resultant brake pressure is then integrated over time. This integration simulates the accumulation (or decay) of pressure applied to the braking system.
+
+d) Force and Torque Calculation  
+ • The integrated brake pressure is multiplied by a gain to compute the force/torque applied to the wheel.
+
+e) Tire Dynamics with Delay Compensation  
+ • A unit delay is applied to the tire torque input to account for discrete dynamic effects or lag in tire response.
+
+f) Summation and Inertial Effects  
+ • The delayed tire torque and the force from brake pressure are combined using a summation, which together represent the net effect on the wheel dynamics. This combined signal is multiplied by 1/I (inverse inertia) to reflect the physical relationship between net torque and angular acceleration.
+
+g) Wheel Speed Determination  
+ • A transfer function block processes this net inertial effect to yield the wheel’s angular speed that is then provided to the outputs.
+
+h) Outputs  
+ • Multiple outputs are recorded: the measured brake pressure (Bp), the processed signal after multiplication by 1/I (Wa), and the final calculated wheel speed (WheelSpeed).
+
+─────────────────────────────  
+3. What theoretical knowledge and mathematical modelling are involved in each step?  
+
+For each simulation module, the following theoretical and mathematical foundations are employed:
+
+a) Input Signal Acquisition  
+ • Theory: Signal processing and system inputs; use of input ports (In1) to receive the control signals and physical torques.
+ • Mathematical Model: The specified input signals represent predefined initial conditions (e.g., vehicle and tire speeds).
+
+b) Dynamic Response through the Hydraulic Lag  
+ • Theory: Control theory and first-order system dynamics. The transfer function simulates hydraulic lag, representing delay dynamics.
+ • Mathematical Model: A continuous transfer function, typically expressed as H(s)=Numerator/Denominator, models the first-order lag (e.g., τs + 1 in the denominator).
+
+c) Brake Pressure Integration  
+ • Theory: Calculus and integration of dynamic variables.
+ • Mathematical Model: An integrator block implements the differential equation dx/dt = u(t), with initial condition x(t₀)=x₀. This computes the cumulative brake pressure over time.
+
+d) Force and Torque Calculation  
+ • Theory: Newtonian mechanics—relation between force, mass, and acceleration.
+ • Mathematical Model: A gain block multiplies brake pressure by a constant factor to yield a force/torque value. This constant can represent physical conversion factors (e.g., effective lever arm length, frictional properties).
+
+e) Tire Dynamics with Delay Compensation  
+ • Theory: Discrete signal processing; modelling of time delays.
+ • Mathematical Model: The Unit Delay block represents a time step lag, effectively implementing the z⁻¹ discrete-time operator.
+
+f) Summation and Inertial Effects  
+ • Theory: Dynamics of rotational motion.
+ • Mathematical Model: The Sum block aggregates the effects of the brake force-derived torque and the delayed tire torque. Then, multiplying by 1/I (inverse of inertia) converts net torque into angular acceleration (α), based on Newton’s second law for rotation (τ = Iα).
+
+g) Wheel Speed Determination  
+ • Theory: Integration of angular acceleration to obtain angular velocity.
+ • Mathematical Model: A second transfer function (or integrator effect) further processes the net inertial term to yield the wheel speed. This reflects the relationship ω = ∫α dt.
+
+h) Outputs  
+ • Theory: System output mapping.
+ • Mathematical Model: The Out1 blocks simply relay the computed signals to external systems for observation or further processing.
+
+─────────────────────────────  
+4. How is it implemented in code?  
+
+The provided Python execution code uses the MATLAB Engine API for Python to create and connect the Simulink blocks that reflect the steps described above. The code is reorganized below to match each simulation step:
+
+─────────────────────────────  
+Step 1 – Input Signal Acquisition  
+ • Code uses two In1 blocks for the controller signal and tire torque signal.  
+  Code excerpt:  
+   eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Controller_out', nargout=0)  
+   eng.set_param(model_name + '/Controller_out', 'Port', '1', nargout=0)  
+   eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Tire_Torque', nargout=0)  
+   eng.set_param(model_name + '/Tire_Torque', 'Port', '2', nargout=0)  
+ • Explanation: These commands create input interface blocks that inject the brake command and torque values into the simulation.
+
+─────────────────────────────  
+Step 2 – Dynamic Response through the Hydraulic Lag  
+ • Code adds a Transfer Fcn block representing the hydraulic lag.  
+  Code excerpt:  
+   eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Hydraulic_Lag', nargout=0)  
+ • Explanation: This block processes the controller output with a defined lag response, capturing hydraulic dynamics as a continuous transfer function.
+
+─────────────────────────────  
+Step 3 – Brake Pressure Integration  
+ • Code uses an Integrator block to simulate the integration of brake pressure over time.  
+  Code excerpt:  
+   eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Brake_pressure', nargout=0)  
+ • Explanation: The integrator implements dx/dt = u(t) to accumulate the brake pressure, reflecting basic calculus in dynamic systems.
+
+─────────────────────────────  
+Step 4 – Force and Torque Calculation  
+ • Code utilizes a Gain block to multiply the integrated brake pressure by a constant factor, representing conversion to force/torque.  
+  Code excerpt:  
+   eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Force_and_torque', nargout=0)  
+ • Explanation: The gain operation mathematically models the multiplication factor needed to convert pressure to a force/torque value.
+
+─────────────────────────────  
+Step 5 – Tire Dynamics with Delay Compensation  
+ • Code adds a Unit Delay block to incorporate a sample delay for the tire torque.  
+  Code excerpt:  
+   eng.add_block('simulink/Discrete/Unit Delay', model_name + '/Unit_Delay', nargout=0)  
+ • Explanation: The UnitDelay block implements a one-sample delay (z⁻¹ operator) that simulates the effect of a processing delay in the tire dynamics.
+
+─────────────────────────────  
+Step 6 – Summation and Inertial Effects  
+ • Code creates a Sum block that combines the force from brake pressure (after the Gain block) and the delayed tire torque from Unit Delay.  
+  Code excerpt:  
+   eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum', nargout=0)  
+   eng.set_param(model_name + '/Sum', 'Inputs', '-+', nargout=0)  
+ • Next, another Gain block (“One_over_I”) multiplies the summation output by the inverse of the moment of inertia.  
+  Code excerpt:  
+   eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/One_over_I', nargout=0)  
+ • Explanation: The summing and scaling operations represent the translation of net torque into angular acceleration according to rotational dynamics (τ = Iα, rearranged to α = τ/I).
+
+─────────────────────────────  
+Step 7 – Wheel Speed Determination  
+ • Code adds a Transfer Fcn block to process the 1/I–scaled signal for computing wheel speed.  
+  Code excerpt:  
+   eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Wheel_Speed', nargout=0)  
+ • Explanation: This transfer function further refines the dynamic relationship to yield the wheel’s angular speed, reflecting integration of the angular acceleration over time.
+
+─────────────────────────────  
+Step 8 – Outputs  
+ • Code uses three Out1 blocks to record the brake pressure (Bp), the intermediate processed signal (Wa), and the final wheel speed (WheelSpeed).  
+  Code excerpt:  
+   eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Bp', nargout=0)  
+   eng.set_param(model_name + '/Bp', 'Port', '1', nargout=0)  
+   eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Wa', nargout=0)  
+   eng.set_param(model_name + '/Wa', 'Port', '2', nargout=0)  
+   eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/WheelSpeed', nargout=0)  
+   eng.set_param(model_name + '/WheelSpeed', 'Port', '3', nargout=0)  
+ • Explanation: These blocks export the simulation results, aligning with the theoretical outputs necessary to analyze wheel dynamics and braking behavior.
+
+─────────────────────────────  
+Interconnecting the Blocks (Implementation of the Block Diagram)  
+
+After creating the blocks, the code connects them with lines to form the signal flow consistent with the simulation’s theoretical model:  
+
+ • The controller output (Controller_out) is linked to Hydraulic_Lag.  
+ • Hydraulic_Lag feeds into Brake_pressure, whose output branches out to both Force_and_torque and directly to the Bp output (brake pressure observable).  
+ • The Force_and_torque output is routed to the Sum block.  
+ • Simultaneously, Tire_Torque is delayed through the Unit_Delay and then provided to the Sum block.  
+ • The summation result flows into the One_over_I gain block.  
+ • The output from One_over_I is connected both to the Wheel_Speed block and the Wa output port (intermediate signal).  
+ • Finally, the Wheel_Speed block output goes to the WheelSpeed output port.  
+
+  Code excerpt for connections (illustrative):  
+   eng.add_line(model_name, 'Controller_out/1', 'Hydraulic_Lag/1', nargout=0)  
+   eng.add_line(model_name, 'Hydraulic_Lag/1', 'Brake_pressure/1', nargout=0)  
+   ...  
+   eng.add_line(model_name, 'Wheel_Speed/1', 'WheelSpeed/1', nargout=0)  
+
+This series of commands arranges the system graphically, aligns the blocks, and saves the final Simulink system as an SLX file.
+
+─────────────────────────────  
+Summary  
+
+The simulation is designed to analyze wheel dynamics during braking by combining a series of functional modules that mimic hydraulic lag, integration of brake pressure, and the calculation of forces and torques leading to wheel slip. The theoretical principles—ranging from control theory and integration, to dynamic summation and the relationship between torque and angular acceleration—are mapped directly into Simulink blocks. The provided Python code using MATLAB Engine sets up these blocks, configures their parameters, and connects them to form a coherent simulation model that mirrors the underlying mathematical formulations.

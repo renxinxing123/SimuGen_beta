@@ -1,0 +1,11 @@
+## Sine Wave
+
+**Path:** `'simulink/Sources/Sine Wave'` 
+
+**Ports:**
+
+- **Output Port:**  
+  - **Port Name:** **1**
+    - **Note:** **Output sine wave signal created based on the block parameter values.**
+  
+---

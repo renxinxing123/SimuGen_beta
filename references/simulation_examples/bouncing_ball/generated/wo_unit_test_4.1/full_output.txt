@@ -1,0 +1,203 @@
+[Investigator] Gravitational acceleration (Constant)  
+Initial Velocity IC (IC)  
+Second-Order Integrator (Second-Order Integrator)  
+Position (Scope)  
+Velocity (Scope)  
+Coefficient of Restitution (Gain)  
+Memory 1 (Memory)  
+
+{
+  "request_blocks": ["Constant", "IC", "Second-Order Integrator", "Scope", "Gain", "Memory"]
+}
+[Investigator] Gravitational acceleration (Constant) 1 <-> Second-Order Integrator (Second-Order Integrator) 1  
+Initial Velocity IC (IC) 1 <-> Second-Order Integrator (Second-Order Integrator) 2  
+Second-Order Integrator (Second-Order Integrator) 1 <-> Position (Scope) 1  
+Second-Order Integrator (Second-Order Integrator) 2 <-> Velocity (Scope) 1  
+Second-Order Integrator (Second-Order Integrator) 2 <-> Memory 1 (Memory) 1  
+Memory 1 (Memory) 1 <-> Coefficient of Restitution (Gain) 1  
+Coefficient of Restitution (Gain) 1 <-> Initial Velocity IC (IC) 1
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'MySimModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Sources/Constant', model_name + '/Gravitational acceleration', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Signal Attributes/IC', model_name + '/Initial Velocity IC', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Continuous/Integrator, Second-Order', model_name + '/Second-Order Integrator', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Position', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Velocity', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Coefficient of Restitution', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Discrete/Memory', model_name + '/Memory 1', 'MakeNameUnique', 'on', nargout=0)
+
+eng.set_param(model_name + '/Second-Order Integrator', 'ICSourceX', 'external', nargout=0)
+
+eng.add_line(model_name, 'Gravitational acceleration/1', 'Second-Order Integrator/1', nargout=0)
+eng.add_line(model_name, 'Initial Velocity IC/1', 'Second-Order Integrator/2', nargout=0)
+eng.add_line(model_name, 'Second-Order Integrator/1', 'Position/1', nargout=0)
+eng.add_line(model_name, 'Second-Order Integrator/2', 'Velocity/1', nargout=0)
+eng.add_line(model_name, 'Second-Order Integrator/2', 'Memory 1/1', nargout=0)
+eng.add_line(model_name, 'Memory 1/1', 'Coefficient of Restitution/1', nargout=0)
+eng.add_line(model_name, 'Coefficient of Restitution/1', 'Initial Velocity IC/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the complete report that integrates the theoretical analysis with a detailed explanation of the simulation’s implementation in code. The report is structured into four sections corresponding to the four key questions.
+
+──────────────────────────────
+1. What Is the Simulation About?
+
+The simulation models the dynamics of a bouncing ball subject to gravitational acceleration and the effects of impact with the ground. In a real-world scenario, a ball thrown or dropped will accelerate downward under gravity and, upon hitting the ground, rebound with a reduced velocity that depends on the coefficient of restitution. In this simulation, the Second-Order Integrator block captures the ball’s motion by solving the differential equations for position (x) and velocity (dx/dt). The system resets (or reinitializes) the velocity value when the ball contacts the ground (saturation at zero position) using additional blocks—a Memory block to capture the velocity just prior to impact and a Gain block to apply the rebound factor. The overall objective is to represent the dynamic behavior of the bouncing ball and to show how the ball’s momentum is updated after each collision with the ground.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?
+
+The simulation is structured into the following distinct stages:
+
+A. Setting Up the Inputs  
+   • A Constant block produces the gravitational acceleration input.  
+   • An Initial Condition (IC) block provides the starting velocity (and possibly other initial settings).
+
+B. Modeling Ball Dynamics  
+   • The Second-Order Integrator block is used to simulate the continuous dynamics of the ball. It integrates acceleration (input from the gravitational force) to produce velocity and integrates velocity to compute position.
+
+C. Detecting and Handling the Bounce  
+   • When the ball’s position reaches the saturation limit (the ground, x = 0), the second order integrator reinitializes the velocity (dx/dt).  
+   • A Memory block captures the velocity immediately before impact (v–).  
+   • A Gain block applies the coefficient of restitution to v– to compute the rebound velocity (v+).
+
+D. Visualizing the Results  
+   • Two Scope blocks display the time evolution of the ball’s position and velocity.
+
+──────────────────────────────
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?
+
+A. Setting Up the Inputs  
+   • The gravitational acceleration is modeled as a constant force. The Constant block mathematically represents a constant term “g” in the differential equation.  
+   • The IC block sets up the required initial values ensuring the second order system has well-defined initial conditions (e.g., initial upward or downward velocity).
+
+B. Modeling Ball Dynamics  
+   • The Second-Order Integrator block solves the second-order differential equation:  
+     d²x/dt² = u,  
+     with u representing the net acceleration (gravitational acceleration here).  
+   • The equations integrated are: dx/dt = v and d²x/dt² = g. This block encapsulates the model of a system in state-space form, where the continuous integration of acceleration yields velocity, and further integration provides position.
+
+C. Detecting and Handling the Bounce  
+   • When the ball hits the ground (x approaches the lower limit set in the integrator), the model uses saturation logic. At this point, the parameter “Reinitialize dx/dt when x reaches saturation” triggers an event.  
+   • A Memory block is used to retain the pre-impact velocity v– so that the rebound calculation can use this value.  
+   • A Gain block implements the restitution effect by multiplying v– with a coefficient (less than one) to yield the rebound velocity v+ mathematically represented as v+ = e · v–, where e is the coefficient of restitution.
+
+D. Visualizing the Results  
+   • Scope blocks provide a graphical display which is essential for confirming the simulation behavior by plotting the time domain signals of the position and velocity. This visualization confirms the dynamic response predicted by the differential equation solutions.
+
+──────────────────────────────
+4. How Is It Implemented in Code?
+
+The code uses MATLAB’s Simulink API via the matlab.engine to build and configure the simulation model. The implementation is organized to match the simulation steps outlined above.
+
+Step A: Setting Up the Inputs  
+• The Constant block and the IC block are added to supply gravitational acceleration and the initial velocity respectively.
+
+  Code excerpt:
+  --------------------------------------------------------------------------------
+  import sys
+  sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+  import matlab.engine
+
+  # Start MATLAB engine and create a new Simulink system
+  eng = matlab.engine.start_matlab()
+  model_name = 'MySimModel'
+  eng.new_system(model_name, nargout=0)
+  eng.open_system(model_name, nargout=0)
+
+  # Add the Constant block for gravitational acceleration
+  eng.add_block('simulink/Sources/Constant', model_name + '/Gravitational acceleration', 
+                'MakeNameUnique', 'on', nargout=0)
+
+  # Add the IC block for initial velocity
+  eng.add_block('simulink/Signal Attributes/IC', model_name + '/Initial Velocity IC', 
+                'MakeNameUnique', 'on', nargout=0)
+  --------------------------------------------------------------------------------
+
+Step B: Modeling Ball Dynamics  
+• The Second-Order Integrator block is integrated into the model. Its configuration is set to use external initial conditions for the position as needed.
+
+  Code excerpt:
+  --------------------------------------------------------------------------------
+  # Add the Second-Order Integrator which models position and velocity dynamics
+  eng.add_block('simulink/Continuous/Integrator, Second-Order', 
+                model_name + '/Second-Order Integrator', 'MakeNameUnique', 'on', nargout=0)
+
+  # Specify that the initial condition for x is provided externally
+  eng.set_param(model_name + '/Second-Order Integrator', 'ICSourceX', 'external', nargout=0)
+  --------------------------------------------------------------------------------
+
+Step C: Detecting and Handling the Bounce  
+• A Memory block captures the pre-impact velocity from the Second-Order Integrator’s velocity output.  
+• A Gain block applies the coefficient of restitution (multiplier) to compute the rebound velocity.  
+• The computed rebound velocity is routed back through the IC block to reinitialize the system velocity after impact.
+
+  Code excerpt:
+  --------------------------------------------------------------------------------
+  # Add the Memory block to capture pre-impact velocity (v–)
+  eng.add_block('simulink/Discrete/Memory', model_name + '/Memory 1', 
+                'MakeNameUnique', 'on', nargout=0)
+
+  # Add the Gain block which applies the coefficient of restitution
+  eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Coefficient of Restitution', 
+                'MakeNameUnique', 'on', nargout=0)
+
+  # Connect the Memory block with the Gain block and then feed back to the IC block
+  --------------------------------------------------------------------------------
+
+Step D: Visualizing the Results  
+• Two Scope blocks are added. One displays the ball’s position while the other displays its velocity. These blocks are connected respectively to the first and second output ports of the Second-Order Integrator.
+
+  Code excerpt:
+  --------------------------------------------------------------------------------
+  # Add the Scope blocks for position and velocity visualization
+  eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Position', 
+                'MakeNameUnique', 'on', nargout=0)
+  eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Velocity', 
+                'MakeNameUnique', 'on', nargout=0)
+  --------------------------------------------------------------------------------
+
+Complete Connection Setup  
+• The remaining code lines establish the signal flow consistent with the simulation block diagram. The gravitational acceleration from the Constant is fed into the Second-Order Integrator’s acceleration input. The initial conditions and feedback loop for the rebound velocity connect the IC, Memory, and Gain blocks appropriately.
+
+  Code excerpt:
+  --------------------------------------------------------------------------------
+  # Connect gravitational acceleration to the Second-Order Integrator
+  eng.add_line(model_name, 'Gravitational acceleration/1', 'Second-Order Integrator/1', nargout=0)
+
+  # Connect the initial velocity to the Second-Order Integrator’s initial condition port
+  eng.add_line(model_name, 'Initial Velocity IC/1', 'Second-Order Integrator/2', nargout=0)
+
+  # Connect the Second-Order Integrator outputs to Scope blocks for visualization
+  eng.add_line(model_name, 'Second-Order Integrator/1', 'Position/1', nargout=0)
+  eng.add_line(model_name, 'Second-Order Integrator/2', 'Velocity/1', nargout=0)
+
+  # Setup the feedback loop for computing rebound velocity:
+  # The velocity (v, at port 2) goes to Memory to capture v-
+  eng.add_line(model_name, 'Second-Order Integrator/2', 'Memory 1/1', nargout=0)
+  # The Memory output is passed through the Gain block to compute v+
+  eng.add_line(model_name, 'Memory 1/1', 'Coefficient of Restitution/1', nargout=0)
+  # The computed v+ is fed back into the IC block for reinitializing velocity post-impact
+  eng.add_line(model_name, 'Coefficient of Restitution/1', 'Initial Velocity IC/1', nargout=0)
+
+  # Arrange the blocks in the system
+  eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+  # Save the system
+  eng.save_system(model_name, model_name + '.slx', nargout=0)
+  --------------------------------------------------------------------------------
+
+──────────────────────────────
+Conclusion
+
+This report has detailed the bouncing ball simulation, elaborating on its purpose to model the dynamics of a ball under gravitational acceleration and impact-induced rebound using a Second-Order Integrator block. The simulation is methodically structured into input setup, dynamic modeling, bounce detection/handling, and result visualization. Each step is grounded in the underlying physics and mathematics, with a clear correspondence to the Simulink blocks as implemented in the MATLAB code.

@@ -1,0 +1,25 @@
+```python
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab('-desktop')
+
+model_name = 'Twobus'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+#######
+#Generate your code from here
+#######
+
+# Set simulation parameters
+eng.set_param(model_name, 'StopTime', '20', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+# Run the simulation
+simout = eng.sim(model_name, nargout=1)
+
+# Save and open the results
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+```

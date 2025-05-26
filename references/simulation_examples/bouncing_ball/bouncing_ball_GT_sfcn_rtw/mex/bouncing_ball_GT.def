@@ -1,0 +1,10 @@
+MEX {
+	global:
+                mexFunction;
+                mexCreateMexFunction;
+                mexDestroyMexFunction;
+                mexFunctionAdapter;
+		mexfilerequiredapiversion;
+	local:
+		*;
+};

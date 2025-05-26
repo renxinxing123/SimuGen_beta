@@ -1,0 +1,11 @@
+## Scope
+
+**Path:** `'simulink/Commonly Used Blocks/Scope'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** None
+ 
+ ---

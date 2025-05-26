@@ -1,0 +1,27 @@
+## Sign
+
+**Path:** `'simulink/Math Operations/Sign'`
+
+**Description:**  
+For real inputs, the **Sign** block outputs the **sign** of the input:
+
+| Input               | Output |
+|--------------------|--------|
+| Greater than zero  | 1      |
+| Equal to zero      | 0      |
+| Less than zero     | −1     |
+
+When the input `u` is a complex scalar, the block output matches the MATLAB® result for:
+
+```
+sign(u) = u ./ abs(u)
+```
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

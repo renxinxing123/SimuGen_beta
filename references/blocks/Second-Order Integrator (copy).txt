@@ -1,0 +1,64 @@
+## Second-Order Integrator
+
+**Path:** `'simulink/Continuous/Integrator, Second-Order'`
+
+**Description:**  
+The Second-Order Integrator block and the Second-Order Integrator Limited block solve the second-order initial value problem:
+
+d²x/dt² = u  
+dx/dt |_(t=0) = dx0  
+x |_(t=0) = x0
+
+
+where u is the input to the system. The block is therefore a dynamic system with two continuous states: x and dx/dt. 
+
+**Ports:**
+
+- **When** **ICSourceX** is set to **internal** and **ICSourceDXDT** is set to **internal**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+      
+- **When** **ICSourceX** is set to **external** and **ICSourceDXDT** is set to **internal**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+    - **Port Name:** **2**
+      - **Note:** Initial condition of x
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+      
+- **When** **ICSourceX** is set to **internal** and **ICSourceDXDT** is set to **external**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+    - **Port Name:** **2**
+      - **Note:** Initial condition of dx/dt
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+
+- **When** **ICSourceX** is set to **external** and **ICSourceDXDT** is set to **external**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+    - **Port Name:** **2**
+      - **Note:** Initial condition of x
+    - **Port Name:** **3**
+      - **Note:** Initial condition of dx/dt
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+ ---

@@ -1,0 +1,54 @@
+## Second-Order Integrator
+
+**Path:** `'simulink/Continuous/Integrator, Second-Order'`
+
+**Ports:**
+
+- **When** **ICSourceX** is set to **internal** and **ICSourceDXDT** is set to **internal**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+      
+- **When** **ICSourceX** is set to **external** and **ICSourceDXDT** is set to **internal**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+    - **Port Name:** **2**
+      - **Note:** Initial condition of x
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+      
+- **When** **ICSourceX** is set to **internal** and **ICSourceDXDT** is set to **external**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+    - **Port Name:** **2**
+      - **Note:** Initial condition of dx/dt
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+
+- **When** **ICSourceX** is set to **external** and **ICSourceDXDT** is set to **external**:
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** Input u to the system
+    - **Port Name:** **2**
+      - **Note:** Initial condition of x
+    - **Port Name:** **3**
+      - **Note:** Initial condition of dx/dt
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** output x
+    - **Port Name:** **2**
+      - **Note:** output dx/dt
+ ---

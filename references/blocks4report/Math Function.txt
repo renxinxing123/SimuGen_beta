@@ -1,0 +1,18 @@
+## Math Function
+
+**Path:** `'simulink/Math Operations/Math Function'`
+
+**Description:**  
+Mathematical functions including logarithmic, exponential, power, and modulus functions. When the function has more than one argument, the first argument corresponds to the top (or left) input port.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port receives the input signal for the mathematical function.
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port outputs the result of the mathematical function.
+  
+---

@@ -1,0 +1,16 @@
+## Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Controlled Voltage Source'`
+
+**Ports:**
+
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+
+  - **Port Name:** **RConn1**  
+  - **Note:** Input physical signal that specifies the voltage value.
+ 
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+  
+---

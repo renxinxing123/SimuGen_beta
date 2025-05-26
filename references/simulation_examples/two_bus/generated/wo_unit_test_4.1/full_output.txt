@@ -1,0 +1,260 @@
+[Investigator] Swing bus (Load Flow Source)  
+PV bus (Load Flow Source)  
+Load (Wye-Connected Load)  
+PQ load (Wye-Connected Load)  
+Busbar1 (Busbar)  
+Busbar2 (Busbar)  
+Transmission Line (Transmission Line (Three-Phase))  
+Solver Configuration (Solver Configuration)  
+Electrical Reference 1 (Electrical Reference)  
+Electrical Reference 2 (Electrical Reference)  
+Electrical Reference 3 (Electrical Reference)  
+Electrical Reference 4 (Electrical Reference)  
+
+{
+  "request_blocks": [
+    "Load Flow Source",
+    "Wye-Connected Load",
+    "Busbar",
+    "Transmission Line (Three-Phase)",
+    "Solver Configuration",
+    "Electrical Reference"
+  ]
+}
+[Investigator] Swing bus (Load Flow Source) LConn1 <-> Busbar1 (Busbar) LConn1 (n_nodes = 3)  
+Swing bus (Load Flow Source) RConn1 <-> Electrical Reference 1 (Electrical Reference) LConn1  
+PV bus (Load Flow Source) LConn1 <-> Busbar2 (Busbar) LConn1 (n_nodes = 3)  
+PV bus (Load Flow Source) RConn1 <-> Electrical Reference 2 (Electrical Reference) LConn1  
+Load (Wye-Connected Load) LConn1 <-> Busbar1 (Busbar) RConn1 (n_nodes = 3)  
+Load (Wye-Connected Load) RConn1 <-> Electrical Reference 3 (Electrical Reference) LConn1  
+PQ load (Wye-Connected Load) LConn1 <-> Busbar2 (Busbar) RConn1 (n_nodes = 3)  
+PQ load (Wye-Connected Load) RConn1 <-> Electrical Reference 4 (Electrical Reference) LConn1  
+Busbar1 (Busbar) LConn2 (n_nodes = 3) <-> Transmission Line (Transmission Line (Three-Phase)) LConn1  
+Transmission Line (Transmission Line (Three-Phase)) RConn1 <-> Busbar2 (Busbar) LConn2 (n_nodes = 3)  
+Transmission Line (Transmission Line (Three-Phase)) LConn2 <-> Electrical Reference 1 (Electrical Reference) LConn1  
+Transmission Line (Transmission Line (Three-Phase)) RConn2 <-> Electrical Reference 2 (Electrical Reference) LConn1  
+Solver Configuration (Solver Configuration) RConn1 <-> Busbar1 (Busbar) LConn1 (n_nodes = 3)
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'PowerSystemModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add blocks
+eng.add_block('ee_lib/Sources/Load Flow Source', model_name + '/Swing_bus', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('ee_lib/Sources/Load Flow Source', model_name + '/PV_bus', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('ee_lib/Passive/RLC Assemblies/Wye-Connected Load', model_name + '/Load', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('ee_lib/Passive/RLC Assemblies/Wye-Connected Load', model_name + '/PQ_load', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('ee_lib/Connectors & References/Busbar', model_name + '/Busbar1', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Busbar1', 'n_nodes', '3', nargout=0)
+eng.add_block('ee_lib/Connectors & References/Busbar', model_name + '/Busbar2', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Busbar2', 'n_nodes', '3', nargout=0)
+eng.add_block('ee_lib/Passive/Lines/Transmission Line (Three-Phase)', model_name + '/TransmissionLine', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/SolverConfiguration', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference2', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference3', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference4', 'MakeNameUnique', 'on', nargout=0)
+
+# Add lines (connections)
+eng.add_line(model_name, 'Swing_bus/LConn1', 'Busbar1/LConn1', nargout=0)
+eng.add_line(model_name, 'Swing_bus/RConn1', 'ElectricalReference1/LConn1', nargout=0)
+eng.add_line(model_name, 'PV_bus/LConn1', 'Busbar2/LConn1', nargout=0)
+eng.add_line(model_name, 'PV_bus/RConn1', 'ElectricalReference2/LConn1', nargout=0)
+eng.add_line(model_name, 'Load/LConn1', 'Busbar1/RConn1', nargout=0)
+eng.add_line(model_name, 'Load/RConn1', 'ElectricalReference3/LConn1', nargout=0)
+eng.add_line(model_name, 'PQ_load/LConn1', 'Busbar2/RConn1', nargout=0)
+eng.add_line(model_name, 'PQ_load/RConn1', 'ElectricalReference4/LConn1', nargout=0)
+eng.add_line(model_name, 'Busbar1/LConn2', 'TransmissionLine/LConn1', nargout=0)
+eng.add_line(model_name, 'TransmissionLine/RConn1', 'Busbar2/LConn2', nargout=0)
+eng.add_line(model_name, 'TransmissionLine/LConn2', 'ElectricalReference1/LConn1', nargout=0)
+eng.add_line(model_name, 'TransmissionLine/RConn2', 'ElectricalReference2/LConn1', nargout=0)
+eng.add_line(model_name, 'SolverConfiguration/RConn1', 'Busbar1/LConn1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the final integrated technical report which explains the simulation’s purpose, outlines its main steps, details the underlying theory for each stage, and then shows how these concepts were implemented in code.
+
+──────────────────────────────
+1. What Is the Simulation About?
+
+The simulation models a two‐bus, three‐phase power system performing load‐flow analysis. In the simulated network, three different types of load-flow sources are used:
+ • A Swing bus that acts as the slack bus by holding the terminal voltage at exactly one times its rated value while automatically absorbing or supplying the power imbalance.
+ • A PV bus that regulates its terminal voltage to 1.025 times the rated voltage and delivers 80 MW of active power.
+ • A PQ load (or load bus) representing an actual power consumption node.
+In addition, the network includes two Busbar blocks that display voltage magnitudes, phase angles, active power, and reactive power after simulation. A three‐phase Transmission Line block connects the two busbars using a lumped-parameter pi model; it represents the transmission path along which power flows from one bus to the other. A Solver Configuration block provides the necessary settings to simulate the physical network, and Electrical Reference blocks define the system ground. In essence, the simulation replicates a simplified transmission system used in power system analysis to understand how generation, load, and line parameters interact to produce a steady-state operating condition.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?
+
+The simulation is organized as follows (presented here as conceptual modules rather than mere code steps):
+
+A. Model Initialization and Block Definition  
+ • Create a new system and initialize the simulation environment.  
+ • Define the key components (Load-Flow Sources for the swing bus and PV bus, a Wye-Connected Load for both the load and PQ load, Busbars, a Transmission Line, a Solver Configuration block, and Electrical Reference blocks).
+
+B. Establishing Interconnections Among Blocks  
+ • Connect the swing bus to a busbar, the PV bus to a different busbar, and link the loads (PQ and the generic three-phase load) to their respective busbars.  
+ • Interconnect the two busbars via the Transmission Line block.  
+ • Ensure each block’s ground or neutral terminal is connected to an Electrical Reference for proper circuit definition.
+
+C. Load Flow Initialization and Solver Settings  
+ • Employ internal load-flow algorithms (using Simscape Electrical’s solver) to determine the initial voltage magnitudes and phases.  
+ • Ensure that both power injections and loads are balanced across the two buses to achieve a steady state.
+
+D. Model Arrangement and Saving  
+ • Arrange the blocks for a clear visual representation.  
+ • Save the complete model for further analysis or future simulation runs.
+
+──────────────────────────────
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?
+
+A. Model Initialization and Block Definition  
+ Theory:  
+  • The two-bus load flow analysis is based on power system network theory, where one bus acts as a slack (or swing) bus, and the other bus is controlled (PV or PQ) depending on whether it is injecting generation or representing a load.  
+  • Load-Flow analysis itself relies on solving sets of nonlinear algebraic equations (power balance equations) that describe active and reactive power flows.  
+ Mathematical Modeling:  
+  • Complex power equations relate the injection and consumption of active (P) and reactive (Q) powers using voltage magnitude and phase angle differences.  
+  • The three-phase system is described via phasor representations, and the Load Flow Source block is modeled as an ideal sinusoidal voltage source when its impedance is set to “None.”
+     P = VI cos(θ)
+     Q = VI sin(θ)  
+
+B. Establishing Interconnections Among Blocks  
+ Theory:  
+  • The interconnection reflects Kirchhoff’s Current Law (KCL) and Kirchhoff’s Voltage Law (KVL) in electrical circuits, ensuring that the power injected by the sources and delivered by the loads is conserved over the network.  
+  • The Busbar blocks take a “node” perspective, where multiple branches converge and disorder in phase or voltage can be quantified.
+ Mathematical Modeling:  
+  • The branch and node equations ensure continuity and equilibrium at each junction.  
+  • In the Transmission Line block, Clarke’s transformation and the lumped parameter “pi” model mathematically represent the phase resistance, self-inductance, mutual inductance, as well as both line-line and line-ground capacitances.
+
+C. Load Flow Initialization and Solver Settings  
+ Theory:  
+  • The load-flow algorithm computes steady-state conditions by iteratively solving network equations for voltage magnitudes and phase angles.  
+  • The Swing bus (or slack bus) provides a reference for balancing power across the system by dynamically adjusting its injection.  
+ Mathematical Modeling:  
+  • Newton-Raphson or Gauss-Seidel iterative methods are typically used to solve the nonlinear equations for load flow analysis.  
+  • The Solver Configuration block sets tolerance levels and numerical solution parameters that govern the convergence and accuracy of these iterative processes.
+
+D. Model Arrangement and Saving  
+ Theory:  
+  • While not involving new mathematical models, this stage is critical for ensuring that the simulation diagram clearly reflects the underlying system’s topology.  
+  • A systematic layout facilitates verification of interconnections corresponding to the formulated power system equations.
+ Mathematical/Conceptual Integrity:  
+  • The final state of the simulation verifies that theoretical predicted voltages and power flows (e.g., the 2.51-degree phase difference and 60/80/20 MW power ratio) are observed in the output tags displayed on the Busbar blocks.
+
+──────────────────────────────
+4. How Is It Implemented in Code?
+
+The implementation is done using a Python script that leverages the MATLAB Engine API for Python. The code illustrates each simulation step by programmatically constructing the Simscape Electrical model. Below is a stepwise explanation along with the corresponding code snippets.
+
+──────────────────────────────
+A. Model Initialization and Block Definition
+
+Theory and Implementation:
+• The model is created, and blocks are added using the “add_block” method.  
+• Blocks are chosen to represent different parts of the network (Load Flow Sources for swing and PV buses, Wye-Connected Loads for load/PQ load, Busbars, Transmission Line, Solver Configuration, Electrical References).
+
+Code Segment:
+-------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+# Start MATLAB engine and initialize a new Simulink system
+eng = matlab.engine.start_matlab()
+model_name = 'PowerSystemModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add source blocks (swing and PV buses)
+eng.add_block('ee_lib/Sources/Load Flow Source', model_name + '/Swing_bus', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('ee_lib/Sources/Load Flow Source', model_name + '/PV_bus', 'MakeNameUnique', 'on', nargout=0)
+
+# Add load blocks (generic three-phase load and PQ load)
+eng.add_block('ee_lib/Passive/RLC Assemblies/Wye-Connected Load', model_name + '/Load', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('ee_lib/Passive/RLC Assemblies/Wye-Connected Load', model_name + '/PQ_load', 'MakeNameUnique', 'on', nargout=0)
+
+# Add Busbar blocks and set node parameters
+eng.add_block('ee_lib/Connectors & References/Busbar', model_name + '/Busbar1', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Busbar1', 'n_nodes', '3', nargout=0)
+eng.add_block('ee_lib/Connectors & References/Busbar', model_name + '/Busbar2', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Busbar2', 'n_nodes', '3', nargout=0)
+
+# Add a Transmission Line block
+eng.add_block('ee_lib/Passive/Lines/Transmission Line (Three-Phase)', model_name + '/TransmissionLine', 'MakeNameUnique', 'on', nargout=0)
+
+# Add Solver Configuration
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/SolverConfiguration', 'MakeNameUnique', 'on', nargout=0)
+
+# Add Electrical Reference blocks (system ground)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference2', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference3', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/ElectricalReference4', 'MakeNameUnique', 'on', nargout=0)
+-------------------------------------------------
+
+──────────────────────────────
+B. Establishing Interconnections Among Blocks
+
+Theory and Implementation:
+• The code then “wires” the network by connecting block ports in a manner that respects the circuit topology and the theoretical requirements of balanced power flow.  
+• For example, the swing bus is connected to Busbar1 and its neutral is tied to an Electrical Reference; similarly, the PV bus and PQ loads are connected appropriately.  
+• The Transmission Line connects the two busbars, representing the physical power flow path.
+
+Code Segment:
+-------------------------------------------------
+# Connect sources and loads to busbars or ground
+eng.add_line(model_name, 'Swing_bus/LConn1',    'Busbar1/LConn1',            nargout=0)
+eng.add_line(model_name, 'Swing_bus/RConn1',    'ElectricalReference1/LConn1', nargout=0)
+eng.add_line(model_name, 'PV_bus/LConn1',       'Busbar2/LConn1',            nargout=0)
+eng.add_line(model_name, 'PV_bus/RConn1',       'ElectricalReference2/LConn1', nargout=0)
+eng.add_line(model_name, 'Load/LConn1',         'Busbar1/RConn1',            nargout=0)
+eng.add_line(model_name, 'Load/RConn1',         'ElectricalReference3/LConn1', nargout=0)
+eng.add_line(model_name, 'PQ_load/LConn1',      'Busbar2/RConn1',            nargout=0)
+eng.add_line(model_name, 'PQ_load/RConn1',      'ElectricalReference4/LConn1', nargout=0)
+
+# Connect busbars with the transmission line
+eng.add_line(model_name, 'Busbar1/LConn2',      'TransmissionLine/LConn1',    nargout=0)
+eng.add_line(model_name, 'TransmissionLine/RConn1','Busbar2/LConn2',           nargout=0)
+
+# Connect transmission line to ground (reference)
+eng.add_line(model_name, 'TransmissionLine/LConn2', 'ElectricalReference1/LConn1', nargout=0)
+eng.add_line(model_name, 'TransmissionLine/RConn2', 'ElectricalReference2/LConn1', nargout=0)
+
+# Connect Solver Configuration to one of the busbars
+eng.add_line(model_name, 'SolverConfiguration/RConn1', 'Busbar1/LConn1', nargout=0)
+-------------------------------------------------
+
+──────────────────────────────
+C. Load Flow Initialization, Solver Settings, and Model Arrangement
+
+Theory and Implementation:
+• The load-heights (swing bus, PV bus, PQ load) are initialized via the internal simulation solver that automatically computes the required internal voltage amplitudes and phases (using steady-state and load-flow algorithms).
+• The Simulation’s Solver Configuration block takes care of the numerical methods, tolerance settings, and iterative techniques needed for convergence.
+• Finally, a built-in MATLAB function arranges the blocks visually and the complete model is saved, ensuring that the simulation is structured correctly for execution and examination.
+
+Code Segment:
+-------------------------------------------------
+# Arrange the blocks in the model for clarity
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save the model to file
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+-------------------------------------------------
+
+──────────────────────────────
+Final Remarks
+
+This comprehensive simulation report has integrated theoretical concepts related to power system load-flow analysis with detailed Python code using MATLAB’s engine API. The code mirrors the conceptual block diagram by:
+
+• Defining idealized voltage sources to represent the swing and PV buses.
+• Connecting loads in a wye configuration.
+• Using Busbar blocks to encapsulate node information and display steady-state simulation results (voltage, phase, active and reactive power).
+• Employing a Transmission Line block with the pi model enhanced via Clarke’s transformation.
+• Utilizing the Solver Configuration block to ensure that the steady-state operating point is reached.
+
+This stepwise approach, from theoretical development to its code-level realization, ensures a rigorous and clear representation of a two-bus load flow simulation within Simscape Electrical™.

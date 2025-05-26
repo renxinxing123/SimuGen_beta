@@ -1,0 +1,63 @@
+ ## Discrete-Time Integrator
+
+**Path:** `'simulink/Commonly Used Blocks/Discrete-Time Integrator'`
+
+**Description:**  
+The Discrete-Time Integrator block integrates an input signal with respect to time and outputs the resulting value using discrete-time numerical methods. Simulink® treats the Discrete-Time Integrator block as a dynamic system with one state, governed by the following discrete-time equations:
+
+$$
+x[k+1] = x[k] + T \cdot u[k]\\
+y[k] = x[k]\\
+x[0] = x_0
+$$
+
+where:
+- **u[k]** is the block input at the current time step.
+- **y[k]** is the block output.
+- **x[k]** is the block state.
+- **x₀** is the initial condition of x.
+- **T** is the sample time.
+
+**Ports:**
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **internal**: (Default)
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u[k]**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y[k]**
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **internal**:  
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u[k]**
+    - **Port Name:** **2**
+      - **Note:** **external signal that reset x to the specified initial condition x₀, the reset will be triggered when the reset signal rises from a negative or zero value to a positive value.**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y[k]**
+  
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **external**:  
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u[k]**
+    - **Port Name:** **2**
+      - **Note:** **x₀, the initial condition of x**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y[k]**
+  
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **external**:  
+  - **Input port:**
+    - **Port Name:** **1**
+      - **Note:** **block input u[k]**
+    - **Port Name:** **2**
+      - **Note:** **external signal that reset x to the specified initial condition x₀, the reset will be triggered when the reset signal rises from a negative or zero value to a positive value.**
+    - **Port Name:** **3**
+      - **Note:** **x₀, the initial condition of x**
+  - **Output port:**
+    - **Port Name:** **1**
+      - **Note:** **block output y[k]**
+---
+

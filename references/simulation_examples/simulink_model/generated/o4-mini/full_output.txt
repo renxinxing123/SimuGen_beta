@@ -1,0 +1,446 @@
+[Investigator] In1 (In1)  
+Sum 1 (Sum)  
+Gain 1 (Gain)  
+Discrete-Time Integrator (Discrete-Time Integrator)  
+Gain 2 (Gain)  
+Sum 2 (Sum)  
+Sum 3 (Sum)  
+Gain 3 (Gain)  
+Gain 4 (Gain)  
+Integrator (Integrator)  
+Out1 (Out1)  
+
+```json
+{
+  "request_blocks": [
+    "In1",
+    "Sum",
+    "Gain",
+    "Discrete-Time Integrator",
+    "Integrator",
+    "Out1"
+  ]
+}
+```
+[Investigator] In1 (In1) 1 <-> Sum 1 (Sum) 1 (`Inputs` = `+-`)  
+Out1 (Out1) 1 <-> Sum 1 (Sum) 2 (`Inputs` = `+-`)  
+Sum 1 (Sum) 1 <-> Gain 1 (Gain) 1  
+Sum 1 (Sum) 1 <-> Discrete-Time Integrator (Discrete-Time Integrator) 1  
+Discrete-Time Integrator (Discrete-Time Integrator) 1 <-> Gain 2 (Gain) 1  
+Gain 1 (Gain) 1 <-> Sum 2 (Sum) 1 (`Inputs` = `++`)  
+Gain 2 (Gain) 1 <-> Sum 2 (Sum) 2 (`Inputs` = `++`)  
+Sum 2 (Sum) 1 <-> Sum 3 (Sum) 1 (`Inputs` = `+-`)  
+Gain 4 (Gain) 1 <-> Sum 3 (Sum) 2 (`Inputs` = `+-`)  
+Sum 3 (Sum) 1 <-> Gain 3 (Gain) 1  
+Gain 3 (Gain) 1 <-> Integrator (Integrator) 1  
+Integrator (Integrator) 1 <-> Out1 (Out1) 1
+[Unit_test_reviewer] Below is the review of the Investigator’s provided simulation information:
+
+1. Existence of block list:
+ • The required block types (In1, Sum, Gain, Discrete-Time Integrator, Integrator, Out1) are identified. The Investigator’s list includes instance names like “Sum 1”, “Gain 1”, etc., that correspond to the block types expected. 
+
+2. Extra Blocks:
+ • All blocks mentioned (even when numbered or repeated as instances) appear in the connections description. No extra block (of an unrequested type) is found.
+
+3. Formatting of block names:
+ • None of the block names include the forbidden “/” symbol. The names (e.g., “In1”, “Sum 1”, etc.) conform to the formatting requirement.
+
+4. Formatting of connection description:
+ • Each connection is formatted as “BlockName (BlockType) PortNumber (optional parameter setting)” on each side. The provided lines generally follow the expected pattern. (Note: The formatting rule regarding not including extra block-type text in the block name has been observed.)
+
+5. Validate Parameter Settings in Connections:
+ • For Sum blocks the parameter “Inputs” is provided (e.g. “(`Inputs` = `+-`)” or “(`Inputs` = `++`)”). The number of input ports deduced from these parameters is consistent with the port numbers referenced in the connections.
+ • Parameter settings for Discrete-Time Integrator and others were not explicitly required in the connection (implying the default is used) so these are acceptable.
+
+6. Detect Duplicate Connections:
+ • No input port for any block (except the allowed cases like Electrical Reference or Solver Configuration, which do not apply here) is connected more than once. There are no duplicate connections detected.
+
+7. Validate Block Connection Types:
+ • A major issue is detected with the Out1 block. Out1 (as described) only has an input port. In the connections we see:
+  o “Out1 (Out1) 1 <-> Sum 1 (Sum) 2 (`Inputs` = `+-`)”
+  o “Integrator (Integrator) 1 <-> Out1 (Out1) 1”
+   In these two lines, Out1 appears once as the left side (output) and once as the right side (input). The connection where Out1 is on the left side is incorrect because Out1 does not provide an output port. Therefore, a block with only an input port is incorrectly used on the left side.
+
+8. Verify Complete Port Connections:
+ • Aside from the Out1 misuse, each block’s input and output ports appear to be connected in accordance with the parameter settings provided. However, the misconfigured connection(s) involving Out1 prevents complete correctness.
+
+Summary:
+• The overall review shows that the simulation connections have one significant issue: Out1 (an input‐only block) is used improperly as if it had an output port in one connection. This mistake violates the rule that a block with only input may not appear on the left side of a connection.
+
+Based on the above, the Investigator’s simulation information does not pass the review.
+
+{
+  "Investigator_unit_test_pass": False
+}
+[Investigator] In1 (In1)  
+Sum 1 (Sum)  
+Gain 1 (Gain)  
+Discrete‑Time Integrator (Discrete‑Time Integrator)  
+Gain 2 (Gain)  
+Sum 2 (Sum)  
+Sum 3 (Sum)  
+Gain 3 (Gain)  
+Gain 4 (Gain)  
+Integrator (Integrator)  
+Out1 (Out1)  
+
+```json
+{
+  "request_blocks": [
+    "In1",
+    "Sum",
+    "Gain",
+    "Discrete-Time Integrator",
+    "Integrator",
+    "Out1"
+  ]
+}
+```
+[Investigator] In1 (In1) 1 <-> Sum1 (Sum) 1 (`Inputs` = `+-`)  
+Integrator (Integrator) 1 <-> Sum1 (Sum) 2 (`Inputs` = `+-`)  
+Sum1 (Sum) 1 <-> Gain1 (Gain) 1  
+Sum1 (Sum) 1 <-> Discrete‑Time Integrator (Discrete‑Time Integrator) 1  
+Discrete‑Time Integrator (Discrete‑Time Integrator) 1 <-> Gain2 (Gain) 1  
+Gain1 (Gain) 1 <-> Sum2 (Sum) 1 (`Inputs` = `++`)  
+Gain2 (Gain) 1 <-> Sum2 (Sum) 2 (`Inputs` = `++`)  
+Sum2 (Sum) 1 <-> Sum3 (Sum) 1 (`Inputs` = `+-`)  
+Sum3 (Sum) 1 <-> Gain3 (Gain) 1  
+Gain3 (Gain) 1 <-> Integrator (Integrator) 1  
+Integrator (Integrator) 1 <-> Gain4 (Gain) 1  
+Gain4 (Gain) 1 <-> Sum3 (Sum) 2 (`Inputs` = `+-`)  
+Integrator (Integrator) 1 <-> Out1 (Out1) 1  
+
+```json
+{
+  "request_blocks": [
+    "In1",
+    "Sum",
+    "Gain",
+    "Discrete-Time Integrator",
+    "Integrator",
+    "Out1"
+  ]
+}
+```
+[Unit_test_reviewer] Below is the review of the Investigator’s simulation information:
+
+1. Existence of block list:  
+ • The required block types (In1, Sum, Gain, Discrete-Time Integrator, Integrator, Out1) are identified. The investigator’s provided list (although using instance names like “Sum1”, “Gain1”, etc.) conforms to what was expected.
+
+2. Extra Blocks:  
+ • The “request_blocks” list contains only the six block types. Although the connections use several numbered instances (e.g., Sum1, Sum2, Sum3 and Gain1, Gain2, Gain3, Gain4), these are valid instances of the requested blocks. No extra block type that is not requested appears.
+
+3. Formatting of block names:  
+ • None of the block names include the forbidden “/” symbol. The instance names (e.g., “In1”, “Sum1”, “Gain1”, etc.) are acceptable.
+
+4. Formatting of connection description:  
+ • The connections are written in the correct “BlockName (BlockType) Port” format. Any parameter settings (such as “(`Inputs` = `+-`)” or “(`Inputs` = `++`)”) appear only on the receiving side as needed, and the overall format follows the rules (e.g., no extra explanation is included).
+
+5. Validate Parameter Settings in Connections:  
+ • For Sum blocks the provided “Inputs” values (e.g., `+-` for Sum1 and Sum3, `++` for Sum2) are consistent with the number of input ports used. The Discrete-Time Integrator and Integrator are used without additional parameter settings, implying the default configuration (ExternalReset = none and InitialConditionSource = internal), which is acceptable.
+
+6. Detect Duplicate Connections:  
+ • No input port is connected more than once. Each block’s input port (for Sum, Gain, Discrete-Time Integrator, Integrator, Out1) is connected exactly once. There are no duplicate connections.
+
+7. Validate Block Connection Types:  
+ • Blocks that are meant to have output ports appear on the left‐side of connections while blocks that are input-only (such as Out1) appear on the right side. All connections respect the rule that a block with only an input (e.g., Out1) is not used as a source.
+
+8. Verify Complete Port Connections:  
+ • Every block’s ports are connected. For example, In1’s output is connected to Sum1; Sum1’s two input ports receive one connection each; Gain blocks and the integrators have their sole input and output ports connected, and Out1’s input port is properly fed by Integrator. Although the Integrator’s output fans out to two destinations, this is acceptable.
+
+No inconsistencies or errors were detected.
+
+{
+  "Investigator_unit_test_pass": True
+}
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'generated_simulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/In1', nargout=0)
+eng.set_param(model_name + '/In1', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum1', 'Inputs', '+-', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain1', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Discrete-Time Integrator', model_name + '/Discrete-Time Integrator', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain2', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum2', 'Inputs', '++', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum3', 'Inputs', '+-', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain3', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain4', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Integrator', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Out1', nargout=0)
+eng.set_param(model_name + '/Out1', 'Port', '1', nargout=0)
+
+eng.add_line(model_name, 'In1/1', 'Sum1/1', nargout=0)
+eng.add_line(model_name, 'Integrator/1', 'Sum1/2', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Gain1/1', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Discrete-Time Integrator/1', nargout=0)
+eng.add_line(model_name, 'Discrete-Time Integrator/1', 'Gain2/1', nargout=0)
+eng.add_line(model_name, 'Gain1/1', 'Sum2/1', nargout=0)
+eng.add_line(model_name, 'Gain2/1', 'Sum2/2', nargout=0)
+eng.add_line(model_name, 'Sum2/1', 'Sum3/1', nargout=0)
+eng.add_line(model_name, 'Sum3/1', 'Gain3/1', nargout=0)
+eng.add_line(model_name, 'Gain3/1', 'Integrator/1', nargout=0)
+eng.add_line(model_name, 'Integrator/1', 'Gain4/1', nargout=0)
+eng.add_line(model_name, 'Gain4/1', 'Sum3/2', nargout=0)
+eng.add_line(model_name, 'Integrator/1', 'Out1/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is a comprehensive report that integrates both the theoretical and code-level explanations for the simulation. The report is structured to address each key question in detail.
+
+────────────────────────────  
+1. What is the simulation about?  
+────────────────────────────  
+The simulation is a representation of a dynamic system modeled in Simulink. Its purpose is to demonstrate the use of basic Simulink components—such as input/output ports, summing junctions, gain blocks, and both discrete-time and continuous integrators—to create a feedback control or signal processing loop. In this model, an input signal is fed into a system that includes feedback loops, scaling via gains, and integration operations (both discrete and continuous), and ultimately produces an output based on these computations. This structure mimics real-world systems such as control systems in engineering where sensor input, dynamic behavior, and numerical integration are central to system performance analysis.
+
+────────────────────────────  
+2. What are the main simulation steps?  
+────────────────────────────  
+The simulation is organized into several distinct functional steps as follows:  
+
+a. Signal Input:  
+ • An input block (In1) collects the external signal that serves as the driving input for the simulation.  
+
+b. First Summation and Feedback:  
+ • A summing block (Sum1) combines the external input with a feedback signal from the continuous integrator. This represents the initial error or difference calculation common in control systems.
+
+c. Signal Scaling and Discrete Integration:  
+ • The output from Sum1 is scaled by a gain block (Gain1) and also sent to a discrete-time integrator. The discrete integrator uses numerical methods to update its state based on an approximation formula, integrating the incoming signal over nominal sample intervals.
+ • The output of the discrete integrator is scaled by another gain block (Gain2).
+
+d. Combination of Scaled Signals:  
+ • A second summing block (Sum2) receives the scaled outputs of Gain1 and Gain2 and adds them together. This step effectively fuses the direct scaled error signal and its integrated value.
+
+e. Secondary Summation and Feedback Path:  
+ • A third summing block (Sum3) subtracts a feedback term (from a gain block) from the combined signal.
+ • The result of Sum3 is then processed through Gain3 which scales the signal before it is passed to a continuous integrator.
+
+f. Continuous Integration and Additional Scaling:  
+ • The continuous integrator (Integrator) processes the signal from Gain3, modeling the continuous system dynamics using differential equations.
+ • The integrator’s output is fed through a final gain block (Gain4) and then combined with the earlier summation in Sum3 to complete the loop.
+
+g. Output Generation:  
+ • Finally, the output of the continuous integrator is routed to the output block (Out1), representing the final simulation result.
+
+────────────────────────────  
+3. What theoretical knowledge and mathematical modelling are involved in each step?  
+────────────────────────────  
+Each step of the simulation relies on well-established theoretical principles and mathematical formulations:
+
+a. Signal Input (In1):  
+ • Theory: This block is analogous to a sensor or external input in physical systems. No complex mathematical operations occur here other than routing the input.
+ • Modelling: It sets the initial condition or stimulus which is later processed.
+
+b. First Summation and Feedback (Sum1):  
+ • Theory: Summation is based on the arithmetic addition/subtraction principle. In control theory, such summing operations are used to compute error signals (difference between desired and actual outputs).
+ • Mathematical Model: For two inputs, the process is represented as:  
+   y = u₁ – u₂  
+  where u₁ is the external input and u₂ is the feedback from the integrator.
+
+c. Signal Scaling (Gain1) and Discrete Integration:  
+ • Theory (Gain1): The gain block multiplies the input by a constant coefficient. This scaling is fundamental in linear systems for adjusting signal amplitudes.
+ • Mathematical Model: y = k * u, where k is the scalar gain.  
+ • Theory (Discrete-Time Integrator): Utilizes numerical integration techniques to approximate continuous integration.  
+ • Mathematical Model:  
+   x[k+1] = x[k] + T·u[k]  
+   y[k] = x[k]  
+  with T being the sample time. This resembles Euler integration for discrete systems.
+
+d. Second Summation (Sum2):  
+ • Theory: The concurrent addition of multiple scaled signals allows for the fusion of different signal components.
+ • Mathematical Model: For two positive inputs, the output is:  
+   y = u₁ + u₂.  
+  This operation is crucial in combining predicted and correction signals in feedback loops.
+
+e. Secondary Summation and Feedback Path (Sum3) with Gain3:  
+ • Theory: A second subtraction (or addition with a negative sign) is used to form another error signal, which can be used to stabilize or correct the system.
+ • Mathematical Model: y = u₁ – u₂; where u₂ here represents the feedback element after further processing.
+ • Theory (Gain3): Again, scaling is applied to adjust the magnitude of the combined signal.
+ • Mathematical Model: y = k * u, analogous to previous gain operations.
+
+f. Continuous Integration (Integrator) and Additional Scaling (Gain4):  
+ • Theory (Integrator): Represents continuous-time dynamics where the state evolves according to a differential equation.
+ • Mathematical Model:  
+   dx/dt = u(t)  
+   y(t) = x(t)  
+   x(t₀) = x₀  
+  This model approximates real-world phenomena such as system response to dynamic inputs.  
+ • Theory (Gain4): Further scales the signal for precise adjustment before feedback recombination.
+ • Mathematical Model: y = k * u.
+
+g. Output Generation (Out1):  
+ • Theory: The output block finalizes the simulation by providing the final computed signal, analogous to an actuator or monitoring display in physical systems.
+ • Modelling: Though no mathematical operation is done here, it is critical for capturing and visualizing the model’s behavior.
+
+────────────────────────────  
+4. How is it implemented in code?  
+────────────────────────────  
+The simulation is constructed dynamically in MATLAB using Simulink’s API. The code reflects the block diagram structure and theoretical underpinnings described above. The implementation is organized stepwise according to the simulation stages:
+
+-----------------------------------------------------------------  
+Step (a): Create the Model and Place the Input Block  
+-----------------------------------------------------------------  
+• The MATLAB engine starts a new Simulink system.  
+• The input port block (In1) is added and its port parameter is set.  
+
+Code Segment:  
+-------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'generated_simulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/In1', nargout=0)
+eng.set_param(model_name + '/In1', 'Port', '1', nargout=0)
+-------------------------------------------------
+Explanation:  
+This code creates the model and defines the external input interface, representing the collection of the driving signal.
+
+-----------------------------------------------------------------  
+Step (b): First Summation (Sum1) and Feedback Signal Combination  
+-----------------------------------------------------------------  
+• The first summing block (Sum1) is added to combine the input signal and the signal from the continuous integrator (feedback).  
+• The parameter 'Inputs' is set to "+-" to indicate that the first input is added and the second is subtracted.
+
+Code Segment:  
+-------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum1', 'Inputs', '+-', nargout=0)
+-------------------------------------------------
+Explanation:  
+This block mathematically performs y = In1 – (feedback from Integrator), embodying the error calculation.
+
+-----------------------------------------------------------------  
+Step (c): Signal Scaling, Discrete Integration, and Further Scaling  
+-----------------------------------------------------------------  
+• Gain1 is added to scale the output from Sum1.  
+• The discrete-time integrator block is added; it numerically integrates the same Sum1 signal.
+• Gain2 is placed after the discrete integrator to scale its output.
+
+Code Segment:  
+-------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain1', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Discrete-Time Integrator', model_name + '/Discrete-Time Integrator', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain2', nargout=0)
+-------------------------------------------------
+Explanation:  
+Gain1 multiplies the error by a constant while the Discrete-Time Integrator uses: x[k+1] = x[k] + T·u[k] (representing a simple Euler integration), and its result is further scaled by Gain2.
+
+-----------------------------------------------------------------  
+Step (d): Combination of Scaled Signals (Sum2)  
+-----------------------------------------------------------------  
+• Sum2 is then introduced to add the outputs of Gain1 and Gain2. The block parameter 'Inputs' is set to "++" indicating both inputs are added.
+
+Code Segment:  
+-------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum2', 'Inputs', '++', nargout=0)
+-------------------------------------------------
+Explanation:  
+This sum provides a combined signal y = (Gain1 output) + (Gain2 output), which is key for synthesizing composite effects before further processing.
+
+-----------------------------------------------------------------  
+Step (e): Secondary Summation, Additional Scaling (Gain3), and Feedback  
+-----------------------------------------------------------------  
+• A third summing block (Sum3) is added to subtract a signal from the combined Sum2 result (using input configuration "+-").  
+• Gain3 is applied to scale the output before entering the continuous integrator.
+
+Code Segment:  
+-------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum3', 'Inputs', '+-', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain3', nargout=0)
+-------------------------------------------------
+Explanation:  
+Here, the summing operation refines the feedback loop by computing y = (Sum2 output) – (feedback from Gain4 later). Gain3 scales the brought-in signal in preparation for continuous integration.
+
+-----------------------------------------------------------------  
+Step (f): Continuous Integration and Additional Scaling (Gain4)  
+-----------------------------------------------------------------  
+• The continuous integrator block is incorporated to model continuous dynamics using the differential equation dx/dt = u(t).  
+• Gain4 is then used to scale the integrator’s output before it loops back into Sum3.
+
+Code Segment:  
+-------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Integrator', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain4', nargout=0)
+-------------------------------------------------
+Explanation:  
+The Integrator block is governed by:  
+  dx/dt = u(t)  
+  y(t) = x(t)  
+This setup models continuous accumulation. Gain4 further scales this output to refine the feedback loop.
+
+-----------------------------------------------------------------  
+Step (g): Output Generation (Out1)  
+-----------------------------------------------------------------  
+• Finally, an output block (Out1) is added. Its parameter is configured to assign it as the first output port.
+• The integrator’s output is then routed to this output block.
+
+Code Segment:  
+-------------------------------------------------
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Out1', nargout=0)
+eng.set_param(model_name + '/Out1', 'Port', '1', nargout=0)
+-------------------------------------------------
+Explanation:  
+This final step collects and presents the simulation result, completing the model’s signal flow.
+
+-----------------------------------------------------------------  
+Connecting the Blocks  
+-----------------------------------------------------------------  
+After the blocks are placed, the script uses the add_line function to connect the outputs and inputs according to the block diagram logic:
+
+Code Segment:  
+-------------------------------------------------
+eng.add_line(model_name, 'In1/1', 'Sum1/1', nargout=0)
+eng.add_line(model_name, 'Integrator/1', 'Sum1/2', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Gain1/1', nargout=0)
+eng.add_line(model_name, 'Sum1/1', 'Discrete-Time Integrator/1', nargout=0)
+eng.add_line(model_name, 'Discrete-Time Integrator/1', 'Gain2/1', nargout=0)
+eng.add_line(model_name, 'Gain1/1', 'Sum2/1', nargout=0)
+eng.add_line(model_name, 'Gain2/1', 'Sum2/2', nargout=0)
+eng.add_line(model_name, 'Sum2/1', 'Sum3/1', nargout=0)
+eng.add_line(model_name, 'Sum3/1', 'Gain3/1', nargout=0)
+eng.add_line(model_name, 'Gain3/1', 'Integrator/1', nargout=0)
+eng.add_line(model_name, 'Integrator/1', 'Gain4/1', nargout=0)
+eng.add_line(model_name, 'Gain4/1', 'Sum3/2', nargout=0)
+eng.add_line(model_name, 'Integrator/1', 'Out1/1', nargout=0)
+-------------------------------------------------
+Explanation:  
+Each line command creates a connection that reflects the signal flow:
+ – For example, 'In1/1' to 'Sum1/1' directs the external signal into the summing block.
+ – Similarly, the return path from the continuous integrator back to Sum1 models the feedback element.
+Finally, the model’s layout is arranged and saved.
+
+-----------------------------------------------------------------  
+Model Arrangement and Saving  
+-----------------------------------------------------------------  
+Code Segment:  
+-------------------------------------------------
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+-------------------------------------------------
+Explanation:  
+These final commands neatly arrange the block diagram for clarity and save the model file for future execution or analysis.
+
+────────────────────────────  
+Conclusion  
+────────────────────────────  
+This simulation report has detailed:  
+• Its overall purpose in modeling dynamic system behavior using feedback loops, gains, and integrators.  
+• The key steps involved in the simulation, from input capture through feedback and integration to output generation.  
+• The theoretical foundations and mathematical models behind each processing step.  
+• The complete code implementation that builds the simulation step by step in MATLAB’s Simulink environment.
+
+This integrated explanation illustrates how theoretical concepts are instantiated into blocks and interconnections via code, enabling a complete simulation of the dynamic system.

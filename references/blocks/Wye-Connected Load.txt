@@ -1,0 +1,14 @@
+## Wye-Connected Load
+
+**Path:** `'ee_lib/Passive/RLC Assemblies/Wye-Connected Load'`
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver.
+---

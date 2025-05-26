@@ -1,0 +1,12 @@
+## Gain
+
+**Path:** `'simulink/Commonly Used Blocks/Gain'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

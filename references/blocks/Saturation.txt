@@ -1,0 +1,11 @@
+## Saturation
+
+**Path:** `'simulink/Commonly Used Blocks/Saturation'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+---

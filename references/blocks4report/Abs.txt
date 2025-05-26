@@ -1,0 +1,15 @@
+## Abs
+
+**Path:** `'simulink/Math Operations/Abs'`
+
+**Description:**  
+y = |u|
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

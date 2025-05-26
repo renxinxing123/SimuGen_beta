@@ -1,0 +1,4 @@
+Block Diagram
+A block diagram is a visual representation of a model in the Simulink Editor. The editor allows you to add blocks selected from block libraries representing elementary model components. Elementary components include integrator, gain, and sum blocks. Blocks are connected to each other with signal and event lines to visually construct the model equations.
+
+https://www.mathworks.com/help/simulink/slref/simulink-concepts-models.html

@@ -1,0 +1,14 @@
+## Memory
+
+**Path:** `'simulink/Discrete/Memory'`
+
+**Ports:**
+
+- **Input port:**  
+  - **Port Name:** **1**
+  - **Note:** **Input signal**
+
+- **Output port:**  
+  - **Port Name:** **1**
+  - **Note:** **Output is the input from the previous time step.**
+---

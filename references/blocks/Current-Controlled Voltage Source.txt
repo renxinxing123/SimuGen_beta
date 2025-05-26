@@ -1,0 +1,18 @@
+## Current-Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Current-Controlled Voltage Source'`
+
+**Ports:**
+ 
+  - **Port Name:** **LConn1**  
+  - **Note:** The port that current flow come in.
+ 
+  - **Port Name:** **RConn1**  
+  - **Note:** The port that current flow come out.
+   
+  - **Port Name:** **LConn2**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+   
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+---

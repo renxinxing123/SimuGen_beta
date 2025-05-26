@@ -1,0 +1,157 @@
+Report: Simulation of Wheel Braking Dynamics
+
+1. What is the simulation about?  
+   The model, named “BrakeWheelSystem,” represents the rotational dynamics of a vehicle wheel under braking. It captures key subsystems of a hydraulic brake circuit and the wheel’s mechanical response:  
+   - A brake controller issues a pressure command (“Controller out”).  
+   - The command passes through a hydraulic lag (a first‑order actuator model).  
+   - The lag output is integrated into brake line pressure.  
+   - Brake pressure generates a frictional braking torque on the wheel.  
+   - The wheel also experiences an external (tire) torque input.  
+   - The net torque accelerates or decelerates the wheel, governed by its moment of inertia \(I\).  
+   The objectives are to predict brake pressure, wheel angular acceleration, and wheel angular velocity in response to controller commands and external torques.
+
+2. Main simulation steps (functional modules)  
+   A. Hydraulic actuator dynamics (first‑order lag)  
+   B. Brake‐line pressure integration  
+   C. Brake torque generation (linear gain)  
+   D. External tire torque handling and algebraic‑loop break (unit delay)  
+   E. Net wheel torque computation (sum block)  
+   F. Angular acceleration calculation (gain \(1/I\))  
+   G. Wheel speed integration (pure integrator transfer function)  
+   H. Signal outputs (brake pressure, angular acceleration, angular velocity)
+
+3. Theoretical foundations and mathematical modeling  
+   Step A: Hydraulic Lag  
+   - Theory: first‐order linear system \(H(s)=\frac{1}{\tau s+1}\) models fluid dynamics and valve response.  
+   - Block: Continuous Transfer Fcn with numerator \([1]\), denominator \([\tau\;1]\).
+
+   Step B: Pressure Integration  
+   - Theory: pressure accumulates as the time integral of flow, \(P(t)=\int u(t)\,dt\).  
+   - Block: Integrator implementing \(\dot x = u(t)\), \(y=x\).
+
+   Step C: Brake Torque Generation  
+   - Theory: braking torque \(T_b = K_f\cdot P\). \(K_f\) lumps cylinder area and caliper leverage.  
+   - Block: Gain with value \(K_f\).
+
+   Step D: Tire Torque Delay  
+   - Theory: to avoid an algebraic loop between torque and dynamics, the external torque \(T_{\rm tire}\) is delayed by one time step: \(T_{\rm tire}[k-1]\).  
+   - Block: Unit Delay (discrete \(z^{-1}\) operator).
+
+   Step E: Net Torque Computation  
+   - Theory: net wheel torque \(T_{\rm net} = T_{\rm tire,delayed} - T_b\).  
+   - Block: Sum with “+” for delayed tire torque and “–” for brake torque.
+
+   Step F: Angular Acceleration  
+   - Theory: Newton’s second law for rotation, \(I\,\alpha = T_{\rm net}\), so \(\alpha = T_{\rm net}/I\).  
+   - Block: Gain with value \(1/I\).
+
+   Step G: Wheel Speed Integration  
+   - Theory: angular velocity \(\omega(t)=\int \alpha(t)\,dt\). In Laplace form, \(\Omega(s)=\Alpha(s)\,/\,s\).  
+   - Block: Continuous Transfer Fcn with numerator \([1]\), denominator \([1\;0]\) (a pure integrator).
+
+   Step H: Outputs  
+   - Brake pressure \(P\) (from Step B)  
+   - Angular acceleration \(\alpha\) (from Step F)  
+   - Angular velocity \(\omega\) (from Step G)
+
+4. Code implementation (reorganized by step)  
+   The Python‑MATLAB Engine script programmatically builds the above subsystem in Simulink. Below, each step shows the key `add_block` and `set_param` calls along with line connections (`add_line`).
+
+   Step A: Hydraulic Lag  
+   ```python
+   # Input port for controller command
+   eng.add_block('simulink/Commonly Used Blocks/In1',
+                 model_name + '/Controller out', nargout=0)
+   eng.set_param(model_name + '/Controller out', 'Port', '1', nargout=0)
+   # First-order lag Transfer Fcn
+   eng.add_block('simulink/Continuous/Transfer Fcn',
+                 model_name + '/Hydraulic Lag', nargout=0)
+   # Set numerator and denominator for 1/(τ s + 1)
+   eng.set_param(model_name + '/Hydraulic Lag',
+                 'Numerator', '[1]', 'Denominator', '[tau 1]', nargout=0)
+   # Connect controller to hydraulic lag
+   eng.add_line(model_name, 'Controller out/1', 'Hydraulic Lag/1', nargout=0)
+   ```
+
+   Step B: Brake‐line Pressure Integration  
+   ```python
+   # Integrator block for pressure P = ∫(hydraulic_lag_output) dt
+   eng.add_block('simulink/Commonly Used Blocks/Integrator',
+                 model_name + '/Brake pressure', nargout=0)
+   # Connect hydraulic lag to integrator
+   eng.add_line(model_name, 'Hydraulic Lag/1', 'Brake pressure/1', nargout=0)
+   # Export brake pressure
+   eng.add_block('simulink/Commonly Used Blocks/Out1',
+                 model_name + '/Bp', nargout=0)
+   eng.set_param(model_name + '/Bp', 'Port', '1', nargout=0)
+   eng.add_line(model_name, 'Brake pressure/1', 'Bp/1', nargout=0)
+   ```
+
+   Step C: Brake Torque Generation  
+   ```python
+   # Gain block T_b = Kf * P
+   eng.add_block('simulink/Commonly Used Blocks/Gain',
+                 model_name + '/Kf', nargout=0)
+   eng.set_param(model_name + '/Kf', 'Gain', 'Kf', nargout=0)
+   eng.add_line(model_name, 'Brake pressure/1', 'Kf/1', nargout=0)
+   ```
+
+   Step D: Tire Torque Delay  
+   ```python
+   # External tire torque input
+   eng.add_block('simulink/Commonly Used Blocks/In1',
+                 model_name + '/Tire Torque', nargout=0)
+   eng.set_param(model_name + '/Tire Torque', 'Port', '2', nargout=0)
+   # Unit Delay for algebraic loop breaking
+   eng.add_block('simulink/Discrete/Unit Delay',
+                 model_name + '/Unit Delay', nargout=0)
+   eng.add_line(model_name, 'Tire Torque/1', 'Unit Delay/1', nargout=0)
+   ```
+
+   Step E: Net Torque Computation  
+   ```python
+   # Sum: + delayed tire torque – brake torque
+   eng.add_block('simulink/Commonly Used Blocks/Sum',
+                 model_name + '/Sum', nargout=0)
+   eng.set_param(model_name + '/Sum', 'Inputs', '+-', nargout=0)
+   eng.add_line(model_name, 'Unit Delay/1',   'Sum/1', nargout=0)
+   eng.add_line(model_name, 'Kf/1',           'Sum/2', nargout=0)
+   ```
+
+   Step F: Angular Acceleration  
+   ```python
+   # Gain 1/I to compute α = T_net / I
+   eng.add_block('simulink/Commonly Used Blocks/Gain',
+                 model_name + '/1 I', nargout=0)
+   eng.set_param(model_name + '/1 I', 'Gain', '1/I', nargout=0)
+   eng.add_line(model_name, 'Sum/1', '1 I/1', nargout=0)
+   # Export angular acceleration
+   eng.add_block('simulink/Commonly Used Blocks/Out1',
+                 model_name + '/Wa', nargout=0)
+   eng.set_param(model_name + '/Wa', 'Port', '2', nargout=0)
+   eng.add_line(model_name, '1 I/1', 'Wa/1', nargout=0)
+   ```
+
+   Step G: Wheel Speed Integration  
+   ```python
+   # Pure integrator: ω = ∫ α dt
+   eng.add_block('simulink/Continuous/Transfer Fcn',
+                 model_name + '/Wheel Speed', nargout=0)
+   eng.set_param(model_name + '/Wheel Speed',
+                 'Numerator', '[1]', 'Denominator', '[1 0]', nargout=0)
+   eng.add_line(model_name, '1 I/1', 'Wheel Speed/1', nargout=0)
+   # Export wheel angular velocity
+   eng.add_block('simulink/Commonly Used Blocks/Out1',
+                 model_name + '/WheelAngularVelocity', nargout=0)
+   eng.set_param(model_name + '/WheelAngularVelocity', 'Port', '3', nargout=0)
+   eng.add_line(model_name, 'Wheel Speed/1', 'WheelAngularVelocity/1', nargout=0)
+   ```
+
+   Finally, the script arranges, saves, and opens the system:
+   ```python
+   eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+   eng.save_system(model_name, model_name + '.slx', nargout=0)
+   eng.open_system(model_name, nargout=0)
+   ```
+
+This structured report ties each functional simulation step to its underlying theory and shows how the MATLAB Engine API calls realize the Simulink block diagram in code.

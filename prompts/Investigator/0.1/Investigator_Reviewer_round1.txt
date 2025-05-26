@@ -1,0 +1,19 @@
+# TASK #
+Your job is to reexamine your previously generated simulation list of blocks and connection description—both of which initially passed your unit tests—after the block builder used them to generate Python code that produced runtime errors. You have now received the issues detected by the Debug Locator. Based on the issues reported by the Debug Locator, reexamine your unit tests and provide revised results.
+
+
+# INPUT #
+- **Debug Locator Detected Issues:**  
+  {debug_locator_issues}
+
+
+# RESPONSE #
+Provide a **brief but clear** report addressing each of the eight responsibilities above. List any inconsistencies or errors found, and articulate your findings clearly. Do not ask any clarifying questions; directly provide your complete review.
+
+At the end of your response, output a JSON formatted object with the key "Investigator_unit_test_pass". Set its value to True if no issues were found, or False if any inconsistencies or errors were detected. For example:
+```json
+{
+  "Investigator_unit_test_pass": True
+}
+```
+

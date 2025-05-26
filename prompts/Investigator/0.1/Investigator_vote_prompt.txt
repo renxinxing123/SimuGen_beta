@@ -1,0 +1,46 @@
+# TASK #
+You will receive:
+- Three sets of simulation descriptions from 3 AIs, each containing:
+   1. **The blocks used in the simulation:** A list of blocks utilized in the simulation.
+   2. **Connections Description:** A detailed description of how the blocks are connected, with each connection formatted as:
+      ```
+      BlockA (Real Block Name) PortX (related parameter setting to match the port number) <-> BlockB (Real Block Name) PortY (related parameter setting to match the port number)
+      ```
+      **Note:** PortX and PortY are the real internal port names (not the visual labels); BlockA and BlockB are the block labels shown in the diagram; and the Real Block Name corresponds to the block names from the simulation blocks list.
+
+Your task is to:
+- Re-examine the simulation diagram.
+- Evaluate and score each of the three sets of descriptions (AI1, AI2, and AI3) based on correctness, completeness, and adherence to the simulation diagram.
+- Score each component on a scale of 5 points:
+   - **The blocks used in the simulation:** (score out of 5)
+   - **Connections Description:** (score out of 5)
+- Provide a brief justification for each score.
+
+# INPUT #
+- **AI1 Description:**  
+  {ai1_description}
+
+- **AI2 Description:**  
+  {ai2_description}
+
+- **AI3 Description:**  
+  {ai3_description}
+
+# RESPONSE #
+Provide a final report with your evaluation, and at the end output a JSON formatted object with the scores for each description, broken down into the two components. For example:
+```json
+{
+  "AI1": {
+    "The blocks used in the simulation": 5,
+    "Connections Description": 4
+  },
+  "AI2": {
+    "The blocks used in the simulation": 4,
+    "Connections Description": 4
+  },
+  "AI3": {
+    "The blocks used in the simulation": 3,
+    "Connections Description": 3
+  }
+}
+```

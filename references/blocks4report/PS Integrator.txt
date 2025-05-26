@@ -1,0 +1,30 @@
+## PS Integrator
+
+**Path:** `'fl_lib/Physical Signals/Linear Operators/PS Integrator'`
+
+**Description:**  
+This block performs continuous-time integration of the input Physical Signal. The output resets to the initial condition when the optional reset signal, R, triggers. The initial condition can either be a fixed parameter or defined by a physical signal, X0. The output limits can either be fixed parameters or defined by physical signals, U and L.
+
+**Ports:**
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.None** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.Internal**:  
+  - **Input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.Rising** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.Internal**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is **R**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.None** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.External**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.Rising** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.External**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is **R**)  
+  - **Third input port:** **LConn3** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+---

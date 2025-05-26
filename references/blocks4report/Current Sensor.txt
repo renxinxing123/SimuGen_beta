@@ -1,0 +1,23 @@
+## Current Sensor
+
+**Path:** `'fl_lib/Electrical/Electrical Sensors/Current Sensor'`
+
+**Description:**  
+The block represents an ideal current sensor, a device that converts the current measured in any electrical branch into a physical signal proportional to that current.
+
+**Ports:**
+
+- ** Positive terminal:**  
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the sensor positive terminal.
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the sensor negative terminal.
+
+- **Current:**  
+  - **Port Name:** **RConn1**  
+  - **Note:** Physical signal output port for the electrical current measurement.
+  
+  
+---

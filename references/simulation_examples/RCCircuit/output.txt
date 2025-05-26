@@ -1,0 +1,131 @@
+1. What is the simulation about?  
+The model compares two representations of a simple first‑order RC low‑pass filter driven by a square‑wave voltage source:  
+  • A purely signal‑based Simulink implementation of the RC differential equation (Transfer Function + feedback sum), and  
+  • A physical‑network Simscape implementation using electrical components (Controlled Voltage Source, Resistor, Capacitor, Ground, Solver Configuration).  
+  
+The objective is to demonstrate that both approaches yield identical capacitor‑voltage responses while highlighting the ease of extending the Simscape network (e.g., adding more stages) without re‑deriving equations. The input is a pulse train; the outputs are the Simulink‑model voltage and the Simscape‑model voltage, displayed simultaneously on a Scope for comparison.
+
+2. Main simulation steps  
+  Step 1. Generate input pulse (Simulink).  
+  Step 2. Branch A – Signal‑based RC model:  
+    2.1 Sum node to form error (u – y).  
+    2.2 Transfer Fcn block to integrate and scale error (1/(R·C·s+1)).  
+    2.3 Feedback via a second Sum (to subtract new y when forming next error).  
+  Step 3. Branch B – Physical‑network RC model:  
+    3.1 Convert Simulink pulse to a physical signal.  
+    3.2 Drive an ideal voltage source with that physical signal.  
+    3.3 Connect resistor and capacitor in series between source+ and ground.  
+    3.4 Provide a consistent solver environment (Solver Configuration + ground).  
+  Step 4. Measure capacitor voltage (physical signal) via Voltage Sensor + PS‑Simulink Converter.  
+  Step 5. Combine both branch outputs in a Mux.  
+  Step 6. Display on a Scope.
+
+3. Theoretical knowledge and mathematical modelling  
+ Step 1 – Pulse Generator  
+  • Theory: Generates a time‑based square wave. Characterized by amplitude, period, pulse width, and phase delay.  
+  • Equation: y(t)=Amplitude if t≥PhaseDelay and t(mod Period)<PulseWidth, else 0.  
+
+ Step 2 – Simulink signal RC model  
+  2.1 Sum “u – y”: Implements the error signal e(t)=u(t)–y(t).  
+  2.2 Transfer Function G(s)=1/(R·C·s + 1): The Laplace‑domain representation of the first‑order ODE R·C·dy/dt + y = u. Numerator [1], denominator [R·C  1].  
+  2.3 Closed‑loop feedback: e(t) feeds the transfer function; its output y(t) is fed back and subtracted from u(t) again to maintain the difference equation.  
+
+ Step 3 – Simscape physical RC network  
+  • Kirchhoff’s voltage law around the loop: Vs – V_R – V_C = 0.  
+  • Resistor constitutive law: V_R = I·R.  
+  • Capacitor constitutive law: I = C·dV_C/dt.  
+  • Controlled Voltage Source: enforces V = input physical signal.  
+  • Solver Configuration: sets up the DAE solver and tolerances for the interconnected physical components.  
+
+ Step 4 – Voltage sensing  
+  • Voltage Sensor: measures V_C between capacitor terminals and outputs a physical signal.  
+  • PS‑Simulink Converter: turns that physical signal back to a Simulink signal for logging/plotting.  
+
+ Step 5 – Mux + Scope  
+  • Mux: concatenates the two voltage signals into a vector.  
+  • Scope: plots both time series on the same axes for direct comparison.
+
+4. How it’s implemented in code  
+Below we reorganize the Python/MATLAB‑engine script into the above steps. Comments link back to theory and block purpose.
+
+```python
+import matlab.engine
+eng = matlab.engine.start_matlab()
+model = 'circuit_model'
+eng.new_system(model, nargout=0)
+eng.open_system(model, nargout=0)
+
+# Step 1: Pulse Generator (Simulink source)
+eng.add_block('simulink/Sources/Pulse Generator', model+'/Pulse Generator', nargout=0)
+# (User can set Amplitude, Period, PulseWidth, PhaseDelay as needed)
+
+# Step 2: Signal‐based RC model
+# 2.1 Sum block for e = u - y
+eng.add_block('simulink/Commonly Used Blocks/Sum', model+'/Sum1', nargout=0)
+eng.set_param(model+'/Sum1','Inputs','+-',nargout=0)
+# 2.2 Transfer Fcn block G(s)=1/(R*C*s + 1)
+eng.add_block('simulink/Continuous/Transfer Fcn', model+'/TransferFcn', nargout=0)
+# Example: set_param(model+'/TransferFcn','Numerator','1','Denominator','[R*C 1]')
+# 2.3 Sum block for feedback insertion (not strictly needed in Simulink; included per original)
+eng.add_block('simulink/Commonly Used Blocks/Sum', model+'/Sum2', nargout=0)
+eng.set_param(model+'/Sum2','Inputs','+-',nargout=0)
+
+# Step 3: Simscape physical network
+# 3.1 Convert Simulink → physical signal
+eng.add_block('nesl_utility/Simulink-PS Converter', model+'/SimulinkPS', nargout=0)
+# 3.2 Controlled Voltage Source
+eng.add_block('fl_lib/Electrical/Electrical Sources/Controlled Voltage Source', model+'/Vsrc', nargout=0)
+# 3.3 Passive elements: Resistor and Capacitor
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model+'/R', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model+'/C', nargout=0)
+# 3.4 Ground and Solver Configuration
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model+'/Gnd', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model+'/Solver', nargout=0)
+
+# Step 4: Measurement of Vc
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model+'/VoltSens', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model+'/PStoSim', nargout=0)
+
+# Step 5: Mux to combine signals
+eng.add_block('simulink/Commonly Used Blocks/Mux', model+'/Mux', nargout=0)
+eng.set_param(model+'/Mux','Inputs','2',nargout=0)
+
+# Step 6: Scope for output display
+eng.add_block('simulink/Commonly Used Blocks/Scope', model+'/Scope', nargout=0)
+
+# ——————————————————————————————————————————————
+# Connections reflecting signal flow and physical network
+# Step 1 → Step 2
+eng.add_line(model,'Pulse Generator/1','Sum1/1',nargout=0)
+eng.add_line(model,'Sum1/1','TransferFcn/1',nargout=0)
+eng.add_line(model,'TransferFcn/1','Sum2/1',nargout=0)
+eng.add_line(model,'Sum2/1','Sum1/2',nargout=0)  # feedback
+
+# Step 1 → Step 3
+eng.add_line(model,'Pulse Generator/1','SimulinkPS/1',nargout=0)
+eng.add_line(model,'SimulinkPS/RConn1','Vsrc/RConn1',nargout=0)
+eng.add_line(model,'Vsrc/LConn1','R/LConn1',nargout=0)
+eng.add_line(model,'R/RConn1','C/LConn1',nargout=0)
+eng.add_line(model,'Vsrc/RConn2','Gnd/LConn1',nargout=0)
+eng.add_line(model,'C/RConn1','Gnd/LConn1',nargout=0)
+eng.add_line(model,'Solver/RConn1','Gnd/LConn1',nargout=0)
+
+# Step 4: Voltage sensing
+eng.add_line(model,'C/LConn1','VoltSens/LConn1',nargout=0)
+eng.add_line(model,'VoltSens/RConn2','Gnd/LConn1',nargout=0)
+eng.add_line(model,'VoltSens/RConn1','PStoSim/LConn1',nargout=0)
+
+# Step 5 → Step 6: collect and display
+eng.add_line(model,'PStoSim/1','Mux/1',nargout=0)
+eng.add_line(model,'TransferFcn/1','Mux/2',nargout=0)
+eng.add_line(model,'Mux/1','Scope/1',nargout=0)
+
+# Finalize layout and save
+eng.Simulink.BlockDiagram.arrangeSystem(model, nargout=0)
+eng.save_system(model, model + '.slx', nargout=0)
+```
+
+In this script, each block addition and connection mirrors the theory:  
+– The Sum/TransferFcn loop implements the 1/(RCs+1) filter in signal form.  
+– The Simscape network uses ideal components satisfying V=IR and I=C dV/dt, with a controlled source driven by the same pulse.  
+– A Voltage Sensor taps the capacitor node, converts back to Simulink, and a Mux feeds both simulated voltages into a Scope for real‑time comparison.

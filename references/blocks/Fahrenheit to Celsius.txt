@@ -1,0 +1,12 @@
+## Fahrenheit to Celsius
+
+**Path:** `'simulink_extras/Transformations/Fahrenheit to Celsius'`
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+
+---

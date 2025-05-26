@@ -1,0 +1,16 @@
+## Voltage Sensor
+
+**Path:** `'fl_lib/Electrical/Electrical Sensors/Voltage Sensor'`
+
+**Ports:**
+ 
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the sensor positive terminal.
+ 
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the sensor negative terminal.
+  
+  - **Port Name:** **RConn1**  
+  - **Note:** Physical signal output port for the voltage measurement.
+  
+---

@@ -1,0 +1,16 @@
+ ## In1
+
+**Path:** `'simulink/Commonly Used Blocks/In1'`
+
+**Parameters:**
+
+- **`Port` (Input Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this input within the subsystem. This parameter defines which input port the block represents.
+
+**Ports:**
+
+- **Output Port:**
+  - **Port name:** **1**
+
+---

@@ -1,0 +1,835 @@
+## Integrator
+
+**Path:** `'simulink/Commonly Used Blocks/Integrator'`
+
+**Description:**  
+The Integrator block integrates an input signal with respect to time and outputs the resulting value. Simulink® treats the Integrator block as a dynamic system with one state, governed by the following equations:
+
+$$
+\dot{x}(t) = u(t)\\
+y(t) = x(t)\\
+x(t_0) = x_0
+$$
+
+where:
+- **u** is the block input.
+- **y** is the block output.
+- **x** is the block state.
+- **x₀** is the initial condition of x.
+
+Although these equations define an exact relationship in continuous time, Simulink employs numerical approximation methods to compute the output with finite precision. Several numerical integration methods are available, each offering distinct advantages for specific applications. The selected solver calculates the output at the current time step using the current input value and the state from the previous time step, while also providing an initial condition at the simulation’s start (default value is 0). Users can specify a different initial condition or create an initial value input port through the block parameter dialog box.
+
+The parameter dialog box allows you to:
+- Define upper and lower limits on the integral.
+- Create an input that resets the block's output (state) to its initial value based on changes in the input.
+- Optionally output the state to trigger a block reset.
+
+For purely discrete systems, use the Discrete-Time Integrator block.
+
+**Ports:**
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **internal**:  
+  - **Input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **internal**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is an upward arrow)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **external**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **external**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is an upward arrow)  
+  - **Third input port:** **3** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+  
+ ---
+ 
+## IC
+
+**Path:** `'simulink/Signal Attributes/IC'`
+
+**Description:**  
+The IC block sets the initial condition for its input signal. At the start of the simulation, it outputs a specified initial value regardless of the input. After that, it simply passes through the actual input signal. For blocks with a nonzero sample time offset, the initial value is output at the first execution time after the simulation starts.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Constant
+
+**Path:** `'simulink/Sources/Constant'`
+
+**Description:**  
+The Constant block generates a constant signal that can be real or complex. It produces scalar, vector, or matrix outputs based on the dimensions of the Constant value parameter and the "Interpret vector parameters as 1-D" setting. When the checkbox is selected, a vector is treated as a 1-D vector; otherwise, it is interpreted as a matrix.
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Gain
+
+**Path:** `'simulink/Commonly Used Blocks/Gain'`
+
+**Description:**  
+The Gain block multiplies the input signal by a constant value (gain). Both the input and the gain can be scalar, vector, or matrix. The gain value is specified in the Gain parameter, while the Multiplication parameter lets you choose between element-wise and matrix multiplication. For matrix multiplication, you can also set the order of the multiplicands. The gain is converted from doubles to the specified data type using round-to-nearest and saturation, and then the multiplication result is converted to the output data type based on the chosen rounding and overflow modes.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Compare To Zero
+
+**Path:** `'simulink/Logic and Bit Operations/Compare To Zero'`
+
+**Description:**  
+The Compare To Zero block compares an input signal to zero. The comparison method is specified by the Operator parameter. The block outputs 0 if the comparison is false and 1 if it is true.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Mux
+
+**Path:** `'simulink/Commonly Used Blocks/Mux'`
+
+**Description:**  
+The Mux block combines inputs of the same data type and complexity into a single virtual vector. You can use multiple Mux blocks in stages, but the final result is flat as if a single Mux block were used. Ideally, Mux blocks are used to group function-call signals. For grouping signals or messages with different data types or complexity, use a Bus Creator block. To concatenate signals into a nonvirtual vector for more efficient code, use a Vector Concatenate block.
+
+**Ports:**
+
+- **Input Ports:** When the parameter **Inputs** is set to **x**, the block has x input ports. Each input port is numbered sequentially (e.g., port names "1", "2", ..., "x") and has no visual label.
+- **Output Port:** There is **only one** output port with port name **1** (no visual label).
+
+**Colour:**
+
+- The colour of Mux is **all black**, those blocks in white **IS NOT** Mux. 
+---
+
+## Scope
+
+**Path:** `'simulink/Commonly Used Blocks/Scope'`
+
+**Description:**  
+The Simulink® Scope block and DSP System Toolbox™ Time Scope block display time domain signals.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Ports:** None
+ 
+ ---
+ 
+ ## In1
+
+**Path:** `'simulink/Commonly Used Blocks/In1'`
+
+**Description:**  
+Provide an input port for a subsystem or model. For Triggered Subsystems, selecting **Latch input by delaying outside signal** produces the subsystem input value from the previous time step. For Function-Call Subsystems, enabling **Latch input for feedback signals of function-call subsystem outputs** prevents the input value from changing during execution. Other parameters allow you to explicitly specify the input signal attributes.
+
+**Parameters:**
+
+- **`Port` (Input Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this input within the subsystem. This parameter defines which input port the block represents.
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Out1
+
+**Path:** `'simulink/Commonly Used Blocks/Out1'`
+
+**Description:**  
+Provide an output port for a subsystem or model. The **Output when disabled** and **Initial output** parameters apply only to conditionally executed subsystems. When such a subsystem is disabled, the output is either held at its last value or set to the **Initial output**.
+
+**Parameters:**
+
+- **`Port` (Output Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this output within the subsystem. This parameter defines which output port the block represents.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+
+---
+
+## Sum
+
+**Path:** `'simulink/Commonly Used Blocks/Sum'`
+
+**Description:**  
+Add or subtract inputs. Specify one of the following methods to define the operation:  
+a) A character vector containing **+** or **-** for each input port, with **|** as a spacer between groups (e.g., `++|-|++`).  
+b) A scalar (≥ 1) that specifies the number of input ports to be summed.  
+When there is only one input port, the block adds or subtracts elements over all dimensions or a specified dimension.
+
+**Parameters:**
+
+- **`Inputs` (Input Configuration):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the operation for each input port using **+** and **-** characters. The number of **+** and **-** symbols determines the number of input ports. You may use **|** as a spacer between groups.
+
+**Ports:**
+
+- **Input Ports:**  
+  The number of input ports is determined by the parameter **`Inputs`**. Each input port is sequentially numbered (e.g., if **Inputs** is `+++---`, there are 6 input ports named **1** through **6**) and has no visual label.
+  
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)
+  
+**Shape and Colour:**
+
+- Please note that there are **two** shapes of Sum, one is **round**, another one is **retangular**. The color of Sum is **all white**.
+  
+ ---
+ 
+ ## Discrete-Time Integrator
+
+**Path:** `'simulink/Commonly Used Blocks/Discrete-Time Integrator'`
+
+**Description:**  
+The Discrete-Time Integrator block integrates an input signal with respect to time and outputs the resulting value using discrete-time numerical methods. Simulink® treats the Discrete-Time Integrator block as a dynamic system with one state, governed by the following discrete-time equations:
+
+$$
+x[k+1] = x[k] + T \cdot u[k]\\
+y[k] = x[k]\\
+x[0] = x_0
+$$
+
+where:
+- **u[k]** is the block input at the current time step.
+- **y[k]** is the block output.
+- **x[k]** is the block state.
+- **x₀** is the initial condition of x.
+- **T** is the sample time.
+
+**Ports:**
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **internal**:  
+  - **Input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **internal**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is an upward arrow)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **none** and **InitialConditionSource** is set to **external**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+
+- **When** **ExternalReset** is set to **rising** and **InitialConditionSource** is set to **external**:  
+  - **First input port:** **1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **2** (simulation diagram visual label is an upward arrow)  
+  - **Third input port:** **3** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **1** (simulation diagram has no corresponding visual label)
+  
+---
+
+## Transfer Fcn
+
+**Path:** `'simulink/Continuous/Transfer Fcn'`
+
+**Description:**  
+The Transfer Fcn block implements a continuous transfer function using numerator and denominator coefficients. The numerator coefficient can be a vector or matrix expression, while the denominator coefficient must be a vector. The output width is determined by the number of rows in the numerator coefficient, and coefficients should be specified in descending order of powers of s.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Sign
+
+**Path:** `'simulink/Math Operations/Sign'`
+
+**Description:**  
+For real inputs, the Sign block outputs **1** for positive values, **-1** for negative values, and **0** when the input is zero. For complex floating point inputs, the output is computed as:
+
+$$
+\text{sign}(u) = \frac{u}{|u|}
+$$
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+- **Output Port:** **1** (no visual label)
+
+---
+
+## XY Graph
+
+**Path:** `'simulink/Sinks/XY Graph'`
+
+**Description:**  
+The XY Graph block displays an X-Y plot of its inputs in a MATLAB figure window. It has two scalar inputs: the first provides the x-axis data, and the second provides the y-axis data. This block is useful for examining limit cycles and other two-state data. Data outside the specified range is not displayed.
+
+**Ports:**
+
+- **Input Ports:**  
+  - **Port 1:** (no visual label)  
+  - **Port 2:** (no visual label)
+
+- **Output Ports:**  
+  - None
+
+---
+
+## Pulse Generator
+
+**Path:** `'simulink/Sources/Pulse Generator'`
+
+**Description:**  
+The Pulse Generator block outputs pulses based on the following logic:
+
+```
+if (t >= PhaseDelay) && (Pulse is on)
+   Y(t) = Amplitude
+else
+   Y(t) = 0
+end
+```
+
+The Pulse type parameter determines the computational technique used. Use Time-based for variable step solvers, and Sample-based for fixed step solvers or for discrete portions within a variable step solver model.
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Connection Port
+
+**Path:** `'simulink/Signal Routing/Connection Port'`
+
+**Description:**  
+The Connection Port block is a Physical Modeling Connection Port for subsystems. It provides a dedicated connection point in your physical models.
+
+**Parameters:**
+
+- **`Port` (Input Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this input within the subsystem. This parameter defines which input port the block represents.
+
+**Ports:**
+
+- **Output Port:** **1** (no visual label)
+
+---
+
+## Voltage Sensor
+
+**Path:** `'fl_lib/Electrical/Electrical Sensors/Voltage Sensor'`
+
+**Description:**  
+The Voltage Sensor block represents an ideal voltage sensor that converts the voltage measured between electrical connections into a physical signal proportional to that voltage.
+
+**Ports:**
+
+- **Conserving Electrical Port (Visual Label: +):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port is a conserving electrical connection, which is used to connect the sensor to the circuit (labeled with a **+**).
+
+- **Conserving Electrical Port (Visual Label: -):**  
+  - **Port Name:** **RConn2**  
+  - **Note:** This port is a conserving electrical connection, which is used to connect the sensor to the circuit (labeled with a **-**).
+
+- **Physical Signal Port (Visual Label: V):**  
+  - **Port Name:** **RConn1**  
+  - **Note:** This port outputs the physical signal corresponding to the voltage value (labeled with **V**).
+  
+---
+
+## Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Controlled Voltage Source'`
+
+**Description:**  
+The block represents an ideal voltage source that is powerful enough to maintain the specified voltage at its output regardless of the current passing through it. The output voltage is given by **V = Vs**, where **Vs** is the numerical value presented at the physical signal port.
+
+**Ports:**
+
+- **Positive Terminal:**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port represents the positive side of the voltage source.
+
+- **Negative Terminal (Left Side):**  
+  - **Port Name:** **RConn1**  
+  - **Note:** This is one of the conserving electrical ports on the negative side.
+
+- **Negative Terminal (Right Side):**  
+  - **Port Name:** **RConn2**  
+  - **Note:** This is the other conserving electrical port on the negative side.
+  
+---
+
+## Simulink-PS Converter
+
+**Path:** `'nesl_utility/Simulink-PS Converter'`
+
+**Description:**  
+Converts the Simulink input signal to a Physical Signal.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **1** (no visual label)
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---
+
+## PS-Simulink Converter
+
+**Path:** `'nesl_utility/PS-Simulink Converter'`
+
+**Description:**  
+Converts the input Physical Signal to a Simulink output signal.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **LConn1** (no visual label)
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)
+  
+---
+
+## Resistor
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Resistor'`
+
+**Description:**  
+The voltage-current (V-I) relationship for a linear resistor is given by **V = I * R**, where **R** is the constant resistance in ohms. The positive and negative terminals of the resistor are denoted by the **+** and **-** signs respectively. By convention, the voltage across the resistor is defined as **V(+) - V(-)**, and the current is considered positive when flowing from the positive to the negative terminal. This convention ensures that the power absorbed by the resistor is always positive.
+
+**Ports:**
+
+- **Conserving Electrical Port (Visual Label: +):**  
+  - **Port Name:** **LConn1**
+
+- **Conserving Electrical Port (Visual Label: -):**  
+  - **Port Name:** **RConn1**
+  
+---
+
+## Capacitor
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Capacitor'`
+
+**Description:**  
+Models a linear capacitor. The relationship between voltage **V** and current **I** is given by **I = C * dV/dt**, where **C** is the capacitance in farads.
+
+**Ports:**
+
+- **Conserving Electrical Port (Visual Label: +):**  
+  - **Port Name:** **LConn1**
+
+- **Conserving Electrical Port (Visual Label: -):**  
+  - **Port Name:** **RConn1**
+  
+---
+
+## AC Current Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/AC Current Source'`
+
+**Description:**  
+The ideal AC current source maintains a sinusoidal current through it, independent of the voltage across its terminals. The output current is defined by the equation:  
+
+$$
+I = I_0 \cdot \sin(2\pi f t + \text{PHI})
+$$
+
+where:  
+- **I₀** is the peak amplitude,  
+- **f** is the frequency in Hz, and  
+- **PHI** is the phase shift in radians.
+
+**Ports:**
+
+- **Conserving Electrical Port (Visual Label with arrow):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** The simulation visual diagram displays an arrow pointing at this port.
+
+- **Conserving Electrical Port:**  
+  - **Port Name:** **RConn1**
+  
+---
+
+## Current Sensor
+
+**Path:** `'fl_lib/Electrical/Electrical Sensors/Current Sensor'`
+
+**Description:**  
+The block represents an ideal current sensor, a device that converts the current measured in any electrical branch into a physical signal proportional to that current.
+
+**Ports:**
+
+- **Conserving Electrical Port (Visual Label: +):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port is used to insert the sensor into the circuit.
+
+- **Conserving Electrical Port (Visual Label: -):**  
+  - **Port Name:** **RConn2**  
+  - **Note:** This port is used to insert the sensor into the circuit.
+
+- **Physical Signal Port (Visual Label: I):**  
+  - **Port Name:** **RConn1**  
+  - **Note:** This port outputs the current value as a physical signal.
+  
+---
+
+## Controlled Voltage Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Controlled Voltage Source'`
+
+**Description:**  
+The block represents an ideal voltage source that is powerful enough to maintain the specified voltage at its output regardless of the current passing through it. The output voltage is given by **V = Vs**, where **Vs** is the numerical value presented at the physical signal port.
+
+**Ports:**
+
+- **Positive Terminal (Visual Label: positive):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port represents the positive terminal of the voltage source.
+
+- **Negative Terminal (Left Side):**  
+  - **Port Name:** **RConn1**  
+  - **Note:** This port is one of the conserving electrical ports on the negative side.
+
+- **Negative Terminal (Right Side):**  
+  - **Port Name:** **RConn2**  
+  - **Note:** This port is the second conserving electrical port on the negative side.
+  
+---
+
+## PS Gain
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Gain'`
+
+**Description:**  
+This block multiplies the input physical signal by a constant, as given by:
+
+$$
+y = u \cdot \text{gain}
+$$
+
+The Gain parameter accepts both positive and negative values. All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **LConn1** (no visual label)
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---
+
+## PS Math Function
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Math Function'`
+
+**Description:**  
+This block applies a mathematical function to the input \( u \) according to:
+
+$$
+y = fcn(u)
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **LConn1** (no visual label)
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---
+
+## PS Constant
+
+**Path:** `'fl_lib/Physical Signals/Sources/PS Constant'`
+
+**Description:**  
+This block creates a physical signal constant:
+
+$$
+y = \text{constant}
+$$
+
+The Constant parameter accepts both positive and negative values. The block output is a physical signal port.
+
+**Ports:**
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---
+
+## PS Subtract
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Subtract'`
+
+**Description:**  
+This block performs subtraction on two inputs according to:
+
+$$
+y = u_1 - u_2
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port (Positive Input):**  
+  - **Port Label:** **+**  
+  - **Port Name:** **LConn1**
+
+- **Input Port (Negative Input):**  
+  - **Port Label:** **-**  
+  - **Port Name:** **LConn2**
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)
+  
+---
+
+## PS Add
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Add'`
+
+**Description:**  
+This block adds signals of the two inputs:
+
+$$
+y = u_1 + u_2
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Physical Signal Port (Visual Label: +):**  
+  Port Name: LConn1  
+  Note: This port is used for the first positive input signal.
+
+- **Physical Signal Port (Visual Label: +):**  
+  Port Name: LConn2  
+  Note: This port is used for the second positive input signal.
+
+- **Physical Signal Port:**  
+  Port Name: RConn1  
+  Note: This port outputs the summed signal.
+  
+---
+
+## PS Add
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Add'`
+
+**Description:**  
+This block adds the signals from its two inputs:
+
+$$
+y = u_1 + u_2
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port (Positive Input, Visual Label: +):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port is used for the first positive input signal.
+
+- **Input Port (Positive Input, Visual Label: +):**  
+  - **Port Name:** **LConn2**  
+  - **Note:** This port is used for the second positive input signal.
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)  
+  - **Note:** This port outputs the summed signal.
+  
+---
+
+## PS Divide
+
+**Path:** `'fl_lib/Physical Signals/Functions/PS Divide'`
+
+**Description:**  
+This block divides the first input signal by the second one:
+
+$$
+y = u_1 ./ u_2
+$$
+
+All connections are physical signal ports.
+
+**Ports:**
+
+- **Input Port (Numerator, Visual Label: ×):**  
+  - **Port Name:** **LConn1**  
+  - **Note:** This port is used for the numerator input signal.
+
+- **Input Port (Denominator, Visual Label: ÷):**  
+  - **Port Name:** **LConn2**  
+  - **Note:** This port is used for the denominator input signal.
+
+- **Output Port:**  
+  - **Port Name:** **RConn1** (no visual label)  
+  - **Note:** This port outputs the division result.
+  
+---
+
+## PS Integrator
+
+**Path:** `'fl_lib/Physical Signals/Linear Operators/PS Integrator'`
+
+**Description:**  
+This block performs continuous-time integration of the input Physical Signal. The output resets to the initial condition when the optional reset signal, R, triggers. The initial condition can either be a fixed parameter or defined by a physical signal, X0. The output limits can either be fixed parameters or defined by physical signals, U and L.
+
+**Ports:**
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.None** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.Internal**:  
+  - **Input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.Rising** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.Internal**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is **R**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.None** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.External**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+- **When** **reset_method** is set to **foundation.enum.IntegratorResetSpec.Rising** and **initial_condition_spec** is set to **foundation.enum.IntegratorICSpec.External**:  
+  - **First input port:** **LConn1** (simulation diagram has no corresponding visual label)  
+  - **Second input port:** **LConn2** (simulation diagram visual label is **R**)  
+  - **Third input port:** **LConn3** (simulation diagram visual label is the formula-style **x₀**)  
+  - **Output port:** **RConn1** (simulation diagram has no corresponding visual label)
+
+---
+
+## Sine Wave
+
+**Path:** `'simulink/Sources/Sine Wave'`
+
+**Description:**  
+Output a sine wave:
+
+$$
+O(t) = \text{Amp} \cdot \sin(\text{Freq} \cdot t + \text{Phase}) + \text{Bias}
+$$
+
+Sine type determines the computational technique used. The parameters in the two types are related through:
+
+- **Samples per period =** \( \frac{2\pi}{\text{Frequency} \times \text{Sample time}} \)
+- **Number of offset samples =** \( \frac{\text{Phase} \times \text{Samples per period}}{2\pi} \)
+
+Use the sample-based sine type if numerical problems due to running for large times (e.g. overflow in absolute time) occur.
+
+**Ports:**
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)
+  
+---
+
+## Trigonometric Function
+
+**Path:** `'simulink/Math Operations/Trigonometric Function'`
+
+**Description:**  
+Trigonometric and hyperbolic functions. When the function has more than one argument, the first argument corresponds to the top (or left) input port. For sin, cos, sincos, cos +j sin, and atan2 functions, a CORDIC approximation can also be used to compute the output.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port receives the input signal for the trigonometric or hyperbolic function.
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port outputs the result of the trigonometric or hyperbolic function.
+  
+---
+
+## Math Function
+
+**Path:** `'simulink/Math Operations/Math Function'`
+
+**Description:**  
+Mathematical functions including logarithmic, exponential, power, and modulus functions. When the function has more than one argument, the first argument corresponds to the top (or left) input port.
+
+**Ports:**
+
+- **Input Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port receives the input signal for the mathematical function.
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)  
+  - **Note:** This port outputs the result of the mathematical function.
+  
+---
+
+## Product
+
+**Path:** `'simulink/Commonly Used Blocks/Product'`
+
+**Description:**  
+Multiply or divide inputs. Choose element-wise or matrix product and specify one of the following:  
+a) * or / for each input port. For example, **/* performs the operation 'u1*u2/u3*u4'.  
+b) A scalar value specifies the number of input ports to be multiplied. For example, 2 performs the operation 'u1*u2'.
+
+If there is only one input port and the Multiplication parameter is set to Element-wise (.*), a single * or / collapses the input signal using the specified operation. However, if the Multiplication parameter is set to Matrix (*), a single * causes the block to output the matrix unchanged, and a single / causes the block to output the matrix inverse.
+
+**Parameters:**
+
+- **`Inputs` (Input Configuration):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the number of input ports. The number of symbols in the `Inputs` parameter determines the number of input ports, with corresponding port names from **1** to **x**.
+
+**Ports:**
+
+- **Input Ports:**  
+  The number of input ports is determined by the **`Inputs`** parameter. Each input port is sequentially numbered (e.g., if **Inputs** is set to `x`, the input port names are **1** to **x**; no visual labels).
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)
+
+
+
+
+
+
+

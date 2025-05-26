@@ -1,0 +1,14 @@
+## Transfer Fcn
+
+**Path:** `'simulink/Continuous/Transfer Fcn'`
+
+**Description:**  
+The Transfer Fcn block implements a continuous transfer function using numerator and denominator coefficients. The numerator coefficient can be a vector or matrix expression, while the denominator coefficient must be a vector. The output width is determined by the number of rows in the numerator coefficient, and coefficients should be specified in descending order of powers of s.
+
+**Ports:**
+
+- **Input Port:** 
+  - **Port name:** **1**
+- **Output Port:** 
+  - **Port name:** **1**
+---

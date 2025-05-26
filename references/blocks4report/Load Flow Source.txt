@@ -1,0 +1,15 @@
+## Load Flow Source
+
+**Path:** `'ee_lib/Sources/Load Flow Source'`
+
+**Description:**  
+The Load Flow Source block is a three-phase voltage source designed for load-flow analysis in three-phase Simscape Electrical™ networks compatible with frequency-time simulation mode. It can be used with the Busbar block to implement a swing bus, PV bus, or PQ bus. When the Source impedance parameter is set to **None**, the block models an ideal voltage source that maintains a sinusoidal voltage (of specified magnitude) regardless of the load. The source uses a wye configuration, where the neutral point is provided at the n port and the three phase connections are provided at the ~ port. The voltage of each phase is measured relative to the neutral (V(+) – Vn).
+
+- **RConn1:**  
+  - **Type:** Wye center
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase voltage  
+  - **Description:** Three-phase port associated with the voltage phases a, b, and c.
+---

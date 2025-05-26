@@ -1,0 +1,639 @@
+## Busbar
+
+**Path:** `'ee_lib/Connectors & References/Busbar'`
+
+**Description:**  
+A connector for load‐flow analysis in three‐phase Simscape Electrical™ networks. The block displays voltage, phase, active power, and reactive power at its ports (if enabled) after simulation.
+
+**Applicable Libraries:**  
+Simscape / Electrical / Connectors & References
+
+**Parameters:**
+
+- **`n_nodes` (Number of connections):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the number of port connections that are exposed on the block. Options include **2 (default)**, **1**, **3**, or **4**. The number of exposed ports directly corresponds to this parameter.  
+  **Important:** Ensure that the value of `n_nodes` matches the number of blocks you intend to connect. Do not connect multiple blocks to the same port.
+
+- **`VRated` (Rated busbar voltage (phase-to-phase RMS)):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the rated phase-to-phase RMS voltage of the busbar. The default value is `sqrt(3)*100/sqrt(2) V`.
+
+- **`VRated_unit` (Rated voltage unit):**  
+  - **Type:** `string`  
+  - **Enum:** `{'V', 'MV', 'kV', 'mV'}`  
+  - **Description:** Specifies the unit for the rated voltage.
+
+- **`freq` (Network frequency):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the frequency of the connected network. The default value is **60 Hz**.
+
+- **`freq_unit` (Frequency unit):**  
+  - **Type:** `string`  
+  - **Enum:** `{'Hz', 'GHz', 'MHz', 'kHz'}`  
+  - **Description:** Specifies the unit for the network frequency.
+
+- **`show_ps` (Measurement ports):**  
+  - **Type:** `string`  
+  - **Description:** Determines whether measurement ports for voltage, phase, active power, and reactive power are exposed. The default is **No**; setting it to **Yes** makes additional ports visible (voltage and phase ports are always shown, and active/reactive power ports appear when **n_nodes** is set to 2, 3, or 4).
+
+**Ports:**
+
+- When **`n_nodes`** is set to **1**, the exposed port is:  
+  - **LConn1**
+
+- When **`n_nodes`** is set to **2**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**
+
+- When **`n_nodes`** is set to **3**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**
+
+- When **`n_nodes`** is set to **4**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**  
+  - **RConn2**
+
+**Note:**  
+Ensure that the number of ports (`n_nodes`) is configured to match the number of blocks that need to be connected. Multiple blocks should not be connected to the same port.
+
+---
+
+## Transmission Line (Three-Phase)
+
+**Path:** `'ee_lib/Passive/Lines/Transmission Line (Three-Phase)'`
+
+**Description:**  
+Models a three-phase transmission line using a lumped-parameter pi-line model. The block accounts for phase resistance, self-inductance, mutual inductance and resistance, line-line capacitance, and line-ground capacitance by employing Clarke’s transformation. It supports segmentation to improve fidelity and offers options for parasitics.
+
+**Applicable Libraries:**  
+Simscape Electrical / Passive / Lines
+
+**Parameters:**
+
+**Main Parameters:**
+- **`length` (Line length):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the physical length of the transmission line (default: 1 km).
+
+- **`length_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for the line length.
+
+- **`freq` (Frequency used for RLCG specification):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the frequency for the R, L, C, and G specification (default: 60 Hz).
+
+- **`freq_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for the frequency.
+
+- **`R` (Resistance):**  
+  - **Type:** `string`  
+  - **Description:** Resistance per phase per unit length (default: 0.02 Ohm/km).
+
+- **`R_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for resistance.
+
+- **`L` (Inductance):**  
+  - **Type:** `string`  
+  - **Description:** Self-inductance per phase per unit length (default: 0.5 mH/km).
+
+- **`L_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for inductance.
+
+- **`M` (Mutual inductance):**  
+  - **Type:** `string`  
+  - **Description:** Line-line mutual inductance per unit length (default: 0.1 mH/km).
+
+- **`M_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for mutual inductance.
+
+- **`Cl` (Line-line capacitance):**  
+  - **Type:** `string`  
+  - **Description:** Line-line capacitance per unit length (default: 0.3 μF/km).
+
+- **`Cl_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for line-line capacitance.
+
+- **`Cg` (Line-ground capacitance):**  
+  - **Type:** `string`  
+  - **Description:** Line-ground capacitance per unit length (default: 0.1 μF/km).
+
+- **`Cg_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for line-ground capacitance.
+
+- **`Rm` (Mutual resistance):**  
+  - **Type:** `string`  
+  - **Description:** Mutual resistance per unit length (default: 0 Ohm/km).
+
+- **`Rm_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for mutual resistance.
+
+**Segment and Section Parameters:**
+- **`ModelTwoSections` (Model two line sections):**  
+  - **Type:** `string`  
+  - **Description:** Option to model the transmission line as two sections (default: No).
+
+- **`N` (Number of segments):**  
+  - **Type:** `string`  
+  - **Description:** Number of segments in the pi-line model (default: 1).
+
+- **`N_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for the number of segments.
+
+- **`InterfacePosition` (Position of section interface):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the position of the section interface (default: 0.5 Km).
+
+- **`InterfacePosition_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for the section interface position.
+
+- **`N1sec` (Number of segments in first section):**  
+  - **Type:** `string`  
+  - **Description:** Number of segments before the interface (default: 1).
+
+- **`N2sec` (Number of segments in second section):**  
+  - **Type:** `string`  
+  - **Description:** Number of segments after the interface (default: 1).
+
+- **`Access_ground` (Accessible ground connections at section interface):**  
+  - **Type:** `string`  
+  - **Description:** Option to access ground connections at the section interface (default: No).
+
+**Parasitic Parameters:**
+- **`R_parasitic` (Parasitic series resistance):**  
+  - **Type:** `string`  
+  - **Description:** Series resistance added in series with every capacitor (divided by the number of segments, default: 1e-6 Ohm).
+
+- **`R_parasitic_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for parasitic series resistance.
+
+- **`G_parasitic` (Parasitic parallel conductance):**  
+  - **Type:** `string`  
+  - **Description:** Parallel conductance added in parallel with series resistors and inductors (divided by the number of segments, default: 1e-6 1/Ohm).
+
+- **`G_parasitic_unit`:**  
+  - **Type:** `string`  
+  - **Description:** Unit for parasitic parallel conductance.
+
+**Ports:**
+
+The block provides a total of four ports:
+- **LConn1:** First port (typically representing the sending-end phase connection).
+- **RConn1:** Second port (typically representing the sending-end phase connection).
+- **LConn2:** Third port (ONLY ground connection).
+- **RConn2:** Fourth port (ONLY ground connection).
+
+---
+
+## Electrical Reference
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Electrical Reference'`
+
+**Description:**  
+Represents an electrical ground. All electrical conserving ports of blocks directly connected to ground must be connected to an Electrical Reference block. A model with electrical elements must contain at least one Electrical Reference block.
+
+**Applicable Libraries:**  
+- Simscape / Foundation Library / Electrical / Electrical Elements  
+- Simscape / Electrical / Connectors & References
+
+**Parameters:**  
+*None*
+
+**Ports:**
+
+- **LConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Voltage is zero.
+
+---
+
+## Load Flow Source
+
+**Path:** `'ee_lib/Sources/Load Flow Source'`
+
+**Description:**  
+The Load Flow Source block is a three-phase voltage source designed for load-flow analysis in three-phase Simscape Electrical™ networks compatible with frequency-time simulation mode. It can be used with the Busbar block to implement a swing bus, PV bus, or PQ bus. When the Source impedance parameter is set to **None**, the block models an ideal voltage source that maintains a sinusoidal voltage (of specified magnitude) regardless of the load. The source uses a wye configuration, where the neutral point is provided at the n port and the three phase connections are provided at the ~ port. The voltage of each phase is measured relative to the neutral (V(+) – Vn).
+
+**Applicable Libraries:**  
+Simscape / Electrical / Sources
+
+**Parameters:**
+
+- **`source_type` (Source type):**  
+  - **Type:** `string`  
+  - **Enum:** `{'ee.enum.sources.load_flow_source_type.Swing', 'ee.enum.sources.load_flow_source_type.Time', 'ee.enum.sources.load_flow_source_type.PV', 'ee.enum.sources.load_flow_source_type.PQ'}`  
+  - **Description:** Selects the voltage source model for load-flow analysis.  
+    - **ee.enum.sources.load_flow_source_type.Swing** corresponds to a swing bus (default).  
+    - **ee.enum.sources.load_flow_source_type.Time** corresponds to a voltage source with series impedance.  
+    - **ee.enum.sources.load_flow_source_type.PV** corresponds to a PV bus.  
+    - **ee.enum.sources.load_flow_source_type.PQ** corresponds to a PQ bus.
+
+- **`v_pu_src` (Source voltage (pu)):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the per-unit voltage generated by the source (default: 1).
+
+- **`v_pu` (Terminal voltage (pu)):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the per-unit terminal voltage generated by the source (visible when Source type is set to Swing bus or PV bus).
+
+- **`active_power_generated` (Active power generated):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the active power generated by the source (visible when Source type is set to PV bus).
+
+- **`active_power_consumed` (Active power consumed):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the active power consumed by the source (visible when Source type is set to PQ bus).
+
+- **`active_power_consumed_unit` (Active power consumed unit):**  
+  - **Type:** `string`  
+  - **Enum:** `{'W', 'GW', 'MW', 'kW', 'mW', 'uW', 'HP_DIN'}`  
+  - **Description:** Specifies the unit for active power consumed.
+
+- **`reactive_power_consumed` (Reactive power consumed):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the reactive power consumed by the source (visible when Source type is set to PQ bus).
+
+- **`reactive_power_consumed_unit` (Reactive power consumed unit):**  
+  - **Type:** `string`  
+  - **Enum:** `{'W', 'GW', 'MW', 'kW', 'mW', 'uW', 'HP_DIN', 'A*V'}`  
+  - **Description:** Specifies the unit for reactive power consumed.
+
+- **`VRated` (Rated voltage (phase-to-phase RMS)):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the rated phase-to-phase RMS voltage (default: sqrt(3)*100/sqrt(2) V).
+
+- **`VRated_unit` (Rated voltage unit):**  
+  - **Type:** `string`  
+  - **Enum:** `{'V', 'MV', 'kV', 'mV'}`  
+  - **Description:** Specifies the unit for VRated.
+
+- **`freq` (Rated frequency):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the rated frequency in Hz (default: 60 Hz).
+
+- **`shift_src` (Source phase):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the phase shift of the source (default: 0 deg).
+
+- **`impedance_option` (Source impedance):**  
+  - **Type:** `string`  
+  - **Enum:** `{'ee.enum.sources.load_flow_source_impedance.None', 'ee.enum.sources.load_flow_source_impedance.XRratio', 'ee.enum.sources.load_flow_source_impedance.R', 'ee.enum.sources.load_flow_source_impedance.L', 'ee.enum.sources.load_flow_source_impedance.RL'}`  
+  - **Description:** Selects the method used to model the source impedance.  
+    - **ee.enum.sources.load_flow_source_impedance.None** models an ideal voltage source (default).  
+    - **ee.enum.sources.load_flow_source_impedance.XRratio** models the impedance using a reactance-to-resistance ratio.  
+    - **ee.enum.sources.load_flow_source_impedance.R** models the impedance with series resistance.  
+    - **ee.enum.sources.load_flow_source_impedance.L** models the impedance with series inductance.  
+    - **ee.enum.sources.load_flow_source_impedance.RL** models the impedance with a combination of resistance and inductance.
+
+  *Dependent on the impedance option:*
+
+  - **`SShortCircuit` (Short-circuit power level):**  
+    - **Type:** `string`  
+    - **Description:** Specifies the short-circuit power level (default: 1e6 V*A).
+
+  - **`SShortCircuit_unit` (Short-circuit power level unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'W', 'GW', 'MW', 'kW', 'mW', 'uW', 'HP_DIN', 'A*V'}`  
+    - **Description:** Specifies the unit for SShortCircuit.
+
+  - **`XR` (Source X/R ratio):**  
+    - **Type:** `string`  
+    - **Description:** Specifies the reactance-to-resistance ratio (default: 15).
+
+  - **`G_parasitic` (Source impedance parasitic parallel conductance):**  
+    - **Type:** `string`  
+    - **Description:** Specifies the parasitic parallel conductance of the source impedance.
+
+  - **`R` (Source resistance):**  
+    - **Type:** `string`  
+    - **Description:** Specifies the source resistance (default: 0.01 Ohm).
+
+  - **`L` (Source inductance):**  
+    - **Type:** `string`  
+    - **Description:** Specifies the source inductance (default: 3.97e-4 H).
+
+- **`minimum_pu` (Minimum voltage (pu)):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the per-unit minimum voltage for aiding convergence in the initial solve (default: 0.95).
+
+- **`phase_search_range` (Internal source phase search range):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the phase search range in degrees (default: [-inf, inf] deg).
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver.  
+
+---
+
+## Wye-Connected Load
+
+**Path:** `'ee_lib/Passive/RLC Assemblies/Wye-Connected Load'`
+
+**Description:**  
+The Wye-Connected Load block models a three-phase load wired in a wye configuration. Each limb of the load can include any combination of a resistor (R), capacitor (C), and inductor (L) arranged in series or parallel. You can specify the load values either by rated power and voltage (default) or directly in terms of component values. When parameterized by rated power and voltage, initial conditions are provided as an initial voltage, voltage phase, and frequency; when specified directly, initial capacitor voltages and inductor currents must be provided. Small parasitic resistances or conductances may be added to aid numerical convergence.
+
+**Applicable Libraries:**  
+Simscape / Electrical / Passive / RLC Assemblies
+
+**Parameters:**
+
+- **Electrical Connection:**
+  - **`port_option` (Electrical connection):**  
+    - **Type:** `string`  
+    - **Description:** Determines whether the load uses composite or expanded three-phase ports.  
+    - **Enum:** Options include *Composite three-phase ports (default)* and *Expanded three-phase ports*.
+
+- **Parameterization:**
+  - **`parameterization` (Parameterization):**  
+    - **Type:** `string`  
+    - **Description:** Selects how to specify the load values.  
+    - **Enum:** Options: *Specify by rated power and voltage (default)* or *Specify component values directly*.
+
+- **Component Structure:**
+  - **`component_structure` (Component structure):**  
+    - **Type:** `string`  
+    - **Description:** Selects the desired combination of resistor, inductor, and capacitor connected in series or parallel.  
+    - **Enum:** Options include:  
+      - `ee.enum.rlc.structure.R` (default)  
+      - `ee.enum.rlc.structure.L`  
+      - `ee.enum.rlc.structure.C`  
+      - `ee.enum.rlc.structure.SeriesRL`  
+      - `ee.enum.rlc.structure.SeriesRC`  
+      - `ee.enum.rlc.structure.SeriesLC`  
+      - `ee.enum.rlc.structure.SeriesRLC`  
+      - `ee.enum.rlc.structure.ParallelRL`  
+      - `ee.enum.rlc.structure.ParallelRC`  
+      - `ee.enum.rlc.structure.ParallelLC`  
+      - `ee.enum.rlc.structure.ParallelRLC`
+
+- **Rated Power Parameterization (if using rated power and voltage):**
+  - **`VRated` (Rated voltage):**  
+    - **Type:** `string`  
+    - **Description:** Voltage for which the load powers are specified (default: 24e3 V).
+  - **`VRated_unit` (Rated voltage unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'V', 'MV', 'kV', 'mV'}`  
+    - **Description:** Specifies the unit for VRated.
+  - **`P` (Real power):**  
+    - **Type:** `string`  
+    - **Description:** Total real power dissipated by the load (default: 1e3 W).
+  - **`P_unit` (Real power unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'W', 'GW', 'MW', 'kW', 'mW', 'uW', 'HP_DIN'}`  
+    - **Description:** Specifies the unit for P.
+  - **`FRated` (Rated electrical frequency):**  
+    - **Type:** `string`  
+    - **Description:** Frequency for which the load powers are specified (default: 60 Hz).
+  - **`FRated_unit` (Rated frequency unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'Hz', 'GHz', 'MHz', 'kHz'}`  
+    - **Description:** Specifies the unit for FRated.
+  - **`Qpos` (Inductive reactive power):**  
+    - **Type:** `string`  
+    - **Description:** Total inductive reactive power (default: 1e2 A*V).
+  - **`Qpos_unit` (Inductive reactive power unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'W', 'GW', 'MW', 'kW', 'mW', 'uW', 'HP_DIN', 'A*V'}`  
+    - **Description:** Specifies the unit for Qpos.
+  - **`Qneg` (Capacitive reactive power):**  
+    - **Type:** `string`  
+    - **Description:** Total capacitive reactive power (default: -1e2 A*V).
+  - **`Vmag0` (Terminal voltage magnitude):**  
+    - **Type:** `string`  
+    - **Description:** Specifies the terminal voltage magnitude.
+  - **`Vmag0_unit` (Terminal voltage magnitude unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'V', 'MV', 'kV', 'mV'}`  
+    - **Description:** Specifies the unit for Vmag0.
+
+- **Component Value Parameterization (if specifying component values directly):**
+  - **`R` (Resistance):**  
+    - **Type:** `string`  
+    - **Description:** Resistance of each load limb (default: 1 Ohm).
+  - **`L` (Inductance):**  
+    - **Type:** `string`  
+    - **Description:** Inductance of each load limb (default: 0.001 H).
+  - **`C` (Capacitance):**  
+    - **Type:** `string`  
+    - **Description:** Capacitance of each load limb (default: 1e-6 F).
+
+- **Parasitics:**
+  - **`R_parasitic_PQ` (Parasitic series resistance):**  
+    - **Type:** `string`  
+    - **Description:** Series resistance added to all capacitor instances for PQ parameterization (default: 1e-6 Ohm).
+  - **`R_parasitic_PQ_unit` (Parasitic series resistance unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'Ohm', 'GOhm', 'MOhm', 'kOhm', 'mOhm'}`  
+    - **Description:** Specifies the unit for R_parasitic_PQ.
+  - **`G_parasitic_PQ` (Parasitic parallel conductance):**  
+    - **Type:** `string`  
+    - **Description:** Parallel conductance added across inductor instances for PQ parameterization (default: 0 1/Ohm).
+  - **`G_parasitic_PQ_unit` (Parasitic parallel conductance unit):**  
+    - **Type:** `string`  
+    - **Enum:** `{'S', 'mS', 'nS', 'uS', '1/Ohm'}`  
+    - **Description:** Specifies the unit for G_parasitic_PQ.
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver. 
+
+---
+
+## Solver Configuration
+
+**Path:** `'nesl_utility/Solver Configuration'`
+
+**Description:**  
+The Solver Configuration block provides the physical network environment and solver settings required for simulating a connected Simscape™ block diagram. Each topologically distinct physical network must have exactly one Solver Configuration block. This block lets you specify options such as the treatment of sinusoidal variables, index reduction methods, tolerance settings, local solver options, and multithreading parameters to optimize simulation accuracy and performance.
+
+**Applicable Libraries:**  
+Simscape / Utilities
+
+**Parameters:**
+
+- **`PhysicalDomain`**  
+  - **Type:** `string`  
+  - **Description:** Specifies the physical domain for the simulation (e.g., electrical, mechanical).
+
+- **`SubClassName`**  
+  - **Type:** `string`  
+  - **Description:** Internal subclass name used by the solver configuration.
+
+- **`LeftPortType`**  
+  - **Type:** `string`  
+  - **Description:** Defines the type for the left connection port.
+
+- **`RightPortType`**  
+  - **Type:** `string`  
+  - **Description:** Defines the type for the right connection port.
+
+- **`Tones`**  
+  - **Type:** `string`  
+  - **Description:** Specifies tonal settings for the simulation.
+
+- **`Harmonics`**  
+  - **Type:** `string`  
+  - **Description:** Specifies the harmonics to be considered during simulation.
+
+- **`SimulateNoise`**  
+  - **Type:** `boolean`  
+  - **Description:** Indicates whether noise should be simulated in the physical network.
+
+- **`IndexReductionMethod`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'None', 'DerivativeReplacement', 'Projection'}`  
+  - **Description:** Chooses the method for reducing the index of nonlinear high-index DAEs.
+
+- **`DoDC`**  
+  - **Type:** `boolean`  
+  - **Description:** Specifies whether DC analysis is performed.
+
+- **`ResidualTolerance`**  
+  - **Type:** `string`  
+  - **Description:** Sets the residual tolerance used during initialization and transient computations.
+
+- **`ConsistencyTolSource`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'LOCAL', 'GLOBAL'}`  
+  - **Description:** Determines whether local or global tolerance settings are used.
+
+- **`ConsistencyAbsTol`**  
+  - **Type:** `string`  
+  - **Description:** Local absolute tolerance value for initial conditions and transient initialization.
+
+- **`ConsistencyRelTol`**  
+  - **Type:** `string`  
+  - **Description:** Local relative tolerance value for initial conditions and transient initialization.
+
+- **`ConsistencyTolFactor`**  
+  - **Type:** `string`  
+  - **Description:** Scaling factor for the state-based absolute and relative tolerances.
+
+- **`UseLocalSolver`**  
+  - **Type:** `boolean`  
+  - **Description:** Determines whether a sample-based local solver is used for the physical network.
+
+- **`LocalSolverChoice`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'NE_BACKWARD_EULER_ADVANCER', 'NE_TRAPEZOIDAL_ADVANCER', 'NE_NDF2_ADVANCER', 'NE_VARIABLE_STEP_ADVANCER', 'NE_PARTITIONING_ADVANCER'}`  
+  - **Description:** Selects the algorithm for the local solver.
+
+- **`ResolveIndetEquations`**  
+  - **Type:** `boolean`  
+  - **Description:** Applies runtime regularization to resolve statically indeterminate systems.
+
+- **`FunctionEvalNumThread`**  
+  - **Type:** `string`  
+  - **Description:** Specifies the maximum number of threads for function evaluation when using the Backward Euler solver.
+
+- **`LocalSolverSampleTime`**  
+  - **Type:** `string`  
+  - **Description:** Sets the sample time (in seconds) for the local solver.
+
+- **`DoFixedCost`**  
+  - **Type:** `boolean`  
+  - **Description:** Enables fixed-cost runtime consistency iterations during transient initialization.
+
+- **`MaxNonlinIter`**  
+  - **Type:** `string`  
+  - **Description:** Number of Newton iterations for transient initialization (default: 3).
+
+- **`MaxModeIter`**  
+  - **Type:** `string`  
+  - **Description:** Number of mode iterations for transient initialization (default: 2).
+
+- **`ComputeImpulses`**  
+  - **Type:** `boolean`  
+  - **Description:** Enables impulse detection during transient initialization.
+
+- **`ImpulseIterations`**  
+  - **Type:** `string`  
+  - **Description:** Number of impulse iterations performed during transient initialization (default: 2).
+
+- **`LinearAlgebra`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'auto', 'Sparse', 'Full'}`  
+  - **Description:** Specifies whether the solver treats matrices as sparse or full.
+
+- **`LinearAlgebraNumThread`**  
+  - **Type:** `string`  
+  - **Description:** Maximum number of threads for multithread linear algebra.
+
+- **`EquationFormulation`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'NE_TIME_EF', 'NE_FREQUENCY_TIME_EF'}`  
+  - **Description:** Determines how sinusoidal variables are treated (time-based or frequency-and-time equations).
+
+- **`DelaysMemoryBudget`**  
+  - **Type:** `string`  
+  - **Description:** Maximum memory budget (in kB) for processing delays.
+
+- **`AutomaticFiltering`**  
+  - **Type:** `boolean`  
+  - **Description:** Determines whether additional input filtering is applied at 1-D/3-D connections.
+
+- **`FilteringTimeConstant`**  
+  - **Type:** `string`  
+  - **Description:** Time constant (in seconds) for the additional input filtering.
+
+- **`PartitionStorageMethod`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'AS_NEEDED', 'EXHAUSTIVE'}`  
+  - **Description:** Method for storing partition data when using the partitioning local solver.
+
+- **`PartitionMemoryBudget`**  
+  - **Type:** `string`  
+  - **Description:** Memory budget (in kB) for storing partition data.
+
+- **`PartitionMethod`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'ROBUST', 'FAST', 'ALG_EQS', 'ALL_EQS', 'MERGE', 'MULTICORE'}`  
+  - **Description:** Selects the partition method to update the states using the local solver.
+
+- **`MultibodyUseLocalSolver`**  
+  - **Type:** `boolean`  
+  - **Description:** Specifies whether to use a local solver for a connected Simscape Multibody network.
+
+- **`MultibodyLocalSolverChoice`**  
+  - **Type:** `enum`  
+  - **Enum:** `{'ODE1', 'ODE2', 'ODE3', 'ODE4', 'ODE5', 'ODE8'}`  
+  - **Description:** Chooses the solver type for updating states in a Simscape Multibody network.
+
+- **`MultibodyLocalSolverSampleTime`**  
+  - **Type:** `string`  
+  - **Description:** Sample time (in seconds) for the Multibody local solver.
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Untyped conserving port  
+  - **Description:** Represents the connection point for solver configuration. This port provides the solver settings to the entire physical network.
+
+---

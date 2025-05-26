@@ -1,0 +1,18 @@
+## AC Current Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/AC Current Source'`
+
+**Description:**  
+The AC Current Source block represents an ideal current source that maintains sinusoidal current through it, independent of the voltage across its terminals.
+
+**Ports:**
+
+- **Positive terminal:**  
+  - **Port Name:** **LConn1**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+
+- **Negative terminal:**  
+  - **Port Name:** **RConn1**
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+  
+---

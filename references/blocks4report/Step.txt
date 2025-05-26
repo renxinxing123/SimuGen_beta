@@ -1,0 +1,13 @@
+## Step
+
+**Path:** `'simulink/Sources/Step'`
+
+**Description:**  
+Output a step.
+
+**Ports:**
+
+- **Input Port:** None
+- **Output Port:** 
+  - **Port name:** **1**
+---

@@ -1,0 +1,20 @@
+Agent run times summary:
+Investigator: 43.79 seconds
+Unit_test_reviewer: 0.00 seconds
+Block_builder: 26.45 seconds
+Debug_locator: 0.00 seconds
+Report_writer: 21.66 seconds
+
+Agent call counts summary:
+Investigator: 1 calls
+Unit_test_reviewer: 0 calls
+Block_builder: 1 calls
+Debug_locator: 0 calls
+Report_writer: 1 calls
+
+Agent token costs summary:
+Investigator           | Model: o4-mini           | Input: 5775     | Output: 4396     | Total: 10171    | InCost: $0.0064   | OutCost: $0.0193   | TotalCost: $0.0257
+Unit_test_reviewer     | Model: o3-mini           | Input: 0        | Output: 0        | Total: 0        | InCost: $0.0000   | OutCost: $0.0000   | TotalCost: $0.0000
+Block_builder          | Model: o3-mini           | Input: 4058     | Output: 3062     | Total: 7120     | InCost: $0.0045   | OutCost: $0.0135   | TotalCost: $0.0179
+Debug_locator          | Model: o3-mini           | Input: 0        | Output: 0        | Total: 0        | InCost: $0.0000   | OutCost: $0.0000   | TotalCost: $0.0000
+Report_writer          | Model: o3-mini           | Input: 2110     | Output: 2625     | Total: 4735     | InCost: $0.0023   | OutCost: $0.0116   | TotalCost: $0.0139

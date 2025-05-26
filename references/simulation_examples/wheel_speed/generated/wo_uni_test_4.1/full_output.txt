@@ -1,0 +1,356 @@
+[Investigator] Hydraulic Lag (Transfer Fcn)  
+Brake pressure (Integrator)  
+Force & torque (Gain)  
+Unit Delay (UnitDelay)  
+sum (Sum)  
+Wa (Gain)  
+Wheel Speed (Discrete-Time Integrator)  
+Controller out (In1)  
+Tire Torque (In1)  
+Bp (Out1)  
+WheelSpeed (Out1)  
+Wa (Out1)  
+
+{
+  "request_blocks": ["Transfer Fcn", "Integrator", "Gain", "UnitDelay", "Sum", "Discrete-Time Integrator", "In1", "Out1"]
+}
+[Investigator] Controller out (In1) 1 <-> Hydraulic Lag (Transfer Fcn) 1  
+Hydraulic Lag (Transfer Fcn) 1 <-> Brake pressure (Integrator) 1  
+Brake pressure (Integrator) 1 <-> Force & torque (Gain) 1  
+Force & torque (Gain) 1 <-> sum (Sum) 1 (`Inputs` = `+-`)  
+Tire Torque (In1) 1 <-> Unit Delay (UnitDelay) 1  
+Unit Delay (UnitDelay) 1 <-> sum (Sum) 2 (`Inputs` = `+-`)  
+sum (Sum) 1 <-> Wa (Gain) 1  
+Wa (Gain) 1 <-> Wheel Speed (Discrete-Time Integrator) 1  
+Wheel Speed (Discrete-Time Integrator) 1 <-> Unit Delay (UnitDelay) 1  
+Brake pressure (Integrator) 1 <-> Bp (Out1) 1  
+Wheel Speed (Discrete-Time Integrator) 1 <-> WheelSpeed (Out1) 1  
+Wa (Gain) 1 <-> Wa (Out1) 1
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'MySimulationModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Controller out', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Controller out', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Hydraulic Lag', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Brake pressure', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Force & torque', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/sum', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/sum', 'Inputs', '+-', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Wa', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Discrete-Time Integrator', model_name + '/Wheel Speed', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Tire Torque', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Tire Torque', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Bp', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Bp', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/WheelSpeed', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/WheelSpeed', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Wa_out', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Wa_out', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Discrete/Unit Delay', model_name + '/Unit Delay', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_line(model_name, 'Controller out/1', 'Hydraulic Lag/1', nargout=0)
+eng.add_line(model_name, 'Hydraulic Lag/1', 'Brake pressure/1', nargout=0)
+eng.add_line(model_name, 'Brake pressure/1', 'Force & torque/1', nargout=0)
+eng.add_line(model_name, 'Force & torque/1', 'sum/1', nargout=0)
+eng.add_line(model_name, 'Tire Torque/1', 'Unit Delay/1', nargout=0)
+eng.add_line(model_name, 'Unit Delay/1', 'sum/2', nargout=0)
+eng.add_line(model_name, 'sum/1', 'Wa/1', nargout=0)
+eng.add_line(model_name, 'Wa/1', 'Wheel Speed/1', nargout=0)
+eng.add_line(model_name, 'Wheel Speed/1', 'Unit Delay/1', nargout=0)
+eng.add_line(model_name, 'Brake pressure/1', 'Bp/1', nargout=0)
+eng.add_line(model_name, 'Wheel Speed/1', 'WheelSpeed/1', nargout=0)
+eng.add_line(model_name, 'Wa/1', 'Wa_out/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Debug_locator] Below is the analysis of the likely problematic code sections:
+
+1. Two lines are being created that both try to connect to the same input port on the Unit Delay block. Recall that according to the block description, the Unit Delay block has only one input port (port 1). The first connection is made in this line:
+
+  eng.add_line(model_name, 'Tire Torque/1', 'Unit Delay/1', nargout=0)
+
+and then later another connection is attempted with:
+
+  eng.add_line(model_name, 'Wheel Speed/1', 'Unit Delay/1', nargout=0)
+
+Since a destination port may only have one incoming line connection, trying to attach a second line to the Unit Delay's input causes the error “The destination port already has a line connection”.
+
+2. The error is triggered at the second call to connect to Unit Delay’s input (the one from 'Wheel Speed/1'). This indicates that the original connection (from 'Tire Torque/1') is still in place when the subsequent connection is attempted.
+
+To help clarify, here are two groups of code snippets:
+
+A. Code Lines Likely Causing the Error (problematic connection):
+  • eng.add_line(model_name, 'Tire Torque/1', 'Unit Delay/1', nargout=0)
+  • eng.add_line(model_name, 'Wheel Speed/1', 'Unit Delay/1', nargout=0)
+
+B. Code Lines Related to the Overall Connection Setup:
+  • eng.add_line(model_name, 'Force & torque/1', 'sum/1', nargout=0)
+  • eng.add_line(model_name, 'Unit Delay/1', 'sum/2', nargout=0)
+  • eng.add_line(model_name, 'Wa/1', 'Wheel Speed/1', nargout=0)
+
+In summary, the error arises because the Unit Delay block’s input port is receiving two incoming connections. To fix the error, you could either route one of the signals through another block (or a bus merger) or reconfigure the Unit Delay so that it supports multiple inputs (for example, using a multiport switch in your model design) if that meets your simulation requirements.
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'MySimulationModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Controller out', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Controller out', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Hydraulic Lag', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Brake pressure', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Force & torque', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/sum', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/sum', 'Inputs', '+-', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Wa', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Discrete-Time Integrator', model_name + '/Wheel Speed', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Tire Torque', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Tire Torque', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Bp', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Bp', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/WheelSpeed', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/WheelSpeed', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Wa_out', 'MakeNameUnique', 'on', nargout=0)
+eng.set_param(model_name + '/Wa_out', 'Port', '1', nargout=0)
+
+eng.add_block('simulink/Discrete/Unit Delay', model_name + '/Unit Delay', 'MakeNameUnique', 'on', nargout=0)
+
+eng.add_line(model_name, 'Controller out/1', 'Hydraulic Lag/1', nargout=0)
+eng.add_line(model_name, 'Hydraulic Lag/1', 'Brake pressure/1', nargout=0)
+eng.add_line(model_name, 'Brake pressure/1', 'Force & torque/1', nargout=0)
+eng.add_line(model_name, 'Force & torque/1', 'sum/1', nargout=0)
+eng.add_line(model_name, 'Tire Torque/1', 'Unit Delay/1', nargout=0)
+eng.add_line(model_name, 'Unit Delay/1', 'sum/2', nargout=0)
+eng.add_line(model_name, 'sum/1', 'Wa/1', nargout=0)
+eng.add_line(model_name, 'Wa/1', 'Wheel Speed/1', nargout=0)
+eng.add_line(model_name, 'Brake pressure/1', 'Bp/1', nargout=0)
+eng.add_line(model_name, 'Wheel Speed/1', 'WheelSpeed/1', nargout=0)
+eng.add_line(model_name, 'Wa/1', 'Wa_out/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the comprehensive report covering all four questions.
+
+─────────────────────────────  
+1. What Is the Simulation About?  
+─────────────────────────────  
+This simulation models the dynamics of a vehicle’s braking system by representing the evolution of wheel speed under braking conditions. In essence, it simulates how brake pressure—generated after a controller input—is transmitted through hydraulic lag, integrated to yield a braking pressure signal, and then converted into a force and torque that acts on the wheel. The simulation also accounts for the tire–road interaction by using dual speed signals (vehicle speed and wheel speed) to compute the slip according to the equation:  
+
+  ω_v = V_v / R  
+  slip = 1 – (ω_w / ω_v)  
+
+Where zero slip indicates no difference between wheel and vehicle speeds, and a slip of 1 means the wheel is locked. A targeted slip value of 0.2 is known to optimize adhesion and minimize stopping distance. Overall, the simulation represents the physical process of wheel deceleration due to braking forces while capturing the nonlinear friction (mu-slip) behavior that occurs in real-world braking scenarios.
+
+─────────────────────────────  
+2. What Are the Main Simulation Steps?  
+─────────────────────────────  
+Although the simulation is built using Simulink blocks, conceptually it can be broken down into the following steps:
+
+a) Controller Input and Hydraulic Lag  
+ • A controller output signal is fed to a hydraulic lag block modeled by a continuous transfer function. This stage simulates the hydraulic system delay that occurs when brake fluid pressure changes.  
+
+b) Brake Pressure Integration  
+ • The output from the hydraulic lag block is integrated to produce the brake pressure signal. The integration simulates the cumulative effect of the rate at which pressure builds up in the braking system.  
+
+c) Force & Torque Conversion  
+ • The brake pressure signal is multiplied by a constant (via a gain block) to convert it into a corresponding force and torque applied to the wheel.  
+
+d) Tire Torque and Net Force Computation  
+ • A tire torque input (representing an opposing force or disturbance) is delayed by one sample period using a unit delay block. A summing operation combines the force from brake pressure (positive contribution) and the delayed tire torque (negative contribution) to compute the net effect on the wheel.  
+
+e) Wheel Speed Dynamics  
+ • The net force is then scaled by another gain (Wa) and fed into a discrete-time integrator representing the dynamic evolution of wheel speed. In addition, the wheel speed output is looped back through a unit delay to model memory or state propagation in the dynamic system.  
+
+f) Output and Feedback  
+ • Finally, signals such as brake pressure (Bp), wheel speed (WheelSpeed), and the transformed force (Wa_out) are output for analysis. These outputs are used for monitoring the behavior of the braking process and for validating theoretical expectations.
+
+─────────────────────────────  
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?  
+─────────────────────────────  
+a) Controller Input and Hydraulic Lag  
+ – The hydraulic lag is modeled by a continuous transfer function. Mathematically, this represents a first‐order linear differential equation; its numerator and denominator coefficients capture the natural response (time constant and gain) of the hydraulic system. This is rooted in control theory and the Laplace transform representation of dynamic systems.
+
+b) Brake Pressure Integration  
+ – This stage uses the principle of integration (∫u(t) dt) whereby the instantaneous input (from the hydraulic lag) is accumulated over time to compute brake pressure. The integrator block models the solution to the differential equation dx/dt = u(t). This is a basic application of system dynamics.
+
+c) Force & Torque Conversion  
+ – The gain block is used to multiply brake pressure by a conversion factor, representing the physical relationship between hydraulic pressure and mechanical force or torque. This multiplication is a linear scaling based on actuator characteristics.
+
+d) Tire Torque and Net Force Computation  
+ – The unit delay block is used to simulate a delay in the tire torque input—a discrete-time approximation to real-world latency. The summing block then computes the net effect by subtracting the delayed tire torque from the force and torque signal. This step conceptually incorporates the principle of superposition in linear systems.
+
+e) Wheel Speed Dynamics  
+ – The discrete-time integrator then integrates the net force (after being scaled by Wa) over time to produce the wheel speed. It is governed by the recursive formula:  
+  x[k+1] = x[k] + T · u[k]  
+ This equation models the dynamics of the wheel’s angular velocity, analogous to integrating angular acceleration over discrete time steps. This is fundamental in digital control and discrete-time system analysis.
+
+f) Output and Feedback  
+ – The feedback loop in which wheel speed is fed back through a unit delay mimics state propagation and memory in dynamic systems. This is crucial for accurately capturing transient behaviors as predicted by continuous dynamics approximated in a discrete setting.
+
+─────────────────────────────  
+4. How Is It Implemented in Code?  
+─────────────────────────────  
+The simulation is implemented in MATLAB using the Simulink API. Each simulation step from the theoretical model is mapped to a specific block in Simulink. The following code segments illustrate the implementation and explain which theoretical concept each step matches.
+
+-----------------------------------------------------------------------  
+// a) Controller Input and Hydraulic Lag  
+-----------------------------------------------------------------------  
+// Create an input block for the controller signal and a Transfer Function to model hydraulic lag  
+  
+ eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Controller out',  
+  'MakeNameUnique', 'on', nargout=0);  
+ eng.set_param(model_name + '/Controller out', 'Port', '1', nargout=0);
+  
+ eng.add_block('simulink/Continuous/Transfer Fcn', model_name + '/Hydraulic Lag',  
+  'MakeNameUnique', 'on', nargout=0);
+  
+// Explanation:  
+// The In1 block represents the controller signal; the hydraulic lag is modeled as a transfer function,
+// capturing the dynamic response (first-order system) of brake fluid pressure propagation.
+
+-----------------------------------------------------------------------  
+// b) Brake Pressure Integration  
+-----------------------------------------------------------------------  
+// Integrate the hydraulic lag output to simulate brake pressure build-up.  
+  
+ eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Brake pressure',  
+  'MakeNameUnique', 'on', nargout=0);
+  
+// Explanation:  
+// The Integrator block models the integration of the hydraulic lag response, aligning with the 
+// differential equation dx/dt = u(t) that captures the accumulation of brake pressure over time.
+
+-----------------------------------------------------------------------  
+// c) Force & Torque Conversion  
+-----------------------------------------------------------------------  
+// Multiply brake pressure signal to obtain force and torque.  
+  
+ eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Force & torque',  
+  'MakeNameUnique', 'on', nargout=0);
+  
+// Explanation:  
+// The Gain block multiplies the integrated brake pressure by a conversion factor,
+// reflecting the physical relation between hydraulic pressure and force/torque.
+
+-----------------------------------------------------------------------  
+// d) Tire Torque and Net Force Computation  
+-----------------------------------------------------------------------  
+// Create a summing junction that subtracts the delayed tire torque from the force & torque signal.  
+// First, create a Unit Delay block for tire torque.
+  
+ eng.add_block('simulink/Commonly Used Blocks/In1', model_name + '/Tire Torque',  
+  'MakeNameUnique', 'on', nargout=0);
+ eng.set_param(model_name + '/Tire Torque', 'Port', '1', nargout=0);
+  
+ eng.add_block('simulink/Discrete/Unit Delay', model_name + '/Unit Delay',  
+  'MakeNameUnique', 'on', nargout=0);
+  
+ eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/sum',  
+  'MakeNameUnique', 'on', nargout=0);
+ eng.set_param(model_name + '/sum', 'Inputs', '+-', nargout=0);
+  
+// Explanation:  
+// The Unit Delay block introduces a one-sample delay to the Tire Torque input, and the Sum block 
+// computes the net force by subtracting the delayed tire torque (negative input) from the Force & torque signal.
+// This step embodies the superposition principle used in linear system analysis.
+
+-----------------------------------------------------------------------  
+// e) Wheel Speed Dynamics  
+-----------------------------------------------------------------------  
+// Scale the summed output with a gain block before integrating to get the wheel speed.
+  
+ eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Wa',  
+  'MakeNameUnique', 'on', nargout=0);
+  
+ eng.add_block('simulink/Commonly Used Blocks/Discrete-Time Integrator', model_name + '/Wheel Speed',  
+  'MakeNameUnique', 'on', nargout=0);
+  
+// Explanation:  
+// The Wa Gain block adjusts the net force to the appropriate scale (e.g., converting force to angular acceleration).
+// The Discrete-Time Integrator then computes the wheel speed over time using the discrete-time formulation:
+//  x[k+1] = x[k] + T · u[k], which approximates the continuous integration of dynamic states.
+
+-----------------------------------------------------------------------  
+// f) Output and Feedback  
+-----------------------------------------------------------------------  
+// Create output ports to record brake pressure, wheel speed, and scaled output (Wa_out).
+  
+ eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Bp',  
+  'MakeNameUnique', 'on', nargout=0);
+ eng.set_param(model_name + '/Bp', 'Port', '1', nargout=0);
+  
+ eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/WheelSpeed',  
+  'MakeNameUnique', 'on', nargout=0);
+ eng.set_param(model_name + '/WheelSpeed', 'Port', '1', nargout=0);
+  
+ eng.add_block('simulink/Commonly Used Blocks/Out1', model_name + '/Wa_out',  
+  'MakeNameUnique', 'on', nargout=0);
+ eng.set_param(model_name + '/Wa_out', 'Port', '1', nargout=0);
+  
+// Connect the blocks to form feedback loops.
+  
+ eng.add_line(model_name, 'Controller out/1', 'Hydraulic Lag/1', nargout=0);
+ eng.add_line(model_name, 'Hydraulic Lag/1', 'Brake pressure/1', nargout=0);
+ eng.add_line(model_name, 'Brake pressure/1', 'Force & torque/1', nargout=0);
+ eng.add_line(model_name, 'Force & torque/1', 'sum/1', nargout=0);
+ eng.add_line(model_name, 'Tire Torque/1', 'Unit Delay/1', nargout=0);
+ eng.add_line(model_name, 'Unit Delay/1', 'sum/2', nargout=0);
+ eng.add_line(model_name, 'sum/1', 'Wa/1', nargout=0);
+ eng.add_line(model_name, 'Wa/1', 'Wheel Speed/1', nargout=0);
+ eng.add_line(model_name, 'Wheel Speed/1', 'Unit Delay/1', nargout=0);
+ eng.add_line(model_name, 'Brake pressure/1', 'Bp/1', nargout=0);
+ eng.add_line(model_name, 'Wheel Speed/1', 'WheelSpeed/1', nargout=0);
+ eng.add_line(model_name, 'Wa/1', 'Wa_out/1', nargout=0);
+  
+// Explanation:  
+// These lines establish the interconnections between blocks so that the simulation follows the intended structure:
+// the outputs (brake pressure, wheel speed, and scaled net force) serve as key performance indicators, while
+// the unit delay in the feedback loop ensures that past states influence future dynamics in a discrete-time fashion.
+
+-----------------------------------------------------------------------  
+// Final System Arrangement and Saving
+-----------------------------------------------------------------------  
+ eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0);
+ eng.save_system(model_name, model_name + '.slx', nargout=0);
+  
+// Explanation:  
+// The arrangement and save commands ensure that the model is laid out cleanly and stored for simulation execution.
+
+─────────────────────────────  
+Conclusion  
+─────────────────────────────  
+The simulation combines theoretical modeling (continuous dynamics, integration, and discrete-time state propagation) with practical implementation via Simulink blocks. The code maps each of these theoretical concepts to a block (or a set of blocks) and connects them according to the system diagram, ultimately capturing the complex interplay between hydraulic lag, brake pressure development, force conversion, slip dynamics, and wheel speed. This comprehensive integration of theory and code ensures that the model is both mechanistically accurate and computationally executable.

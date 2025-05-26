@@ -1,0 +1,11 @@
+## Clock
+
+**Path:** `'simulink/Sources/Clock'`
+
+**Ports:**
+
+- **Output Port:**
+  - **Port name:** **1**
+    - **Note:** **Sample time, specified as the current simulation time at each simulation time step.**
+
+---

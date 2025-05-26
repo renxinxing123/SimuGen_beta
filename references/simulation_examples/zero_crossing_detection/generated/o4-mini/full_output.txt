@@ -1,0 +1,320 @@
+[Investigator] sin (Sine Wave)  
+|u| (Abs)  
+saturation 1 (Saturation)  
+clock 1 (Clock)  
+5 (Constant)  
+≤ (Relational Operator)  
+switch 1 (Switch)  
+mux 1 (Mux)  
+scope 1 (Scope)  
+
+{"request_blocks": ["Sine Wave", "Abs", "Saturation", "Clock", "Constant", "Relational Operator", "Switch", "Mux", "Scope"]}
+[Investigator] sin (Sine Wave) 1 <-> |u| (Abs) 1  
+sin (Sine Wave) 1 <-> saturation 1 (Saturation) 1  
+sin (Sine Wave) 1 <-> mux 1 (Mux) 2 (`Inputs` = 3)  
+|u| (Abs) 1 <-> mux 1 (Mux) 1 (`Inputs` = 3)  
+switch 1 (Switch) 1 <-> mux 1 (Mux) 3 (`Inputs` = 3)  
+|u| (Abs) 1 <-> switch 1 (Switch) 1  
+saturation 1 (Saturation) 1 <-> switch 1 (Switch) 3  
+clock 1 (Clock) 1 <-> ≤ (Relational Operator) 1  
+5 (Constant) 1 <-> ≤ (Relational Operator) 2  
+≤ (Relational Operator) 1 <-> switch 1 (Switch) 2  
+mux 1 (Mux) 1 <-> scope 1 (Scope) 1
+[Unit_test_reviewer] 1. Block List Verification:
+   - All nine blocks listed in the "blocks used in the simulation" are present in the connections description:
+     • sin (Sine Wave)
+     • |u| (Abs)
+     • saturation 1 (Saturation)
+     • clock 1 (Clock)
+     • 5 (Constant)
+     • ≤ (Relational Operator)
+     • switch 1 (Switch)
+     • mux 1 (Mux)
+     • scope 1 (Scope)
+
+2. Extra Blocks:
+   - No extra blocks were found. Every block mentioned in the block list appears in the connection list.
+
+3. Formatting of Block Names:
+   - All block names are formatted appropriately and contain no forbidden special symbols such as '/'.
+
+4. Formatting of Connection Descriptions:
+   - Each connection follows the prescribed format:
+     • The left side always shows the output port (block name, block type, port number, and any parameter setting if applicable).
+     • The right side properly shows the input port.
+   - Parameter settings, like “(`Inputs` = 3)” for the Mux block, are included correctly. There are no formatting discrepancies.
+
+5. Validate Parameter Settings in Connections:
+   - The only parameter setting provided is for the Mux block (“`Inputs` = 3”). According to the simulation block description, this means the block has input ports “1”, “2”, and “3” (with output port “1”). All connections to mux ports (“1”, “2”, and “3”) correctly match this configuration.
+
+6. Duplicate Connections Detection:
+   - No duplicate connections were detected. Each input port for every block (other than special cases like Electrical Reference and Solver Configuration, which do not apply here) is connected only once.
+
+7. Validate Block Connection Types:
+   - All connections connect an output port to an input port. There are no connections linking output-to-output or input-to-input, and no block that has only one type (input‐only or output‐only) is incorrectly connected to another.
+
+8. Verify Complete Port Connections:
+   - Sine Wave’s single output port “1” is used in multiple connections, which is acceptable.
+   - Abs, Saturation, Clock, Constant, and Relational Operator have all their designated input and output ports connected as specified.
+   - The Switch block’s ports are all properly connected: its three input ports (connected from Abs, Relational Operator, and Saturation) and its single output port.
+   - The Mux block, with “Inputs = 3”, has all its input ports (1, 2, 3) connected and its output port (port 1) connected to the Scope.
+   - The Scope’s single input port is properly connected from the Mux’s output port.
+
+Overall, the Investigator’s simulation information exactly matches the simulation blocks description with respect to block listing, connection formatting, parameter setting, duplication, block connection types, and complete port connectivity.
+
+{
+  "Investigator_unit_test_pass": True
+}
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'MySimModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('simulink/Sources/Sine Wave', model_name + '/sin', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Math Operations/Abs', model_name + '/|u|', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Saturation', model_name + '/saturation 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Sources/Clock', model_name + '/clock 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Sources/Constant', model_name + '/5', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Relational Operator', model_name + '/≤', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Switch', model_name + '/switch 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/mux 1', 'MakeNameUnique', 'on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/scope 1', 'MakeNameUnique', 'on', nargout=0)
+
+eng.set_param(model_name + '/mux 1', 'Inputs', '3', nargout=0)
+
+eng.add_line(model_name, 'sin/1', '|u|/1', nargout=0)
+eng.add_line(model_name, 'sin/1', 'saturation 1/1', nargout=0)
+eng.add_line(model_name, 'sin/1', 'mux 1/2', nargout=0)
+eng.add_line(model_name, '|u|/1', 'mux 1/1', nargout=0)
+eng.add_line(model_name, 'switch 1/1', 'mux 1/3', nargout=0)
+eng.add_line(model_name, '|u|/1', 'switch 1/1', nargout=0)
+eng.add_line(model_name, 'saturation 1/1', 'switch 1/3', nargout=0)
+eng.add_line(model_name, 'clock 1/1', '≤/1', nargout=0)
+eng.add_line(model_name, '5/1', '≤/2', nargout=0)
+eng.add_line(model_name, '≤/1', 'switch 1/2', nargout=0)
+eng.add_line(model_name, 'mux 1/1', 'scope 1/1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is the complete technical report that addresses the four prescribed questions. The report synthesizes simulation theory, block‐diagram structure, and the Python code used to build the Simulink model.
+
+──────────────────────────────
+1. WHAT IS THE SIMULATION ABOUT?  
+──────────────────────────────
+This simulation demonstrates accurate zero‐crossing detection in a Simulink environment. In many physical and control systems, abrupt changes or discontinuities (for example, when a signal crosses zero) are critical events that can destabilize numerical solvers. Simulink addresses this by using zero‐crossing detection algorithms, allowing these abrupt changes to be handled without the need to decrease the solver time step.  
+  
+In our simulation, a sinusoidal (sine wave) signal is generated and then processed through a series of function blocks that compute its absolute value, clip (saturate) it, and finally use conditional logic (via relational and switch operations) to decide which version of the signal should be passed forward. A multiplexer (Mux) gathers these various signal representations and displays them on a Scope. Underneath this demonstration is the accurate detection of when the sine wave (or its absolute value) crosses zero—this is essential for ensuring that the simulation remains accurate even in the presence of discontinuous dynamics.
+
+──────────────────────────────
+2. WHAT ARE THE MAIN SIMULATION STEPS?  
+──────────────────────────────
+The simulation is structured into four broad steps, each corresponding to a distinct functional module:
+
+A. Signal Generation  
+ • Generate a continuous sine wave signal using a Sine Wave block.  
+  – This produces a time-dependent signal: O(t) = Amp · sin(Freq · t + Phase) + Bias.  
+
+B. Signal Processing  
+ • Compute the absolute value of the sine signal using an Abs block.  
+ • Apply a saturation (clipping) to the sine signal using a Saturation block.  
+  – These two processes introduce nonlinearity: one ensuring the signal’s magnitude is nonnegative and the other limiting it to predefined bounds.
+
+C. Conditional Decision Making  
+ • Use a Clock block to provide the current simulation time.  
+ • Introduce a constant (5) using a Constant block to serve as a threshold.  
+ • Compare the current time with the threshold using a Relational Operator block.  
+ • Based on this comparison, employ a Switch block which selects between the absolute value signal and the saturated signal.  
+  – The switch uses the result from the relational operation as a control signal: if the simulation time satisfies the condition (for example, “≤ 5”), one signal will be chosen, otherwise a different signal will be passed.
+
+D. Signal Integration and Visualization  
+ • Combine the original sine wave, the absolute signal, and the conditionally selected signal using a Mux block.  
+ • Visualize the combined signals on a Scope block for analysis.
+
+──────────────────────────────
+3. WHAT THEORETICAL KNOWLEDGE AND MATHEMATICAL MODELLING ARE INVOLVED IN EACH STEP?  
+──────────────────────────────
+A. Signal Generation  
+ • The Sine Wave block mathematically implements the sinusoidal function:
+  O(t) = Amp · sin(Freq · t + Phase) + Bias  
+ • Underlying theory: Harmonic motion and periodic functions, essential in representing physical oscillations such as mechanical vibrations or AC signals.
+
+B. Signal Processing  
+ • Absolute Value (Abs Block):
+  – The absolute value function, y = |u|, models a nonlinearity where negative values become positive. This is important for systems that only respond to magnitudes.
+ • Saturation (Saturation Block):
+  – Saturation represents a clipping nonlinearity. Mathematically, it limits the signal such that if u exceeds a specified upper limit or falls below a lower limit, it is “clipped” to these boundaries. This is common in control systems where actuators have maximum capacities.
+
+C. Conditional Decision Making  
+ • Clock Block:
+  – Produces the current simulation time. It is a fundamental feature needed for time‐dependent decision making in dynamic systems.
+ • Constant Block:
+  – Provides a fixed numerical value (5 in this case), forming the basis for a threshold.
+ • Relational Operator Block:
+  – Implements a Boolean comparison (e.g., checking if the clock output is ≤ 5). This is rooted in logic and set theory and is often used in hybrid dynamical systems that switch modes based on events.
+ • Switch Block:
+  – Uses the Boolean output from the relational operator as its control input to choose between signals. The theoretical concept here is conditional selection, similar to if-then-else constructs in programming and logic systems in control theory.
+
+D. Signal Integration and Visualization  
+ • Mux Block:
+  – Concatenates multiple signals into a vector. This is important for organizing and visualizing different aspects of the simulation in a consolidated manner.
+ • Scope Block:
+  – A data visualization tool used to monitor time-domain outputs. This is akin to an oscilloscope in physical experiments, providing insight into the dynamic characteristics of the signals.
+
+──────────────────────────────
+4. HOW IS IT IMPLEMENTED IN CODE?  
+──────────────────────────────
+Below is the stepwise explanation of the code. The code uses the MATLAB Engine for Python to create and connect Simulink blocks programmatically. The code is organized in segments that reflect the simulation steps described above.
+
+──────────────────────────────
+A. Setting Up the Model and Signal Generation  
+──────────────────────────────
+1. Create a new Simulink system and add the Sine Wave block to generate the periodic signal.
+
+ Code Segment:
+ -----------------------------------------------------------
+ import sys
+ sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+ import matlab.engine
+
+ # Start MATLAB engine and create a new Simulink system
+ eng = matlab.engine.start_matlab()
+ model_name = 'MySimModel'
+ eng.new_system(model_name, nargout=0)
+ eng.open_system(model_name, nargout=0)
+
+ # Add Sine Wave block for signal generation
+ eng.add_block('simulink/Sources/Sine Wave', model_name + '/sin', 'MakeNameUnique', 'on', nargout=0)
+ -----------------------------------------------------------
+Explanation:  
+The Sine Wave block implements the function O(t) = Amp * sin(Freq * t + Phase) + Bias. This represents the physical sine wave signal in the simulation.
+
+──────────────────────────────
+B. Signal Processing: Absolute Value and Saturation  
+──────────────────────────────
+2. Add blocks to process the sine signal:
+ • Abs block: Computes |sin(t)|.  
+ • Saturation block: Limits the sine signal’s range.
+ 
+ Code Segment:
+ -----------------------------------------------------------
+ # Add Abs block
+ eng.add_block('simulink/Math Operations/Abs', model_name + '/|u|', 'MakeNameUnique', 'on', nargout=0)
+
+ # Add Saturation block to clip the signal
+ eng.add_block('simulink/Commonly Used Blocks/Saturation', model_name + '/saturation 1', 'MakeNameUnique', 'on', nargout=0)
+ -----------------------------------------------------------
+Explanation:  
+Here, mathematical nonlinearity is introduced. The Abs block takes the sine due to |sin(t)| while the Saturation block enforces limits as dictated by its preset boundaries. These reflect common physical constraints encountered in real systems.
+
+──────────────────────────────
+C. Conditional Decision Making Using Time and Threshold  
+──────────────────────────────
+3. Introduce blocks for conditional operation:
+ • Clock block generates the current simulation time.
+ • Constant block provides a threshold value (5).
+ • Relational Operator compares the clock output to the constant.
+ • Switch block uses this comparison to select between the processed signals.
+
+ Code Segment:
+ -----------------------------------------------------------
+ # Add Clock block for simulation time
+ eng.add_block('simulink/Sources/Clock', model_name + '/clock 1', 'MakeNameUnique', 'on', nargout=0)
+
+ # Add Constant block with value '5'
+ eng.add_block('simulink/Sources/Constant', model_name + '/5', 'MakeNameUnique', 'on', nargout=0)
+
+ # Add Relational Operator block for threshold comparison
+ eng.add_block('simulink/Commonly Used Blocks/Relational Operator', model_name + '/≤', 'MakeNameUnique', 'on', nargout=0)
+
+ # Add Switch block for conditional selection between the abs and saturation outputs
+ eng.add_block('simulink/Commonly Used Blocks/Switch', model_name + '/switch 1', 'MakeNameUnique', 'on', nargout=0)
+ -----------------------------------------------------------
+Explanation:  
+The Clock block provides the time “t”, which is compared against the constant value (5) using the Relational Operator. The Switch block then uses the Boolean result of this comparison to choose either:
+ – The absolute value of the sine wave (when the condition is satisfied), or  
+ – The saturated signal (when the condition is not met).  
+This reflects a hybrid dynamic system where system behavior changes based on time-based events.
+
+──────────────────────────────
+D. Signal Integration and Visualization  
+──────────────────────────────
+4. Combine signals and set up visualization:
+ • Mux block gathers signals from multiple sources (Abs, Sine, and Switch outputs).  
+ • Scope block then displays the combined output.
+
+ Code Segment:
+ -----------------------------------------------------------
+ # Add Mux block to combine three signals (set Inputs parameter to 3)
+ eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/mux 1', 'MakeNameUnique', 'on', nargout=0)
+ eng.set_param(model_name + '/mux 1', 'Inputs', '3', nargout=0)
+
+ # Add Scope block for displaying the signal(s)
+ eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/scope 1', 'MakeNameUnique', 'on', nargout=0)
+ -----------------------------------------------------------
+Explanation:  
+The Mux block collects the following signals:
+ • The output of the Abs block (|u|).
+ • The original sine wave (sin).
+ • The output from the Switch block which conditionally selects between |u| and the saturated signal.
+Finally, the Scope displays these signals over time, enabling observation of the simulation’s behavior.
+
+──────────────────────────────
+E. Connecting the Blocks (As per the Block Diagram)  
+──────────────────────────────
+5. Create the interconnections that reflect the simulation’s logic and flow:
+
+ Code Segment:
+ -----------------------------------------------------------
+ # Connect sine wave to Abs and Saturation blocks
+ eng.add_line(model_name, 'sin/1', '|u|/1', nargout=0)
+ eng.add_line(model_name, 'sin/1', 'saturation 1/1', nargout=0)
+
+ # Connect sine wave to 2nd input of Mux (Inputs = 3)
+ eng.add_line(model_name, 'sin/1', 'mux 1/2', nargout=0)
+
+ # Connect output of Abs block to 1st input of Mux
+ eng.add_line(model_name, '|u|/1', 'mux 1/1', nargout=0)
+
+ # Wire the Switch block:
+ #   The main data inputs: Abs block to input port 1, Saturation block to input port 3
+ eng.add_line(model_name, '|u|/1', 'switch 1/1', nargout=0)
+ eng.add_line(model_name, 'saturation 1/1', 'switch 1/3', nargout=0)
+
+ # Connect the control signal for the Switch:
+ eng.add_line(model_name, 'clock 1/1', '≤/1', nargout=0)
+ eng.add_line(model_name, '5/1', '≤/2', nargout=0)
+ eng.add_line(model_name, '≤/1', 'switch 1/2', nargout=0)
+
+ # Connect Switch block output to 3rd input of Mux
+ eng.add_line(model_name, 'switch 1/1', 'mux 1/3', nargout=0)
+
+ # Connect Mux output to Scope for final visualization
+ eng.add_line(model_name, 'mux 1/1', 'scope 1/1', nargout=0)
+ -----------------------------------------------------------
+Explanation:  
+Each add_line command creates a connection reflecting the simulation’s designed data flow. Notice how the connections blend both the theoretical signal processing (absolute value, saturation) and logic (comparisons using the clock and constant) to ensure that the model accurately detects and processes zero crossings.
+
+──────────────────────────────
+F. Final Arrangement and Saving the Model  
+──────────────────────────────
+6. Arrange the system for neat visualization and save the model:
+
+ Code Segment:
+ -----------------------------------------------------------
+ # Properly arrange the system for clarity and save the model
+ eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+ eng.save_system(model_name, model_name + '.slx', nargout=0)
+ -----------------------------------------------------------
+Explanation:  
+This final step calls upon Simulink’s built-in layout algorithm to arrange the blocks neatly and then saves the model for future use.
+
+──────────────────────────────
+CONCLUSION  
+──────────────────────────────
+By integrating a range of Simulink blocks—each representing fundamental mathematical operations (from sine generation to non-linear gating via a switch)—the simulation adeptly demonstrates accurate zero-crossing detection. The Python code using MATLAB Engine for Python programmatically creates, connects, and configures this model. This example not only illustrates the theoretical underpinnings (control theory, signal processing, and system dynamics) but also provides a clear mapping from theory to practical implementation.

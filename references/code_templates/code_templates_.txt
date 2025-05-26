@@ -1,0 +1,21 @@
+```python
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'model_name_of_the_simulation_definded_by_you'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+#######
+#Generate your code from here
+#######
+
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save and open the results
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+```

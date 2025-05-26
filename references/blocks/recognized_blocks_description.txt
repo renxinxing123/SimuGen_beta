@@ -1,0 +1,102 @@
+## Load Flow Source
+
+**Path:** `'ee_lib/Sources/Load Flow Source'`
+
+- **RConn1:**  
+  - **Type:** Wye center
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase voltage  
+  - **Description:** Three-phase port associated with the voltage phases a, b, and c.
+---
+
+
+## Wye-Connected Load
+
+**Path:** `'ee_lib/Passive/RLC Assemblies/Wye-Connected Load'`
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver.
+---
+
+
+## Electrical Reference
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Electrical Reference'`
+
+**Ports:**
+
+- **Input/Output Port:** **LConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Voltage is zero.
+
+---
+
+
+## Solver Configuration
+
+**Path:** `'nesl_utility/Solver Configuration'`
+
+**Ports:**
+
+- **Input/Output Port:** **RConn1:**  
+  - **Type:** Untyped conserving port  
+  - **Note:** Represents the connection point for solver configuration. This port provides the solver settings to the entire physical network.
+
+---
+
+
+## Busbar
+
+**Path:** `'ee_lib/Connectors & References/Busbar'`
+
+**Ports:**
+
+- When **`n_nodes`** is set to **1**, the exposed port is:  
+  - **LConn1**
+
+- When **`n_nodes`** is set to **2**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**
+
+- When **`n_nodes`** is set to **3**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**
+
+- When **`n_nodes`** is set to **4**, the exposed ports are:  
+  - **LConn1**  
+  - **RConn1**  
+  - **LConn2**  
+  - **RConn2**
+
+*In the visual simulation blocks, the port labels correspond as follows:*  
+- **LConn1** appears as **~1**.  
+- **RConn1** appears as **~2**.  
+- **LConn2** appears as **~3**.  
+- **RConn2** appears as **~4**.
+
+**~1, ~2, ~3, ~4 are just port label for recognition, NOT port name, only use **LConn1** ,**RConn1** ,**LConn2**  ,**RConn2****.
+---
+
+
+## Transmission Line (Three-Phase)
+
+**Path:** `'ee_lib/Passive/Lines/Transmission Line (Three-Phase)'`
+
+**Ports:**
+
+The block provides a total of four ports:
+- **LConn1:** First port (typically representing the sending-end phase connection).
+- **RConn1:** Second port (typically representing the sending-end phase connection).
+- **LConn2:** Third port (ONLY ground connection).
+- **RConn2:** Fourth port (ONLY ground connection).
+---

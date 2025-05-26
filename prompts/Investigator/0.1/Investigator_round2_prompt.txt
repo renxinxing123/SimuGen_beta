@@ -1,0 +1,39 @@
+# TASK #
+You will receive:
+- Unit_Test_reviewer’s feedback.
+- And again the simulation diagram and the simulation blocks list.
+
+Your responsibilities are to:
+1. **Carefully re-identify the blocks in the simulation diagram, paying special attention to any blocks that were not previously identified**.
+2. Review the Unit_Test_reviewer’s feedback.
+3. Carefully assess whether the previously identified Blocks and Their block types are correct and reasonable based on the feedback.
+4. Re-list all the blocks used in the simulation, **INCLUDING those without annotations if they are USED**. Before listing them, identify their corresponding block type from the simulation blocks list, **while please note that the diagram would NEVER include a SUBSYSTEM, so DO NOT request a subsystem.** The list should be formatted as:
+
+BlockA (BlockA's block type)  
+BlockB (BlockB's block type)     
+...
+
+where Used BlockA, Used BlockB are just example, if the annotation of a block is already given, please just use it. **BUT NEVER include the special symbol '/' in the block name, if it happen in the annotation, you need to modified it.**
+
+- **Important:** If the simulation diagram shows multiple instances of the same block without separate annotations, you should proactively annotate them to differentiate each instance. For example, there are two sum without annotation are shown in the diagram, you should list them like:
+
+sum 1 (sum)
+sum 2 (sum)
+
+# INPUT #
+
+- **Unit Test Reviewer Feedback:**  
+  {investigator_reviewer_feedback}
+
+- **Simulation Blocks List:**  
+  {simulation_blocks_list}
+
+# RESPONSE #
+Always list all identified blocks first and then request half description of **ALL** listed blocks using their **block type (not Path) from the blocks list** at the end of your response in a JSON format as (DO NOT need to request the same unique block type):
+
+{
+  "request_blocks": ["block type 1", "block type 2"，...]
+}
+
+Do not ask any clarifying questions or confirmations. Directly provide a complete answer.
+

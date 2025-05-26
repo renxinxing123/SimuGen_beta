@@ -1,0 +1,18 @@
+## Out1
+
+**Path:** `'simulink/Commonly Used Blocks/Out1'`
+
+**Description:**  
+Provide an output port for a subsystem or model. The **Output when disabled** and **Initial output** parameters apply only to conditionally executed subsystems. When such a subsystem is disabled, the output is either held at its last value or set to the **Initial output**.
+
+**Parameters:**
+
+- **`Port` (Output Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this output within the subsystem. This parameter defines which output port the block represents.
+
+**Ports:**
+
+- **Input Port:** **1** (no visual label)
+
+---

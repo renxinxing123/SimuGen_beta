@@ -1,0 +1,230 @@
+Below is the comprehensive report that explains the simulation in detail, addressing the four required questions by integrating the theory, simulation structure, and code implementation.
+
+──────────────────────────────
+1. What Is the Simulation About?
+
+The simulation demonstrates “Accurate Zero-Crossing Detection” using Simulink. In many dynamic systems, abrupt changes or discontinuities can occur when a signal passes through zero. Instead of requiring the solver to decrease its time step, zero-crossing detection efficiently and accurately captures these transitions. Here, a sine wave (a continuous periodic function) is generated and processed through various blocks (such as Absolute, Sum, and Relational Operator) to detect when the signal crosses a preset threshold. In effect, the simulation replicates the behavior of a discontinuous system change (for example, switching control actions in a real-world system) while maintaining computational efficiency.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?
+
+The simulation is modular and can be broadly broken down into the following steps:
+
+a. Signal Generation  
+   – Generate a periodic sine wave as the main test signal using the Sine Wave block.  
+   
+b. Signal Transformation and Processing  
+   – Process the sine wave via the Absolute Value block to obtain its magnitude.  
+   – Combine the sine value with other processed signals using the Sum block.  
+
+c. Time and Threshold Comparison  
+   – Generate the simulation time using the Clock block.  
+   – Produce a constant threshold value using the Constant block.  
+   – Compare the current simulation time with the constant value using the Relational Operator block to create a switching condition.
+
+d. Conditional Signal Routing  
+   – Use the Switch block to select between different processed signals (from the sum and a saturated value) based on the condition provided by the relational operator.
+
+e. Signal Saturation and Signal Combination  
+   – Limit the processed signal’s range using the Saturation block to avoid extreme values (if applicable).  
+   – Combine signals from two paths using the Mux block to create a unified vector for final output.
+
+f. Visualization  
+   – Display the final output signal on the Scope block for time-domain analysis.
+
+──────────────────────────────
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?
+
+a. Signal Generation  
+ Theory: The Sine Wave block models a continuous-time sinusoidal function using the equation  
+  O(t) = Amp × sin(Freq × t + Phase) + Bias  
+ Mathematical Modelling: This equation represents oscillatory behavior, common in systems analysis, communications, and control engineering.
+
+b. Signal Transformation and Processing  
+ – Absolute Value Block  
+  Theory: Takes the absolute value (magnitude) of the signal, modeled by y = |u|. This operation is fundamental when the interest lies in the magnitude regardless of the signal’s sign.
+ – Sum Block  
+  Theory: This block provides linear addition (or subtraction) of multiple signals. It is based on superposition principles found in linear system theory.
+
+c. Time and Threshold Comparison  
+ – Clock Block  
+  Theory: Provides the current simulation time at every solver step. This is critical in systems where time-dependent behaviors trigger changes.
+ – Constant Block  
+  Theory: Supplies a fixed reference value used as a threshold in the simulation.
+ – Relational Operator Block  
+  Theory: Implements logical comparison (e.g., greater than, less than) between two signals (clock vs. constant). This is essential for detecting the zero-crossing event or when the signal reaches a specific state.
+
+d. Conditional Signal Routing  
+ – Switch Block  
+  Theory: Implements condition-based signal routing. Based on the Boolean output from the relational operator, the switch selects one of two data inputs, aligning with control theory concepts of state-based decision making.
+
+e. Signal Saturation and Combination  
+ – Saturation Block  
+  Theory: Uses non-linear constraints to limit signals within a specified range. This is often required in practical control systems to prevent actuator saturation.
+ – Mux Block  
+  Theory: Combines separate scalar signals into a single vector, forming the basis for multi-channel signal representation in a unified display or further processing.
+
+f. Visualization  
+ – Scope Block  
+  Theory: Provides real-time visualization of time-series data to allow for monitoring, debugging, and analysis of system behavior.
+
+──────────────────────────────
+4. How Is It Implemented in Code?
+
+Below is the stepwise code explanation showing how each simulation step is implemented in MATLAB using the Simulink API. The code has been reorganized in blocks corresponding to the above simulation stages.
+
+──────────────────────────────
+a. Signal Generation
+
+Theory & Block:  
+• Sine Wave block produces a sine signal following:  
+  O(t) = Amp × sin(Freq × t + Phase) + Bias
+
+Code Implementation:
+--------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'SimModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add Sine Wave block for signal generation
+eng.add_block('simulink/Sources/Sine Wave', model_name + '/Sine', 'MakeNameUnique','on', nargout=0)
+--------------------------------------------------
+
+In this segment, the Sine block is added to generate the continuous sinusoidal signal.
+
+──────────────────────────────
+b. Signal Transformation and Processing
+
+Theory & Blocks:  
+• Abs block calculates y = |u| (absolute value).  
+• Sum block adds inputs, representing simple linear superposition.  
+
+Code Implementation:
+--------------------------------------------------
+# Add Abs block to compute absolute values of the sine signal
+eng.add_block('simulink/Math Operations/Abs', model_name + '/Abs', 'MakeNameUnique','on', nargout=0)
+
+# Add Sum block to combine signals (here used to pass the sine signal as one input, parameter set to "+")
+eng.add_block('simulink/Commonly Used Blocks/Sum', model_name + '/Sum', 'MakeNameUnique','on', nargout=0)
+eng.set_param(model_name + '/Sum', 'Inputs', '+', nargout=0)
+
+# Connect Sine output to Abs and Sum input
+eng.add_line(model_name, 'Sine/1', 'Abs/1', nargout=0)
+eng.add_line(model_name, 'Sine/1', 'Sum/1', nargout=0)
+--------------------------------------------------
+
+This portion of the code sets up the transformation of the original sine signal into its magnitude and adds it through the summation module.
+
+──────────────────────────────
+c. Time and Threshold Comparison
+
+Theory & Blocks:  
+• Clock block outputs the current simulation time.  
+• Constant block provides a fixed threshold.  
+• Relational Operator block compares the current time to the constant threshold (e.g., zero-crossing criteria).
+
+Code Implementation:
+--------------------------------------------------
+# Add Clock block to generate simulation time
+eng.add_block('simulink/Sources/Clock', model_name + '/Clock', 'MakeNameUnique','on', nargout=0)
+
+# Add Constant block to provide a threshold value
+eng.add_block('simulink/Sources/Constant', model_name + '/Constant', 'MakeNameUnique','on', nargout=0)
+
+# Add Relational Operator block to compare Clock and Constant values
+eng.add_block('simulink/Commonly Used Blocks/Relational Operator', model_name + '/RelOp', 'MakeNameUnique','on', nargout=0)
+
+# Connect Clock to first input of the Relational Operator and Constant to the second input
+eng.add_line(model_name, 'Clock/1', 'RelOp/1', nargout=0)
+eng.add_line(model_name, 'Constant/1', 'RelOp/2', nargout=0)
+--------------------------------------------------
+
+This part models the time-based condition using the clock and constant threshold, then establishes a switching condition via a logical comparison.
+
+──────────────────────────────
+d. Conditional Signal Routing
+
+Theory & Block:  
+• Switch block uses the relational operator’s output as control (input 2) to decide which signal to pass forward.  
+ – Input 1 comes from the Sum block (representing one signal path).  
+ – Input 3 comes from the Saturation block (providing a limited value).
+
+Code Implementation (combining the condition with the two signal options):
+--------------------------------------------------
+# Add Switch block to select the output based on the condition
+eng.add_block('simulink/Commonly Used Blocks/Switch', model_name + '/Switch', 'MakeNameUnique','on', nargout=0)
+
+# Connect the Sum output to the first data input of the Switch
+eng.add_line(model_name, 'Sum/1', 'Switch/1', nargout=0)
+# Connect the Relational Operator output (logical condition) to the control input of the Switch
+eng.add_line(model_name, 'RelOp/1', 'Switch/2', nargout=0)
+--------------------------------------------------
+
+──────────────────────────────
+e. Signal Saturation and Signal Combination
+
+Theory & Blocks:  
+• Saturation block constrains the signal to given upper and lower limits.  
+• Mux block combines the output from the Switch block and the output from the Abs block, forming a composite signal vector for analysis.
+
+Code Implementation:
+--------------------------------------------------
+# Add Saturation block to limit the signal amplitude (as a second option for the switch)
+eng.add_block('simulink/Commonly Used Blocks/Saturation', model_name + '/Saturation', 'MakeNameUnique','on', nargout=0)
+
+# Connect the Saturation block output to the third input of the Switch
+eng.add_line(model_name, 'Saturation/1', 'Switch/3', nargout=0)
+
+# Add Mux block to combine signals from Switch and Abs
+eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux', 'MakeNameUnique','on', nargout=0)
+eng.set_param(model_name + '/Mux', 'Inputs', '2', nargout=0)
+
+# Connect the Switch output and Abs output to the Mux block
+eng.add_line(model_name, 'Switch/1', 'Mux/1', nargout=0)
+eng.add_line(model_name, 'Abs/1', 'Mux/2', nargout=0)
+--------------------------------------------------
+
+Here the Saturation block and Mux block allow us to see a controlled signal (via saturation on one branch) and the unmodified absolute value on the other branch simultaneously.
+
+──────────────────────────────
+f. Visualization
+
+Theory & Block:  
+• Scope block displays the combined signal (or the resulting vector) over time for visual analysis of the simulation’s behavior.
+
+Code Implementation:
+--------------------------------------------------
+# Add Scope block to visualize the final output
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope', 'MakeNameUnique','on', nargout=0)
+
+# Connect Mux output to the Scope input for display
+eng.add_line(model_name, 'Mux/1', 'Scope/1', nargout=0)
+--------------------------------------------------
+
+In this final step, the Mux’s output is directed to the Scope block, enabling a real-time, time-domain view of the simulation results.
+
+──────────────────────────────
+Finalizing the Simulation Model
+
+After all blocks are added and interconnections have been made, the following commands are used to automatically arrange the block diagram and save the final model.
+
+Code Implementation:
+--------------------------------------------------
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save the final Simulink model
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+--------------------------------------------------
+
+──────────────────────────────
+Summary
+
+This report has provided a clear, step-by-step explanation of the simulation for accurate zero-crossing detection. It started from generating a continuous sine wave, processing it through absolute, summing, and threshold comparison blocks, then routing signals conditionally with a switch supported by saturation limiting. Finally, the processed signals are combined and visualized using a Mux and Scope block. Each simulation module is supported by theoretical and mathematical models (signal sine generation, absolute value operation, logical comparisons, and state-based switching) and the code segments reflect these conceptual steps through explicit block additions and line connections within the MATLAB/Simulink environment.
+
+No further clarifications are provided as per the project guidelines.

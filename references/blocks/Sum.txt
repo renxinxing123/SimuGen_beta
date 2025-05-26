@@ -1,0 +1,23 @@
+## Sum
+
+**Path:** `'simulink/Commonly Used Blocks/Sum'`
+
+**Parameters:**
+
+- **`Inputs` (Input Configuration):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the operation for each input port using **+** and **-** characters. The number of **+** and **-** symbols determines the number of input ports. You may use **|** as a spacer between groups.
+
+**Ports:**
+
+- **Input Ports:**  
+  The number of input ports is determined by the parameter **`Inputs`**. Each input port is sequentially numbered (e.g., if **Inputs** is `+++---`, there are 6 input ports named **1** through **6**) and has no visual label.
+  
+- **Output Port:**  
+  - **Port Name:** **1**
+  
+**Shape and Colour:**
+
+- Please note that there are **two** shapes of Sum, one is **round**, another one is **retangular**. The color of Sum is **all white**.
+  
+ ---

@@ -1,0 +1,205 @@
+## eng.add_block
+
+**Name:** eng.add_block  
+**Description:**  
+Adds a copy of a block from a library or an existing model to a specified destination within a model using MATLAB Engine. This function supports options such as ensuring a unique block name and specifying copy behaviors. Every call to this function must end with `, nargout=0` to indicate that no output is expected.  
+**Applicable Situations:**  
+- Adding blocks from Simulink libraries or models into a destination model.  
+- Duplicating blocks (e.g., input port blocks) within a subsystem.  
+- Programmatically setting block parameters upon creation.
+
+**Parameters:**
+- `source`:
+  - **Type:** `string`
+  - **Description:** The path to the block to be copied. This can be either:
+    - A library block path (e.g., `'simulink/Math Operations/Gain'`), or  
+    - A model block path (e.g., `'vdp/Mu'`).
+- `dest`:
+  - **Type:** `string`
+  - **Description:** The full block path in the destination model where the new block will be placed. This path must include the desired block name.
+- `MakeNameUnique` *(optional, Name-Value Pair)*:
+  - **Type:** `string`
+  - **Description:** When set to `'on'`, ensures that the destination block name is unique within the model. If a block with the specified name exists, MATLAB Engine automatically appends a number to the name to create a unique identifier.
+  - **Enum:** `'on'`
+  - **Default:** Not specified.
+- `CopyOption` *(optional, Name-Value Pair)*:
+  - **Type:** `string`
+  - **Description:** Specifies the copying behavior for the block:
+    - `'nolink'`: Copies the block from the library without maintaining a link to the library block.
+    - `'duplicate'`: Duplicates an input port block in a subsystem so that the new block retains the same port number as the source block (without adding an extra input port to the parent subsystem).
+  - **Enum:** `'nolink'` | `'duplicate'`
+  - **Default:** Not specified.
+- **Additional Name-Value Pairs:**
+  - **Description:** Additional block parameters and properties can be set using extra Name,Value pairs.
+
+**Required:**  
+`source`, `dest`
+
+**Result:**  
+No return value. Every function call must include `, nargout=0` to indicate that no output is expected.
+
+**Notes:**
+- **Model Loading:** When copying blocks from libraries or other models, ensure that the destination model is loaded or open before calling this function.
+- **Unique Naming:** Using `'MakeNameUnique','on'` automatically adjusts the destination block name if a naming conflict is detected.
+- **Copying Input Ports:** The `'duplicate'` option enables you to replicate an input port block so that the duplicate retains the same port number as the source, allowing signal branching without modifying the parent subsystem's port configuration.
+- **Parameter Settings:** Additional block parameter settings can be provided via Name,Value pairs during block creation.
+- **MATLAB Engine Session:** Before using this function, start the MATLAB Engine session with:
+  ```python
+  eng = matlab.engine.start_matlab();
+  ```
+- **No Return Value:** All calls to this function must end with `, nargout=0`.
+
+**Examples:**
+
+The following example demonstrates how to create a new system called `Twobus`, open it, and then add a three-phase transmission line block from a library:
+
+```python
+eng = matlab.engine.start_matlab();
+
+model_name = 'Twobus';
+eng.new_system(model_name, nargout=0);
+eng.open_system(model_name, nargout=0);
+
+eng.add_block('ee_lib/Passive/Lines/Transmission Line (Three-Phase)', model_name + '/Transmission Line', nargout=0);
+```
+
+---
+## eng.set_param
+
+**Name:** eng.set_param  
+**Description:**  
+Sets one or more Simulink® parameter values for a target object using MATLAB Engine. The target object can be a model, subsystem, library, block, line, port, or bus element. Multiple parameters can be set in a single function call by providing name-value pairs, which improves efficiency by evaluating the target object only once. Every call to this function must end with `, nargout=0` to indicate that no output is expected.  
+**Applicable Situations:**  
+- Setting parameter values for Simulink models, subsystems, and blocks.  
+- Changing model configuration parameters (e.g., solver type, stop time).  
+- Adjusting properties such as block position, size, and other attributes.
+
+**Parameters:**
+- `object`:
+  - **Type:** `string`, `char`, or `numeric scalar`
+  - **Description:** The target object whose parameters will be set. This can be specified as a model name, block path, or handle.
+- `parameter1`, `parameter2`, ...:
+  - **Type:** `string` or `char`
+  - **Description:** The name(s) of the parameter(s) to be set. Parameter names are case-sensitive.
+- `value1`, `value2`, ...:
+  - **Type:** Depends on the parameter type
+  - **Description:** The new value(s) to assign to the corresponding parameter(s). Values are often provided as strings, but may also be numeric or arrays depending on the parameter requirements.
+
+**Required:**  
+At least one parameter and its corresponding value must be provided.
+
+**Result:**  
+No return value. Every function call must include `, nargout=0` to indicate that no output is expected.
+
+**Notes:**
+- **Multiple Parameters:** You can set several parameters in a single call by providing multiple name-value pairs.
+- **Object Specification:** The way you specify the target object (by name, path, or handle) depends on its type. For instance, for a block, you can use its full block path or handle.
+- **Efficiency:** Setting multiple parameters in one function call is more efficient than making separate calls for each parameter.
+- **MATLAB Engine Session:** Ensure that MATLAB Engine is started before calling this function, for example:
+  ```python
+  eng = matlab.engine.start_matlab();
+  ```
+- **No Return Value:** All calls must end with `, nargout=0`.
+
+**Examples:**
+
+_Set block parameter values using a block path:_
+```python
+eng = matlab.engine.start_matlab();
+
+mdl = 'slexAircraftExample';
+eng.load_system(mdl, nargout=0);
+
+block_path = mdl + '/Controller/Alpha-sensor Low-pass Filter';
+eng.set_param(block_path, 'Numerator', '1.2', 'Denominator', '[0.8*Tal,1]', nargout=0);
+```
+
+_Set model configuration parameters:_
+```python
+eng = matlab.engine.start_matlab();
+
+eng.load_system('f14', nargout=0);
+eng.set_param('f14', 'Solver', 'ode15s', 'StopTime', '3000', nargout=0);
+```
+
+---
+## eng.add_line
+
+**Name:** eng.add_line  
+**Description:**  
+Adds a line to a Simulink® model or subsystem using MATLAB Engine. The line can be created by connecting an output port to an input port—optionally using automatic routing—or by specifying a series of (x,y) coordinate points to define a custom path. Every call to this function must end with `, nargout=0` to indicate that no output is expected.  
+**Applicable Situations:**  
+- Connecting blocks via their ports within a Simulink model or subsystem.  
+- Creating branched lines or using autorouting options to avoid overlapping other elements.  
+- Drawing custom lines using explicit (x,y) coordinates.
+
+**Parameters:**
+- `sys`:
+  - **Type:** `string`
+  - **Description:** The model or subsystem in which to add the line. Specify this as a character vector (e.g., `'myModel'` or `'myModel/Subsystem'`).
+
+_For connecting ports:_
+- `out`:
+  - **Type:** `string`, `char`, or port handle (or an array of port designators)
+  - **Description:** The source output port from which the line will originate. This can be specified as a block name with a slash and port number (e.g., `'BlockName/1'`), as a port handle, or as an array of such designators.
+- `in`:
+  - **Type:** `string`, `char`, or port handle (or an array of port designators)
+  - **Description:** The destination input port where the line will be connected. This can be specified as a block name with a slash and port number (e.g., `'BlockName/1'`), as a port handle, or as an array of such designators.
+- `autorouting` *(optional, Name-Value Pair)*:
+  - **Type:** `string`
+  - **Description:** Specifies the automatic routing option for the line:
+    - `'off'` (default): No automatic routing.
+    - `'on'`: Enable automatic routing.
+    - `'smart'`: Use smart autorouting to optimize the layout by taking advantage of blank canvas space and avoiding overlaps.
+
+_Alternatively, for drawing a line using coordinates:_
+- `points`:
+  - **Type:** `matrix`
+  - **Description:** A numeric matrix specifying the (x,y) coordinates for each point along the line. The matrix must have at least 2 rows and 2 columns. Coordinates are relative to the upper-left corner of the Simulink Editor canvas before any resizing. If either end of the drawn line is within five pixels of a port, the function will automatically connect the line to that port.
+
+**Required:**  
+- For port-based connections: `sys`, `out`, `in`  
+- For coordinate-based drawing: `sys`, `points`
+
+**Result:**  
+No return value. Every function call must include `, nargout=0` to indicate that no output is expected.
+
+**Notes:**
+- **Port Connectivity:** When connecting ports, ensure that the output port is not already connected and that the ports are compatible.
+- **Automatic Routing:** Using the `'autorouting'` option helps in routing lines neatly around other blocks.
+- **Coordinate Lines:** The points-based syntax allows for custom routing; if an endpoint is near a port, the line will automatically snap to it.
+- **MATLAB Engine Session:** Before using this function, start the MATLAB Engine session with:
+  ```python
+  eng = matlab.engine.start_matlab();
+  ```
+- **No Return Value:** All calls must end with `, nargout=0`.
+
+**Examples:**
+
+_Connecting blocks using port numbers:_
+```python
+eng = matlab.engine.start_matlab();
+
+eng.new_system('myModel', nargout=0);
+eng.open_system('myModel', nargout=0);
+
+eng.add_block('simulink/Commonly Used Blocks/Constant', 'myModel/Constant', nargout=0);
+eng.set_param('myModel/Constant', 'Position', [140,80,180,120], nargout=0);
+
+eng.add_block('simulink/Commonly Used Blocks/Gain', 'myModel/Gain', nargout=0);
+eng.set_param('myModel/Gain', 'Position', [220,80,260,120], nargout=0);
+
+% Connect the output port of the Constant block to the input port of the Gain block.
+eng.add_line('myModel', 'Constant/1', 'Gain/1', nargout=0);
+```
+
+_Connecting blocks with autorouting:_
+```python
+eng = matlab.engine.start_matlab();
+
+eng.open_system('vdp', nargout=0);
+% Connect the output port of block 'x1' to the input port of block 'Scope1' with autorouting enabled.
+eng.add_line('vdp', 'x1/1', 'Scope1/1', 'autorouting', 'on', nargout=0);
+```
+
+---

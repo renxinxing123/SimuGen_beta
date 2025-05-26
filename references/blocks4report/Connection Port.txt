@@ -1,0 +1,18 @@
+## Connection Port
+
+**Path:** `'simulink/Signal Routing/Connection Port'`
+
+**Description:**  
+The Connection Port block is a Physical Modeling Connection Port for subsystems. It provides a dedicated connection point in your physical models.
+
+**Parameters:**
+
+- **`Port` (Input Port Number):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the sequential position of this input within the subsystem. This parameter defines which input port the block represents. This parameter do not refer to the number of the ports of the block 'connection port' itself, the 'connection port' only has one input port, but this parameter defines which input port the block represents within the subsystem.
+
+**Ports:**
+
+- **Input/Output Port:** **RConn1** (no visual label)
+
+---

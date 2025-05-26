@@ -1,0 +1,156 @@
+Below is the comprehensive report that addresses each of the four key questions by integrating both the theoretical analysis and the complete code explanation.
+
+──────────────────────────────
+1. What Is the Simulation About?
+──────────────────────────────
+The simulation models a 2‐Bus Loadflow in a three‐phase power system network. Its purpose is to represent and analyze the steady‐state power flow in a simplified electric network with two busbars. One bus operates as a swing bus (maintaining voltage at nominal value) and the other as a PV bus (regulating voltage to 1.025 per unit and delivering 80 MW active power). In addition, a PQ load is connected to the network. The system is designed to show how voltage regulation, active/reactive power balancing, and network interplay are managed by setting appropriate initial conditions using a load-flow analysis solver. The real‐world analogy is a power grid subsection where generation (including the voltage controlling swing and PV buses) is distributed over a transmission line with connected loads.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?
+──────────────────────────────
+Without referring to the code implementation details, the simulation is structured in the following key stages:
+
+A. Model Initialization and Block Placement  
+ • Define the overall simulation system and introduce the individual blocks (the load flow sources, loads, busbars, transmission line, solver configuration, and ground references).  
+ • The swing bus, PV bus, and PQ load blocks replicate different bus behaviors: the swing bus maintains a fixed voltage and supplies the balance of power, the PV bus fixes the voltage magnitude while providing a certain active power, and the PQ load consumes power.
+
+B. Network Configuration and Interconnection  
+ • Establish the physical interconnections among the blocks by linking the busbars, loads, source blocks, and transmission line.  
+ • Busbars gather data (voltage, phase, power flows) post-simulation; the transmission line block uses a lumped-parameter π model to simulate physical transmission behavior.
+
+C. Solver Environment and Reference Setup  
+ • Add a Solver Configuration block and Electrical Reference (ground) blocks to provide the necessary network environment, ensuring that all electrical ports have a defined ground reference.  
+ • These blocks ensure proper handling of indexed sinusoidal state variables, tolerance settings, and convergence during load-flow calculations.
+
+D. Simulation Run and Result Extraction  
+ • Once the blocks are interconnected (including proper designation of nodes in the busbars), the simulation runs.  
+ • Immediately after execution, the busbar blocks display tags that summarize load-flow initialization results, reflecting the converged values of voltages, phase angles, as well as active and reactive power flows.
+
+──────────────────────────────
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?
+──────────────────────────────
+A. Model Initialization and Block Placement  
+ • Theory & Modeling:  
+  – The Load Flow Source block is based on the concept of ac power source modelling in three-phase systems. It uses sinusoidal voltage waveforms (magnitude and phase), which are core to sinusoidal steady-state analysis.  
+  – The modeling of a swing bus, PV bus, and PQ bus is grounded in power system load-flow theory, where loads (PQ) and controlled voltage generators (PV and swing) are distinguished by their different control objectives.  
+  – The blocks incorporate principles from electrical circuit theory and system dynamics to replicate network behavior at steady state.
+
+B. Network Configuration and Interconnection  
+ • Theory & Modeling:  
+  – The interconnection of blocks follows Kirchhoff’s laws ensuring conservation of energy and charge.  
+  – The busbars can be seen as nodes whose voltage and phase data are determined by solving a set of simultaneous nonlinear algebraic equations typical in load-flow analysis.  
+  – The Transmission Line block employs a lumped-parameter π-model, using Clarke’s transformation to account for parameters such as resistance, inductance, and capacitance across phases. This reflects distributed parameter modeling in power engineering.
+
+C. Solver Environment and Reference Setup  
+ • Theory & Modeling:  
+  – The Solver Configuration block anchors the simulation within a numerical environment that handles sinusoidal dynamics and network constraints. This involves methods from numerical analysis (e.g., tolerance settings, index reduction methods) to ensure convergence of the nonlinear load flow equations.  
+  – The Electrical Reference (ground) establishes a zero voltage potential, an essential boundary condition in circuit theory and electrical network analysis.
+
+D. Simulation Run and Result Extraction  
+ • Theory & Modeling:  
+  – The steady-state load flow is achieved by solving the nonlinear power flow equations, ensuring that active and reactive power balance at every node.  
+  – The output parameters on the busbar blocks (voltage magnitudes, phase angles, active and reactive powers) are based on mathematical formulations from AC power system analysis.  
+  – The initialization solver determines internal parameters (voltage amplitudes and phases) by matching the block specifications with numerical solutions of the network equations.
+
+──────────────────────────────
+4. How Is It Implemented in Code?
+──────────────────────────────
+The simulation is built programmatically using MATLAB’s Simscape Electrical libraries. The code is organized in a stepwise manner that mirrors the theoretical setup described above. Below, each simulation stage is paired with the corresponding code segments and explanation.
+
+──────────────────────────────
+A. Model Initialization and Block Placement
+──────────────────────────────
+The code begins by launching MATLAB and creating a new simulation system. Then, it adds the necessary blocks:
+ • Load Flow Source blocks for Swing bus and PV bus.
+ • Wye-Connected Load blocks for the PQ load and another load.
+ • Busbars to represent the two bus nodes.
+ • A Transmission Line block for the power line.
+ • Solver and Ground (Electrical Reference) blocks to set environmental conditions.
+
+Code Example:
+--------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'my_simulation'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add blocks for sources and loads, creation of busbars and transmission line
+eng.add_block('ee_lib/Sources/Load Flow Source', model_name + '/Swing_bus', 'MakeNameUnique','on', nargout=0)
+eng.add_block('ee_lib/Passive/RLC Assemblies/Wye-Connected Load', model_name + '/Load_1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver_Configuration', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical_Reference_1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('ee_lib/Connectors & References/Busbar', model_name + '/Busbar1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('ee_lib/Passive/Lines/Transmission Line (Three-Phase)', model_name + '/Transmission_Line', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical_Reference_2', 'MakeNameUnique','on', nargout=0)
+eng.add_block('ee_lib/Passive/RLC Assemblies/Wye-Connected Load', model_name + '/PQ_load', 'MakeNameUnique','on', nargout=0)
+eng.add_block('ee_lib/Connectors & References/Busbar', model_name + '/Busbar2', 'MakeNameUnique','on', nargout=0)
+eng.add_block('ee_lib/Sources/Load Flow Source', model_name + '/PV_bus', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical_Reference_3', 'MakeNameUnique','on', nargout=0)
+--------------------------------------------------
+Explanation:  
+Each block is added from its respective library path. The use of “MakeNameUnique” allows a unique instance in the model. This step corresponds to mocking up the power system elements (swing bus, load, PV bus) which represent the physical buses and loads in the network.
+
+──────────────────────────────
+B. Network Configuration and Interconnection
+──────────────────────────────
+The system’s topology is established by connecting the various ports. The busbars’ node configurations (n_nodes = 3) are set, and physical lines are defined between swing bus, loads, busbars, and the transmission line.
+
+Code Example:
+--------------------------------------------------
+# Set Busbar parameters for port configuration (n_nodes = 3)
+eng.set_param(model_name + '/Busbar1', 'n_nodes', '3', nargout=0)
+eng.set_param(model_name + '/Busbar2', 'n_nodes', '3', nargout=0)
+
+# Add lines (physical interconnections based on simulation schematic)
+eng.add_line(model_name, 'Swing_bus/LConn1', 'Busbar1/LConn1', nargout=0)
+eng.add_line(model_name, 'Load_1/LConn1', 'Busbar1/LConn2', nargout=0)
+eng.add_line(model_name, 'Busbar1/RConn1', 'Transmission_Line/LConn1', nargout=0)
+eng.add_line(model_name, 'Transmission_Line/RConn1', 'Busbar2/LConn1', nargout=0)
+eng.add_line(model_name, 'PQ_load/LConn1', 'Busbar2/LConn2', nargout=0)
+eng.add_line(model_name, 'Busbar2/RConn1', 'PV_bus/LConn1', nargout=0)
+--------------------------------------------------
+Explanation:  
+Here, the simulation defines the network’s connectivity without delving into low-level signal operations. The ports (e.g., LConn1, LConn2, RConn1) correspond to the theoretical nodes where power flows are computed based on Kirchhoff’s laws. The Busbar block, when configured with 3 nodes, ensures that the load-flow data (voltage, phase, power) are correctly aggregated.
+
+──────────────────────────────
+C. Solver Environment and Reference Setup
+──────────────────────────────
+This stage connects the blocks representing the electrical ground and synchronization with the solver:
+ • Electrical Reference blocks provide the ground (zero voltage reference).
+ • The Solver Configuration block is linked to the network to apply the proper initial conditions and numerical settings.
+
+Code Example:
+--------------------------------------------------
+eng.add_line(model_name, 'Swing_bus/RConn1', 'Electrical_Reference_1/LConn1', nargout=0)
+eng.add_line(model_name, 'PQ_load/RConn1', 'Electrical_Reference_2/LConn1', nargout=0)
+eng.add_line(model_name, 'PV_bus/RConn1', 'Electrical_Reference_3/LConn1', nargout=0)
+eng.add_line(model_name, 'Transmission_Line/LConn2', 'Electrical_Reference_1/LConn1', nargout=0)
+eng.add_line(model_name, 'Transmission_Line/RConn2', 'Electrical_Reference_2/LConn1', nargout=0)
+eng.add_line(model_name, 'Load_1/RConn1', 'Electrical_Reference_1/LConn1', nargout=0)
+eng.add_line(model_name, 'Solver_Configuration/RConn1', 'Electrical_Reference_1/LConn1', nargout=0)
+--------------------------------------------------
+Explanation:  
+Connecting these lines ensures that every block that acts as a source or load has a proper electrical reference. This is essential from a theoretical standpoint to set boundary conditions and guarantee that the load-flow equations converge properly.
+
+──────────────────────────────
+D. Simulation Run and Result Extraction
+──────────────────────────────
+The final steps arrange the system visually and save the simulation file. Running the simulation executes all load-flow calculations, whereby the busbar blocks update their tags with terminal voltages, phase differences (reflecting net power flow), and active/reactive powers.
+
+Code Example:
+--------------------------------------------------
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+--------------------------------------------------
+Explanation:  
+The code arranges the blocks neatly (improving readability) and saves the complete network as a Simulink model (.slx file). Post-simulation, the busbar tags, which include theoretical load flow results, demonstrate that the model satisfied the power balance and voltage regulation conditions as expected from power system theory.
+
+──────────────────────────────
+Conclusion
+──────────────────────────────
+This report outlined the simulation of a 2-Bus Loadflow power system by explaining its purpose, stepwise process, associated theoretical background, and detailed code implementation. Each simulation step—from model initialization and block placement to network interconnection, environmental setup, and simulation execution—is directly linked to practical power system analysis and numerical solution methodologies taught in control theory and electrical network modeling.

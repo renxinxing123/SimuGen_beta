@@ -1,0 +1,11 @@
+## Electrical Reference
+
+**Path:** `'fl_lib/Electrical/Electrical Elements/Electrical Reference'`
+
+**Ports:**
+
+- **Input/Output Port:** **LConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Voltage is zero.
+
+---

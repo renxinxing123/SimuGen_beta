@@ -1,0 +1,17 @@
+## Memory
+
+**Path:** `'simulink/Discrete/Memory'`
+
+**Description:**  
+The Memory block holds and delays its input by one major integration time step. When placed in an iterator subsystem, it holds and delays its input by one iteration. This block accepts continuous and discrete signals. The block accepts one input and generates one output. Each signal can be a scalar, vector, matrix, or N-D array. If the input is non-scalar, the block holds and delays all elements of the input by the same time step.
+
+**Ports:**
+
+- **Input port:**  
+  - **Port Name:** **1**
+  - **Note:** **Input signal**
+
+- **Output port:**  
+  - **Port Name:** **1**
+  - **Note:** **Output is the input from the previous time step.**
+---

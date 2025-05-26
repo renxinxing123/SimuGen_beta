@@ -1,0 +1,173 @@
+Below is the complete technical report that addresses the four key questions as required.
+
+─────────────────────────────  
+1. Simulation Overview  
+─────────────────────────────
+
+The simulation is focused on demonstrating accurate zero-crossing detection, an essential feature in Simulink® for handling abrupt changes in models without the need to reduce solver time steps. In this context, zero-crossing detection is used to capture instances where a signal (for example, a sine wave) passes through zero. This ability is crucial for handling events like switching and saturating in a control system or physical process. The simulation uses a sine wave as the primary source, processes its absolute value, and uses a switch along with relational logic to form a composite signal. The model mimics the behavior of a real-world signal processing chain in systems that require precise detection and handling of discontinuities (e.g., power electronics or digital control systems).
+
+─────────────────────────────  
+2. Main Simulation Steps  
+─────────────────────────────
+
+The simulation is structured in the following sequential modules:
+
+A. Signal Generation  
+• A sine wave block generates a time-varying sinusoidal signal.  
+
+B. Signal Pre-processing  
+• An absolute value block computes the modulus of the sine wave, preparing the signal for threshold detection.  
+
+C. Triggering and Timing  
+• A clock block provides the simulation time, while a constant block provides a possible threshold or reference value.  
+• A relational operator block compares the simulation time from the clock block with the constant threshold, essentially detecting when the time (or another relevant signal) meets a given condition.
+
+D. Signal Routing  
+• A switch block uses the output of the relational operator as a control signal to select between different signal sources.  
+• A saturation block limits the amplitude of the sine wave to prevent unrealistic overshoots.
+  
+E. Signal Combination and Visualization  
+• A mux block bundles several signals into one vector.
+• Finally, a scope block displays the resulting combined signal for visual analysis.
+
+─────────────────────────────  
+3. Theoretical Knowledge and Mathematical Modeling in Each Step  
+─────────────────────────────
+
+A. Signal Generation – Sine Wave  
+• Theory: The block uses the sine function (O(t) = Amp * sin(Freq * t + Phase) + Bias) which is foundational in signal processing.  
+• Modeling: The behavior of periodic signals is represented mathematically using trigonometric functions. This underpins many simulations in physics and engineering where time-varying phenomena are modeled.
+
+B. Signal Pre-processing – Absolute Value Operation  
+• Theory: The absolute value function converts negative values to their positive equivalents.  
+• Modeling: Mathematically, |u| ensures non-negative representation of the signal, which is important when the direction of the signal is less critical than its magnitude (for example, in rectification or envelope detection).
+
+C. Triggering and Timing – Clock, Constant, and Relational Operator  
+• Clock:  
+  – Theory: Time as a function of simulation steps; it is critical for event-triggering in dynamic systems.  
+  – Modeling: Represents simulation time, allowing for synchronization and discrete event detection.  
+• Constant:  
+  – Theory: Provides a static threshold value that is used as a reference.  
+  – Modeling: Acts as a bias or threshold level in decision-making mathematical functions.  
+• Relational Operator:  
+  – Theory: Implements binary logic tests (e.g., ≤, ≥) to compare signals.  
+  – Modeling: Uses discontinuous (if-then) logic functions to simulate switching events when thresholds are reached.
+
+D. Signal Routing – Switch and Saturation  
+• Switch:  
+  – Theory: A logical sampler that routes one of its inputs based on a control condition.  
+  – Modeling: Captures the logical decision process that is fundamental to control systems.  
+• Saturation:  
+  – Theory: Introduces bounds to signals to simulate real-world limitations, preventing unrealistic signal values.  
+  – Modeling: Can be expressed mathematically as:  
+    y = { UpperLimit if u > UpperLimit,  
+       u if LowerLimit ≤ u ≤ UpperLimit,  
+       LowerLimit if u < LowerLimit }  
+  This non-linear function is often used in actuator models or safety limiters.
+
+E. Signal Combination and Visualization – Mux and Scope  
+• Mux:  
+  – Theory: Combines multiple scalar signals into one vector, facilitating simultaneous analysis.  
+  – Modeling: This is analogous to vector concatenation in mathematics.  
+• Scope:  
+  – Theory: Provides time-domain visualization, allowing verification of the dynamic behavior of the simulation.  
+  – Modeling: Graphical output serves as an empirical observation of theoretical signal flow and dynamics.
+
+─────────────────────────────  
+4. Code Implementation Explanation by Simulation Step  
+─────────────────────────────
+
+Below is the code implementation reorganized to reflect the stepwise structure, with inline explanations showing how each code block mirrors the theoretical and block diagram design:
+
+A. Signal Generation  
+  • Code corresponding to the Sine Wave block:
+    
+    eng.add_block('simulink/Sources/Sine Wave', model_name + '/sin', nargout=0)
+  
+  Explanation:  
+  Creates a sine wave generator block with parameters (amplitude, frequency, phase, bias) used to produce the signal O(t) = Amp * sin(Freq * t + Phase) + Bias.
+
+B. Signal Pre-processing  
+  • Code corresponding to the Abs block:
+    
+    eng.add_block('simulink/Math Operations/Abs', model_name + '/|u|', nargout=0)
+  
+  Explanation:  
+  Computes the absolute value of the sine signal, ensuring that all output values are non-negative, a step key for threshold-based decisions.
+
+C. Triggering and Timing  
+  • Clock and Constant blocks:
+    
+    eng.add_block('simulink/Sources/Clock', model_name + '/Clock', nargout=0)  
+    eng.add_block('simulink/Sources/Constant', model_name + '/5', nargout=0)
+  
+  Explanation:  
+  The Clock block provides the current time for simulation dynamics while the Constant block supplies the threshold value (here “5”, which can be interpreted as a reference level).
+
+  • Relational Operator block:
+    
+    eng.add_block('simulink/Commonly Used Blocks/Relational Operator', model_name + '/≤', nargout=0)
+  
+  Explanation:  
+  This block compares the Clock value against the constant. Mathematically, it executes a comparison (e.g., time ≤ threshold) to generate a binary output signal which is later used by the switch.
+
+D. Signal Routing  
+  • Switch Block:
+    
+    eng.add_block('simulink/Commonly Used Blocks/Switch', model_name + '/Switch', nargout=0)
+  
+  Explanation:  
+  Based on two inputs – one driven by the absolute value signal and one by the condition provided by the relational operator – the switch block decides which signal to propagate further in the simulation.
+  
+  • Saturation Block:
+    
+    eng.add_block('simulink/Commonly Used Blocks/Saturation', model_name + '/Saturation', nargout=0)
+  
+  Explanation:  
+  Limits the amplitude of the sine wave ensuring that the signal values remain within physical, specified bounds.
+
+E. Signal Combination and Visualization  
+  • Mux Block:
+    
+    eng.add_block('simulink/Commonly Used Blocks/Mux', model_name + '/Mux', nargout=0)
+    eng.set_param(model_name + '/Mux', 'Inputs', '3', nargout=0)
+  
+  Explanation:  
+  Combines three signals (the absolute value from the sine wave, the sine wave itself from saturation, and the selected output from the switch block) into one vector. This grouping aids in subsequent visualization.
+  
+  • Scope Block:
+    
+    eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope', nargout=0)
+  
+  Explanation:  
+  Displays the final simulation output vector, enabling the user to observe dynamic behavior and verify the correctness of zero-crossing detection.
+
+F. Interconnecting the Blocks  
+  The following lines of code establish the simulation data flow:
+  
+  eng.add_line(model_name, 'sin/1', '|u|/1', nargout=0)                     // Connect sine wave to absolute value  
+  eng.add_line(model_name, '|u|/1', 'Switch/1', nargout=0)                     // Absolute value to Switch (first input)  
+  eng.add_line(model_name, 'Clock/1', '≤/1', nargout=0)                       // Clock to relational operator  
+  eng.add_line(model_name, '5/1', '≤/2', nargout=0)                        // Constant to relational operator  
+  eng.add_line(model_name, '≤/1', 'Switch/2', nargout=0)                      // Relational operator to Switch control input  
+  eng.add_line(model_name, 'sin/1', 'Saturation/1', nargout=0)                  // Sine wave to Saturation  
+  eng.add_line(model_name, 'Saturation/1', 'Switch/3', nargout=0)                  // Saturation output to Switch (third input)  
+  eng.add_line(model_name, '|u|/1', 'Mux/1', nargout=0)                        // Absolute value to Mux  
+  eng.add_line(model_name, 'sin/1', 'Mux/2', nargout=0)                        // Original sine wave to Mux  
+  eng.add_line(model_name, 'Switch/1', 'Mux/3', nargout=0)                      // Switch output to Mux  
+  eng.add_line(model_name, 'Mux/1', 'Scope/1', nargout=0)                     // Muxed signal to Scope for visualization
+
+G. Finalization  
+  • Code to arrange, save, and open the simulation:
+    
+    eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)  
+    eng.save_system(model_name, model_name + '.slx', nargout=0)
+  
+  Explanation:  
+  These commands tidy up the block layout and save the model, ensuring that the simulation is ready for execution and analysis.
+
+─────────────────────────────  
+Conclusion  
+─────────────────────────────
+
+This report presents an integrated view of the simulation designed to showcase accurate zero-crossing detection. The simulation sequentially generates a sine wave, processes it through absolute value transformation, uses timed relational logic to trigger switching, and limits the signal with saturation before combining and visualizing the outputs. Each stage is rooted in well-established theoretical constructs—from trigonometric signal generation and absolute value operations to threshold-based decision logic—and is implemented in code through Simulink blocks interconnected via MATLAB’s engine interface. This provides a comprehensive synthesis of theory and implementation, facilitating both academic understanding and practical application in dynamic system simulations.

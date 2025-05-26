@@ -1,0 +1,189 @@
+Below is the comprehensive report addressing the four key questions regarding the state events simulation model (bang‐bang control example):
+
+─────────────────────────────  
+1. What Is the Simulation About?  
+─────────────────────────────  
+This simulation demonstrates how to handle state events using a bang–bang mechanism. In practical terms, it models a dynamic system subject to discontinuities in the control signal—a scenario common in systems employing on/off (bang–bang) control. The simulation represents a simplified real-world process where the switching behavior (via a Relay block) triggers state changes, and the integration of input signals (using Integrator blocks) emulates the continuous-time dynamics of the underlying physical system. Additionally, the Gain block scales the relay output before it is reintegrated, allowing us to observe limit cycles or phase-plane trajectories of a system that experiences sudden state resets or discontinuous control actions.
+
+─────────────────────────────  
+2. What Are the Main Simulation Steps?  
+─────────────────────────────  
+The overall simulation is structured into the following functional modules or steps:
+
+a. Initialization and First State Integration  
+ • A continuous signal is integrated using the first integrator to simulate the state evolution of the system.  
+ • This step represents the natural dynamics described by the differential equation dx/dt = u(t).
+
+b. State Event Handling via Relay  
+ • The output of the first integrator feeds into the Relay block.  
+ • The Relay block implements bang–bang control, switching its output between two predetermined values based on threshold crossings.  
+ • This block introduces state events; when the relay toggles, it simulates the discontinuous control action observed in many real-world systems.
+
+c. Signal Scaling through Gain  
+ • The relay’s output is then scaled by the Gain block.  
+ • This scaling adjusts the magnitude of the control signal to suit subsequent dynamic behavior, reflecting proportional control aspects.
+
+d. Second State Integration and Feedback  
+ • The scaled signal is fed into a second integrator, simulating another layer of system dynamics or state accumulation over time.  
+ • Moreover, a feedback loop is created: the output of this second integrator is connected back to the first, establishing a dynamic interplay between the states.
+
+e. Phase Plane Visualization  
+ • The outputs from the first and second integrators are plotted using an XY Graph block.  
+ • This visualization step offers insights into the phase-plane dynamics, allowing analysis of limit cycles or other state trajectories.
+
+─────────────────────────────  
+3. What Theoretical Knowledge and Mathematical Modelling Are Involved in Each Step?  
+─────────────────────────────  
+
+a. Initialization and First State Integration  
+ • Theoretical Foundations: Differential equations and numerical integration.  
+ • Mathematical Model:  
+   – The integrator uses the relationship dx/dt = u(t) with an initial condition x(t₀) = x₀.  
+   – It represents the accumulation of the input signal over time, which is a cornerstone in dynamic system analysis (e.g., physical motion under force).
+
+b. State Event Handling via Relay  
+ • Theoretical Foundations: Hybrid systems theory and discontinuous control.  
+ • Mathematical Model:  
+   – The Relay block switches its output between two discrete values when the input crosses specified thresholds.  
+   – This introduces a piecewise-constant control signal where the switching nature is akin to bang–bang control, capturing nonlinearity and hysteresis effects.
+
+c. Signal Scaling through Gain  
+ • Theoretical Foundations: Linear system theory and signal processing.  
+ • Mathematical Model:  
+   – The Gain block performs a multiplication operation: y = k·u, where k is a constant gain.  
+   – This is a linear scaling operation that adjusts the amplitude of the relay’s output to interface correctly with subsequent dynamic components.
+
+d. Second State Integration and Feedback  
+ • Theoretical Foundations: Feedback control and system dynamics.  
+ • Mathematical Model:  
+   – Similar to the first integrator, the second integrator implements dx/dt = u(t) on the scaled signal.  
+   – The feedback connection (Integrator 2 output feeding back into Integrator 1) creates a coupled system of differential equations, which can be analyzed using phase-plane techniques.
+
+e. Phase Plane Visualization  
+ • Theoretical Foundations: Dynamical systems analysis and qualitative theory of differential equations.  
+ • Mathematical Model:  
+   – The XY Graph block plots the state trajectories on a two-dimensional plane (first integrator state on the x-axis, second integrator state on the y-axis).  
+   – This representation is essential for visualizing system behaviors like limit cycles or oscillatory modes.
+
+─────────────────────────────  
+4. How Is It Implemented in Code?  
+─────────────────────────────  
+The simulation is implemented using MATLAB’s Simulink engine through a Python interface. The code below is organized to follow the simulation steps outlined above. Each section of the code corresponds to the functional module and reflects both the theoretical and implementation details:
+
+─────────────────────────────  
+a. Initialization and First State Integration  
+─────────────────────────────  
+The first integrator represents the integration of an input signal (u(t)) over time. Its dynamics follow dx/dt = u(t) with a given initial condition.
+
+Code Snippet:
+--------------------------------------------------
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+# Start MATLAB engine and create a new Simulink model
+eng = matlab.engine.start_matlab()
+model_name = 'MySimModel'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add First Integrator (Integrator 1) to simulate state evolution: dx/dt = u(t)
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Integrator 1', nargout=0)
+--------------------------------------------------
+
+Explanation:  
+This code initializes the MATLAB engine, creates a new Simulink model and adds the first Integrator block. The integrator block uses numerical methods to solve the differential equation representing the system dynamics.
+
+─────────────────────────────  
+b. State Event Handling via Relay  
+─────────────────────────────  
+The Relay block processes the integrator’s output and switches its output value when the input crosses preset thresholds.
+
+Code Snippet:
+--------------------------------------------------
+# Add Relay block which implements bang–bang control:
+eng.add_block('simulink/Discontinuities/Relay', model_name + '/Relay 1', nargout=0)
+
+# Connect the output of the first integrator to the Relay block:
+eng.add_line(model_name, 'Integrator 1/1', 'Relay 1/1', nargout=0)
+--------------------------------------------------
+
+Explanation:  
+Here, the Relay block is added to the model and the integration result from Integrator 1 is fed into it. The Relay block encapsulates the discontinuous or switching behavior, critical in simulating state events.
+
+─────────────────────────────  
+c. Signal Scaling through Gain  
+─────────────────────────────  
+After switching, the relay’s output is scaled using the Gain block.
+
+Code Snippet:
+--------------------------------------------------
+# Add Gain block to scale the output from the Relay:
+eng.add_block('simulink/Commonly Used Blocks/Gain', model_name + '/Gain', nargout=0)
+
+# Connect the Relay output to the Gain block:
+eng.add_line(model_name, 'Relay 1/1', 'Gain/1', nargout=0)
+--------------------------------------------------
+
+Explanation:  
+This section introduces a Gain block, which performs a linear scaling (y = k×u) on the relay signal, aligning with the concept of signal conditioning or proportional control in the theoretical framework.
+
+─────────────────────────────  
+d. Second State Integration and Feedback  
+─────────────────────────────  
+The scaled signal is integrated again to model an additional state variable. A feedback loop is also established by connecting the second integrator back to the first integrator.
+
+Code Snippet:
+--------------------------------------------------
+# Add Second Integrator (Integrator 2) to accumulate the scaled signal:
+eng.add_block('simulink/Commonly Used Blocks/Integrator', model_name + '/Integrator 2', nargout=0)
+
+# Connect Gain output to Integrator 2:
+eng.add_line(model_name, 'Gain/1', 'Integrator 2/1', nargout=0)
+
+# Establish the feedback loop: output of Integrator 2 affects Integrator 1 directly
+eng.add_line(model_name, 'Integrator 2/1', 'Integrator 1/1', nargout=0)
+--------------------------------------------------
+
+Explanation:  
+In this segment, the second integration represents further state evolution under the influence of the scaled control signal. The feedback connection is set up by routing the second integrator’s output back to the first integrator, forming a coupled dynamic system.
+
+─────────────────────────────  
+e. Phase Plane Visualization  
+─────────────────────────────  
+Phase-plane behavior is visualized by plotting the states from both integrators on an XY graph.
+
+Code Snippet:
+--------------------------------------------------
+# Add Phase Plane Plot (XY Graph) to visualize state trajectories:
+eng.add_block('simulink/Sinks/XY Graph', model_name + '/Phase Plane Plot', nargout=0)
+
+# Connect the integrator outputs to the XY Graph:
+eng.add_line(model_name, 'Integrator 1/1', 'Phase Plane Plot/1', nargout=0)
+eng.add_line(model_name, 'Integrator 2/1', 'Phase Plane Plot/2', nargout=0)
+--------------------------------------------------
+
+Explanation:  
+The XY Graph block is connected to the outputs of both integrators, plotting one state against the other. This visualization step is essential for exploring the phase-plane dynamics and understanding the system behavior under the influence of state events.
+
+─────────────────────────────  
+Finalizing the Model  
+─────────────────────────────  
+After setting up all blocks and connections, the model layout is arranged, and the system is saved.
+
+Code Snippet:
+--------------------------------------------------
+# Arrange the blocks neatly in the model
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save the complete model to file
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+--------------------------------------------------
+
+Explanation:  
+These final instructions tidy up the Simulink diagram and persist the model configuration to a file for further simulation and analysis. This step ensures that the model is well-organized and accessible for subsequent execution.
+
+─────────────────────────────  
+Conclusion  
+─────────────────────────────  
+The report has integrated theoretical concepts—such as numerical integration, discontinuous (bang–bang) control, linear scaling, and feedback dynamics—with the code-level implementation details. Each simulation step is directly mapped to corresponding blocks in the Simulink model, and the MATLAB engine code demonstrates how these theoretical models are concretely realized. This structured approach allows for a clear understanding of both the dynamics of the modeled system and the implementation methodology employed.

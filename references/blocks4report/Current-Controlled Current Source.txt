@@ -1,0 +1,37 @@
+## Current-Controlled Current Source
+
+**Path:** `'fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source'`
+
+**Description:**  
+The **Current-Controlled Current Source** block models a linear **current-controlled current source**, described with the following equation:
+
+```
+I2 = K * I1
+```
+
+**where**
+
+- `I2`       Output current  
+- `K`         Current gain  
+- `I1`        Current flowing from the + to the − control port  
+
+To use the block, connect the + and − ports on the left side of the block (the control ports) to the control current source. The arrow between these ports indicates the positive direction of the control current flow. The two ports on the right side of the block (the output ports) generate the output current, with the arrow between them indicating the positive direction of the output current flow.
+
+**Ports:**
+
+- **Positive control port**  
+  - **Port Name:** **LConn1**  
+  - **Note:** The port that current flow come in.
+
+- **Negative control port**  
+  - **Port Name:** **RConn1**  
+  - **Note:** The port that current flow come out.
+  
+- **Positive terminal**  
+  - **Port Name:** **LConn2**  
+  - **Note:** Electrical conserving port associated with the source positive terminal.
+  
+- **Negative terminal**  
+  - **Port Name:** **RConn2**  
+  - **Note:** Electrical conserving port associated with the source negative terminal.
+---

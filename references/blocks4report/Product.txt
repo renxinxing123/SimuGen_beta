@@ -1,0 +1,24 @@
+## Product
+
+**Path:** `'simulink/Commonly Used Blocks/Product'`
+
+**Description:**  
+Multiply or divide inputs. Choose element-wise or matrix product and specify one of the following:  
+a) * or / for each input port. For example, **/* performs the operation 'u1*u2/u3*u4'.  
+b) A scalar value specifies the number of input ports to be multiplied. For example, 2 performs the operation 'u1*u2'.
+
+If there is only one input port and the Multiplication parameter is set to Element-wise (.*), a single * or / collapses the input signal using the specified operation. However, if the Multiplication parameter is set to Matrix (*), a single * causes the block to output the matrix unchanged, and a single / causes the block to output the matrix inverse.
+
+**Parameters:**
+
+- **`Inputs` (Input Configuration):**  
+  - **Type:** `string`  
+  - **Description:** Specifies the number of input ports. The number of symbols in the `Inputs` parameter determines the number of input ports, with corresponding port names from **1** to **x** (x should be a number like 1, 2, 3, 4, 5...).
+
+**Ports:**
+
+- **Input Ports:**  
+  The number of input ports is determined by the **`Inputs`** parameter. Each input port is sequentially numbered (e.g., if **Inputs** is set to `x`, the input port names are **1** to **x**; no visual labels).
+
+- **Output Port:**  
+  - **Port Name:** **1** (no visual label)

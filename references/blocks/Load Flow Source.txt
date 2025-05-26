@@ -1,0 +1,12 @@
+## Load Flow Source
+
+**Path:** `'ee_lib/Sources/Load Flow Source'`
+
+- **RConn1:**  
+  - **Type:** Wye center
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase voltage  
+  - **Description:** Three-phase port associated with the voltage phases a, b, and c.
+---

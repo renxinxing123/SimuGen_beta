@@ -1,0 +1,17 @@
+## Wye-Connected Load
+
+**Path:** `'ee_lib/Passive/RLC Assemblies/Wye-Connected Load'`
+
+**Description:**  
+The Wye-Connected Load block models a three-phase load wired in a wye configuration. Each limb of the load can include any combination of a resistor (R), capacitor (C), and inductor (L) arranged in series or parallel. You can specify the load values either by rated power and voltage (default) or directly in terms of component values. When parameterized by rated power and voltage, initial conditions are provided as an initial voltage, voltage phase, and frequency; when specified directly, initial capacitor voltages and inductor currents must be provided. Small parasitic resistances or conductances may be added to aid numerical convergence.
+
+**Ports:**
+
+- **RConn1:**  
+  - **Type:** Electrical conserving port  
+  - **Description:** Represents the wye center (neutral point). This port is ONLY connected to ground or a solver.
+
+- **LConn1:**  
+  - **Type:** Three-phase port  
+  - **Description:** Represents the positive terminal of the three-phase source (phases a, b, and c). This port is connected to blocks EXCEPT ground or a solver.
+---

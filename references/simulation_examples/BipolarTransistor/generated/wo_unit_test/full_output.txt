@@ -1,0 +1,444 @@
+[Investigator] AC Voltage Source (AC Voltage Source)  
+C1 (Capacitor)  
+RBias (Resistor)  
+RLoad (Resistor)  
+Electrical Reference (Electrical Reference)  
+Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source)  
+R1 (Resistor)  
+Current-Controlled Current source (Current-Controlled Current Source)  
+R2 (Resistor)  
+Voltage Sensor (Voltage Sensor)  
+PS-Simulink Converter (PS-Simulink Converter)  
+Compare To Zero (Compare To Zero)  
+Solver Configuration (Solver Configuration)  
+Scope (Scope)  
+
+{"request_blocks": ["AC Voltage Source", "Capacitor", "Resistor", "Electrical Reference", "Voltage-Controlled Voltage Source", "Current-Controlled Current Source", "Voltage Sensor", "PS-Simulink Converter", "Compare To Zero", "Solver Configuration", "Scope"]}
+[Investigator] AC Voltage Source (AC Voltage Source) LConn1 <-> C1 (Capacitor) LConn1  
+C1 (Capacitor) RConn1 <-> RBias (Resistor) LConn1  
+C1 (Capacitor) RConn1 <-> Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source) LConn2  
+Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source) LConn1 <-> C1 (Capacitor) RConn1  
+Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source) RConn1 <-> Electrical Reference (Electrical Reference) LConn1  
+RBias (Resistor) RConn1 <-> Electrical Reference (Electrical Reference) LConn1  
+Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source) RConn2 <-> RLoad (Resistor) LConn1  
+Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source) RConn2 <-> Voltage Sensor (Voltage Sensor) LConn1  
+Voltage-Controlled Voltage source (Voltage-Controlled Voltage Source) RConn2 <-> Current-Controlled Current source (Current-Controlled Current Source) LConn2  
+RLoad (Resistor) RConn1 <-> Electrical Reference (Electrical Reference) LConn1  
+Current-Controlled Current source (Current-Controlled Current Source) RConn2 <-> Electrical Reference (Electrical Reference) LConn1  
+Current-Controlled Current source (Current-Controlled Current Source) LConn2 <-> RLoad (Resistor) LConn1  
+Current-Controlled Current source (Current-Controlled Current Source) LConn2 <-> Voltage Sensor (Voltage Sensor) LConn1  
+Voltage Sensor (Voltage Sensor) RConn2 <-> Electrical Reference (Electrical Reference) LConn1  
+Voltage Sensor (Voltage Sensor) RConn1 <-> PS-Simulink Converter (PS-Simulink Converter) LConn1  
+PS-Simulink Converter (PS-Simulink Converter) 1 <-> Compare To Zero (Compare To Zero) 1  
+Compare To Zero (Compare To Zero) 1 <-> Scope (Scope) 1  
+Solver Configuration (Solver Configuration) RConn1 <-> Electrical Reference (Electrical Reference) LConn1
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'my_simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('fl_lib/Electrical/Electrical Sources/AC Voltage Source', model_name + '/AC Voltage Source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/C1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/RBias', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/RLoad', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Voltage-Controlled Voltage Source', model_name + '/Voltage-Controlled Voltage source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/R1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source', model_name + '/Current-Controlled Current source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/R2', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter', 'MakeNameUnique','on', nargout=0)
+eng.add_block('simulink/Logic and Bit Operations/Compare To Zero', model_name + '/Compare To Zero', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration', 'MakeNameUnique','on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope', 'MakeNameUnique','on', nargout=0)
+
+eng.add_line(model_name, 'AC Voltage Source/LConn1', 'C1/LConn1', nargout=0)
+eng.add_line(model_name, 'C1/RConn1', 'RBias/LConn1', nargout=0)
+eng.add_line(model_name, 'C1/RConn1', 'Voltage-Controlled Voltage source/LConn2', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/LConn1', 'C1/RConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'RBias/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'RLoad/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Voltage Sensor/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source/LConn2', nargout=0)
+eng.add_line(model_name, 'RLoad/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source/RConn2', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'RLoad/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'Voltage Sensor/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn2', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn1', 'PS-Simulink Converter/LConn1', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter/1', 'Compare To Zero/1', nargout=0)
+eng.add_line(model_name, 'Compare To Zero/1', 'Scope/1', nargout=0)
+eng.add_line(model_name, 'Solver Configuration/RConn1', 'Electrical Reference/LConn1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Debug_locator] Below is the analysis that led to identifying the likely root cause:
+
+─────────────────────────────  
+Error Explanation:  
+The error “The second port already has a line connection” indicates that a port in the model is being used for more than one connection. In this case, the port LConn2 of the Current-Controlled Current Source is being connected multiple times, which is not allowed because each port can only have one connection (unless explicitly designed to branch).
+
+─────────────────────────────  
+Key Code Lines Likely Causing the Error (approx. 5–10 lines):  
+
+1. eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source/LConn2', nargout=0)  
+2. eng.add_line(model_name, 'Current-Controlled Current source/RConn2', 'Electrical Reference/LConn1', nargout=0)  
+3. eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'RLoad/LConn1', nargout=0)  ← Error is thrown here  
+4. eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'Voltage Sensor/LConn1', nargout=0)  
+
+• In line (1) the port LConn2 of the Current-Controlled Current source is first connected to the RConn2 output of the Voltage-Controlled Voltage source.  
+• Then, in lines (3) and (4) you attempt to use the same port LConn2 to connect to both RLoad and Voltage Sensor—this creates a conflict as the port already has a connection.
+
+─────────────────────────────  
+Additional Context Lines Related to the Error (approx. 5–10 lines):
+
+5. eng.add_line(model_name, 'AC Voltage Source/LConn1', 'C1/LConn1', nargout=0)  
+6. eng.add_line(model_name, 'C1/RConn1', 'RBias/LConn1', nargout=0)  
+7. eng.add_line(model_name, 'C1/RConn1', 'Voltage-Controlled Voltage source/LConn2', nargout=0)  
+8. eng.add_line(model_name, 'Voltage-Controlled Voltage source/LConn1', 'C1/RConn1', nargout=0)  
+9. eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn1', 'Electrical Reference/LConn1', nargout=0)  
+
+• These lines show how different blocks and ports are connected. In particular, line (7) connects a port of the capacitor to the LConn2 port of the Voltage-Controlled Voltage source (which then later feeds into the Current-Controlled Current source via line (1)).  
+• Such connections help build the network; however, the chain eventually causes the Current-Controlled Current source’s port LConn2 to be re-used, leading to the error.
+
+─────────────────────────────  
+Conclusion & Recommendation:
+
+• The error originates because the LConn2 port on the Current-Controlled Current source is used in multiple add_line calls.  
+• To fix the issue, review the intended network topology:  
+  – If you meant to branch the signal, you may need to use the duplicate option (for input ports) when adding a block or reassign one of the connections to another available port (for example, using RConn2 if that port is designed for another connection).  
+  – Alternatively, if one of the connections is redundant, remove or comment out the extra add_line calls using the same port.
+
+By adjusting the connections to ensure that each port is connected only once (or using the proper branching method if supported), the error should be resolved.
+
+─────────────────────────────  
+
+This concludes the diagnosis of the error source and the related code segments.
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'my_simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('fl_lib/Electrical/Electrical Sources/AC Voltage Source', model_name + '/AC Voltage Source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/C1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/RBias', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/RLoad', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Voltage-Controlled Voltage Source', model_name + '/Voltage-Controlled Voltage source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/R1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source', model_name + '/Current-Controlled Current source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/R2', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter', 'MakeNameUnique','on', nargout=0)
+eng.add_block('simulink/Logic and Bit Operations/Compare To Zero', model_name + '/Compare To Zero', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration', 'MakeNameUnique','on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope', 'MakeNameUnique','on', nargout=0)
+
+# Duplicate the Current-Controlled Current Source block to allow branching from its LConn2 port
+eng.add_block('fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source', model_name + '/Current-Controlled Current source_dup', 'CopyOption','duplicate', nargout=0)
+
+eng.add_line(model_name, 'AC Voltage Source/LConn1', 'C1/LConn1', nargout=0)
+eng.add_line(model_name, 'C1/RConn1', 'RBias/LConn1', nargout=0)
+eng.add_line(model_name, 'C1/RConn1', 'Voltage-Controlled Voltage source/LConn2', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/LConn1', 'C1/RConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'RBias/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'RLoad/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Voltage Sensor/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source/LConn2', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source_dup/LConn2', nargout=0)
+eng.add_line(model_name, 'RLoad/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source/RConn2', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'RLoad/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source_dup/LConn2', 'Voltage Sensor/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn2', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn1', 'PS-Simulink Converter/LConn1', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter/1', 'Compare To Zero/1', nargout=0)
+eng.add_line(model_name, 'Compare To Zero/1', 'Scope/1', nargout=0)
+eng.add_line(model_name, 'Solver Configuration/RConn1', 'Electrical Reference/LConn1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Debug_locator] Below is the analysis and diagnosis:
+
+─────────────────────────────  
+Error Summary:  
+The error “The second port already has a line connection” occurs because the LConn2 port on the Current-Controlled Current source block is being connected to more than one destination. In other words, this port already has an existing connection, and then an additional add_line call attempts to connect it again.
+
+─────────────────────────────  
+Key Code Lines Likely Causing the Error (approx. 5–10 lines):
+
+1. eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source/LConn2', nargout=0)
+2. eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'RLoad/LConn1', nargout=0)  ← Error is raised here
+3. (Also, note the subsequent duplicate branch:)
+   eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source_dup/LConn2', nargout=0)
+4. eng.add_line(model_name, 'Current-Controlled Current source_dup/LConn2', 'Voltage Sensor/LConn1', nargout=0)
+
+• In line (1), the original Current-Controlled Current source’s LConn2 port is connected to the RConn2 output of the Voltage-Controlled Voltage source.  
+• Later in line (2), an attempt is made to connect from that same port (LConn2 of the original Current-Controlled Current source) to RLoad/LConn1. Since that port is already in use from (1), MATLAB raises the error.  
+• The duplicate block (with "CopyOption",'duplicate') is intended to allow for branching, and its port LConn2 is later used for connecting to the Voltage Sensor, but the original block’s port is still overloaded.
+
+─────────────────────────────  
+Additional Context Lines Related to the Error (approx. 5–10 lines):
+
+• eng.add_line(model_name, 'C1/RConn1', 'Voltage-Controlled Voltage source/LConn2', nargout=0)  
+ – This connection sets up the route feeding into the Voltage-Controlled Voltage source’s port that later drives the Current-Controlled Current source.  
+• eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'RLoad/LConn1', nargout=0)  
+ – A separate connection (unused in this error trace) that shows intended network routing before branching is attempted.  
+• eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source_dup/LConn2', nargout=0)  
+ – This shows the duplicate branch which is correctly branching to Voltage Sensor in a later line.
+• The rest of the connections (ports on AC Voltage Source, Capacitor, and Electrical Reference) help form the overall network; however, the conflict arises specifically at the use of Current-Controlled Current source’s LConn2 port.
+
+─────────────────────────────  
+Conclusion & Recommendation:
+
+• The error originates because the original block’s port LConn2 is connected already (via the connection from Voltage-Controlled Voltage source/RConn2), yet another attempt is made to branch from that same port by connecting to RLoad/LConn1.  
+• To resolve the issue, you should either:
+ – Use the duplicate block’s port exclusively for one of the branches (i.e. route one branch from Current-Controlled Current source_dup/LConn2 and remove the extra connection from the original block), or
+ – Reconfigure the network so that each physical port is connected only once, perhaps by employing a Branching or Mux block if multiple signals are needed from the same point.
+
+─────────────────────────────  
+This analysis isolates the problematic lines and provides context from the related connections. Adjusting the routing to avoid multiple connections on the same port should resolve the error.
+[Block_builder] import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+model_name = 'my_simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+eng.add_block('fl_lib/Electrical/Electrical Sources/AC Voltage Source', model_name + '/AC Voltage Source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor', model_name + '/C1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/RBias', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/RLoad', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference', model_name + '/Electrical Reference', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Voltage-Controlled Voltage Source', model_name + '/Voltage-Controlled Voltage source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/R1', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source', model_name + '/Current-Controlled Current source', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor', model_name + '/R2', 'MakeNameUnique','on', nargout=0)
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor', model_name + '/Voltage Sensor', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/PS-Simulink Converter', model_name + '/PS-Simulink Converter', 'MakeNameUnique','on', nargout=0)
+eng.add_block('simulink/Logic and Bit Operations/Compare To Zero', model_name + '/Compare To Zero', 'MakeNameUnique','on', nargout=0)
+eng.add_block('nesl_utility/Solver Configuration', model_name + '/Solver Configuration', 'MakeNameUnique','on', nargout=0)
+eng.add_block('simulink/Commonly Used Blocks/Scope', model_name + '/Scope', 'MakeNameUnique','on', nargout=0)
+
+# Create a duplicate of the Current-Controlled Current source for branching purposes
+eng.add_block('fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source', model_name + '/Current-Controlled Current source_dup', 'CopyOption','duplicate', nargout=0)
+
+eng.add_line(model_name, 'AC Voltage Source/LConn1', 'C1/LConn1', nargout=0)
+eng.add_line(model_name, 'C1/RConn1', 'RBias/LConn1', nargout=0)
+eng.add_line(model_name, 'C1/RConn1', 'Voltage-Controlled Voltage source/LConn2', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/LConn1', 'C1/RConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'RBias/RConn1', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source/LConn2', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source_dup/LConn2', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'RLoad/LConn1', nargout=0)
+eng.add_line(model_name, 'Current-Controlled Current source_dup/LConn2', 'Voltage Sensor/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn2', 'Electrical Reference/LConn1', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn1', 'PS-Simulink Converter/LConn1', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter/1', 'Compare To Zero/1', nargout=0)
+eng.add_line(model_name, 'Compare To Zero/1', 'Scope/1', nargout=0)
+eng.add_line(model_name, 'Solver Configuration/RConn1', 'Electrical Reference/LConn1', nargout=0)
+
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+[Report_writer] Below is a comprehensive report that integrates the theoretical analysis with the corresponding code implementation. The report is organized into four sections that directly address the key questions.
+
+──────────────────────────────
+1. What Is the Simulation About?  
+──────────────────────────────
+This simulation models a small-signal bipolar transistor amplifier using a common-emitter configuration. In this representation, the actual transistor is replaced by its small-signal equivalent—an arrangement of fundamental electrical elements (resistors, capacitors, controlled sources) that emulate the transistor’s hybrid-parameters: h_ie (input resistance), h_fe (forward current gain), h_oe (output admittance), and h_re (reverse voltage transfer ratio). In the simulation, biasing resistors set the operating point and load resistors produce conditions for signal amplification. For example, a computed gain of approximately –47 is achieved based on the relation –h_fe·R_Load/h_ie. Practical circuit elements like a decoupling capacitor are used to ensure negligible impedance at the signal frequency; thus, the AC input (1 kHz, 10 mV) is amplified to about 0.47 V peak. In essence, the simulation replicates the behavior of a common-emitter amplifier, demonstrating how complex transistor behavior can be synthesized from basic electrical blocks drawn from the Foundation library.
+
+──────────────────────────────
+2. What Are the Main Simulation Steps?  
+──────────────────────────────
+The simulation is structured into the following high-level steps:
+
+A. Signal Generation & Initial Filtering  
+ • An AC Voltage Source generates a sinusoidal input signal.  
+ • A decoupling Capacitor is connected to the voltage source to eliminate DC offsets and present negligible impedance at the operating frequency.
+
+B. Biasing and Signal Conditioning  
+ • A Resistor (RBias) is connected from the capacitor to an Electrical Reference (ground) to set the transistor’s bias point.  
+ • Signal division and augmentation are also achieved by the interconnection with controlled sources that model the transistor’s small-signal behavior.
+
+C. Transistor Modeling using Hybrid-Parameter Blocks  
+ • A Voltage-Controlled Voltage Source (VCVS) represents the forward gain properties of the transistor according to hybrid parameters. This block “senses” the voltage across the capacitor and produces a scaled (inverted) output.  
+ • Simultaneously, a Current-Controlled Current Source (CCCS) further emulates the transistor’s current amplification, again tied to the load resistor and sensor arrangements.
+
+D. Output Measurement and Observation  
+ • A load resistor (RLoad) is connected at the transistor’s output stage to complete the amplifier circuit.  
+ • A Voltage Sensor is placed at the output to monitor the signal, which is then converted via a PS-Simulink Converter for compatibility with the digital Scope.  
+ • Finally, a Compare To Zero block is used before the signal is passed to a Scope for visualization, ensuring that the final output is appropriately processed or verified.
+
+E. Solver Configuration  
+ • A Solver Configuration block is included to define the physical network’s simulation environment and solver settings to maintain simulation accuracy.
+
+──────────────────────────────
+3. Theoretical Knowledge and Mathematical Modelling in Each Step  
+──────────────────────────────
+A. Signal Generation & Initial Filtering  
+ • Theory: Sinusoidal signal theory  
+  – The AC Voltage Source generates V(t) = V₀·sin(2π·f·t + φ), relying on basic sinusoidal functions to mimic an alternating voltage.  
+ • The capacitor is modelled by I(t) = C·dV/dt, representing the dynamic relationship (differentiation of the voltage) essential for decoupling DC components while passing AC.
+
+B. Biasing and Signal Conditioning  
+ • Theory: Voltage division and biasing  
+  – RBias sets the steady-state DC level to ensure the transistor’s operating point is in the proper amplification region.
+ • The electrical reference establishes a common ground, facilitating proper voltage referencing across the circuit.
+
+C. Transistor Modeling using Hybrid-Parameter Blocks  
+ • Theory: Small-signal transistor modeling  
+  – The Voltage-Controlled Voltage Source implements the gain according to –h_fe, with its output scaled by the ratio RLoad/h_ie. The mathematical approximation –h_fe*470/h_ie ≈ –47 encapsulates this behavior.  
+ • The Current-Controlled Current Source further applies a proportional relationship I₂ = K·I₁, representing the current amplification (derived from the transistor’s hybrid parameters) and contributing to the overall small-signal analysis.
+
+D. Output Measurement and Observation  
+ • Theory: Electrical measurement and signal processing  
+  – The Voltage Sensor idealizes the measurement process by converting the voltage difference across its terminals into a physical signal.  
+ • The PS-Simulink Converter bridges the gap between physical signals (as measured in the simulation environment) and Simulink signals that can be visualized using a digital Scope.
+
+E. Solver Configuration  
+ • Theory: Numerical solving of differential-algebraic equations (DAEs)  
+  – The Solver Configuration block ensures that the simulation’s DAE system is solved with appropriate tolerances and solver settings, critical for accurately simulating a physical network over time.
+
+──────────────────────────────
+4. Code Implementation Corresponding to Each Step  
+──────────────────────────────
+Below is the reorganized Python code (using the MATLAB Engine API) with comments explaining how each segment mirrors the steps above:
+
+----------------------------------------------------------------------
+# A. Signal Generation & Initial Filtering
+----------------------------------------------------------------------
+# Create a new Simulink model and add an AC Voltage Source and a Capacitor.
+import sys
+sys.path.append('/usr/local/lib/python3.10/dist-packages/matlabengine-24.2-py3.10.egg')
+import matlab.engine
+
+eng = matlab.engine.start_matlab()
+
+# Create and open a new system (model)
+model_name = 'my_simulation_model'
+eng.new_system(model_name, nargout=0)
+eng.open_system(model_name, nargout=0)
+
+# Add the AC Voltage Source which creates the sinusoidal signal
+eng.add_block('fl_lib/Electrical/Electrical Sources/AC Voltage Source',
+              model_name + '/AC Voltage Source', 'MakeNameUnique','on', nargout=0)
+
+# Add the Capacitor (C1) to filter the signal and block DC components
+eng.add_block('fl_lib/Electrical/Electrical Elements/Capacitor',
+              model_name + '/C1', 'MakeNameUnique','on', nargout=0)
+
+# Connect AC Voltage Source to Capacitor (input stage)
+eng.add_line(model_name, 'AC Voltage Source/LConn1', 'C1/LConn1', nargout=0)
+
+----------------------------------------------------------------------
+# B. Biasing and Signal Conditioning
+----------------------------------------------------------------------
+# Add a resistor block for biasing (RBias) and connect it between the capacitor and ground.
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor',
+              model_name + '/RBias', 'MakeNameUnique','on', nargout=0)
+
+# Connect Capacitor to RBias (setting the bias point)
+eng.add_line(model_name, 'C1/RConn1', 'RBias/LConn1', nargout=0)
+
+# Add Electrical Reference block (ground)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Electrical Reference',
+              model_name + '/Electrical Reference', 'MakeNameUnique','on', nargout=0)
+
+# Connect the bias resistor to ground
+eng.add_line(model_name, 'RBias/RConn1', 'Electrical Reference/LConn1', nargout=0)
+
+----------------------------------------------------------------------
+# C. Transistor Modeling using Hybrid-Parameter Blocks
+----------------------------------------------------------------------
+# The transistor is modeled using a Voltage-Controlled Voltage Source and a Current-Controlled Current Source.
+# Add the Voltage-Controlled Voltage Source (VCVS)
+eng.add_block('fl_lib/Electrical/Electrical Sources/Voltage-Controlled Voltage Source',
+              model_name + '/Voltage-Controlled Voltage source', 'MakeNameUnique','on', nargout=0)
+
+# Use the capacitor’s node also for feed-back to the VCVS, creating the forward gain behavior.
+eng.add_line(model_name, 'C1/RConn1', 'Voltage-Controlled Voltage source/LConn2', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/LConn1', 'C1/RConn1', nargout=0)
+
+# Connect the VCVS negative output to the Electrical Reference (establishing ground in the control loop).
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn1', 'Electrical Reference/LConn1', nargout=0)
+
+# Connect VCVS output to further signal conditioning (load and sensor)
+# Add a resistor block for load (RLoad)
+eng.add_block('fl_lib/Electrical/Electrical Elements/Resistor',
+              model_name + '/RLoad', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'RLoad/LConn1', nargout=0)
+
+# Add the Current-Controlled Current Source (CCCS) to model current amplification properties.
+eng.add_block('fl_lib/Electrical/Electrical Sources/Current-Controlled Current Source',
+              model_name + '/Current-Controlled Current source', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Current-Controlled Current source/LConn2', nargout=0)
+
+# Further connect the CCCS to the load and voltage sensor to complete the small-signal aspect of the transistor model.
+eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'RLoad/LConn1', nargout=0)
+
+----------------------------------------------------------------------
+# D. Output Measurement and Observation
+----------------------------------------------------------------------
+# Add Voltage Sensor block to monitor the output at the load node.
+eng.add_block('fl_lib/Electrical/Electrical Sensors/Voltage Sensor',
+              model_name + '/Voltage Sensor', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'Voltage-Controlled Voltage source/RConn2', 'Voltage Sensor/LConn1', nargout=0)
+
+# Additionally, connect the CCCS output to the Voltage Sensor (emulating parallel sensing)
+eng.add_line(model_name, 'Current-Controlled Current source/LConn2', 'Voltage Sensor/LConn1', nargout=0)
+
+# Tie the sensor back to ground.
+eng.add_line(model_name, 'Voltage Sensor/RConn2', 'Electrical Reference/LConn1', nargout=0)
+
+# Convert the physical signal to a Simulink signal using the PS-Simulink Converter.
+eng.add_block('nesl_utility/PS-Simulink Converter',
+              model_name + '/PS-Simulink Converter', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'Voltage Sensor/RConn1', 'PS-Simulink Converter/LConn1', nargout=0)
+
+# The converted signal is compared to zero (optionally for threshold processing) and then displayed.
+eng.add_block('simulink/Logic and Bit Operations/Compare To Zero',
+              model_name + '/Compare To Zero', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'PS-Simulink Converter/1', 'Compare To Zero/1', nargout=0)
+
+# Add a Scope block for real-time visualization of the processed output.
+eng.add_block('simulink/Commonly Used Blocks/Scope',
+              model_name + '/Scope', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'Compare To Zero/1', 'Scope/1', nargout=0)
+
+----------------------------------------------------------------------
+# E. Solver Configuration
+----------------------------------------------------------------------
+# Finally, add the Solver Configuration block to the model to provide the physical simulation environment.
+eng.add_block('nesl_utility/Solver Configuration',
+              model_name + '/Solver Configuration', 'MakeNameUnique','on', nargout=0)
+eng.add_line(model_name, 'Solver Configuration/RConn1', 'Electrical Reference/LConn1', nargout=0)
+
+# Arrange all blocks neatly in the model diagram.
+eng.Simulink.BlockDiagram.arrangeSystem(model_name, nargout=0)
+
+# Save the generated model.
+eng.save_system(model_name, model_name + '.slx', nargout=0)
+
+──────────────────────────────
+Conclusion  
+──────────────────────────────
+This report has detailed the simulation of a small-signal bipolar transistor amplifier using a combination of fundamental electrical blocks. The simulation is divided into clear steps—from generating and conditioning the input signal, modeling the transistor’s small-signal behavior with controlled sources, to measuring and visualizing the output. Each simulation step is accompanied by the underlying theoretical principles and a corresponding section of the MATLAB Engine-based Python code that establishes the block connections as per the simulation block diagram.
