@@ -33,6 +33,30 @@ SimuGen allows users to flexibly choose the LLM backend and simulation configura
 
 ---
 
+## Environment Setup
+
+To quickly set up the required environment, use the provided `environment.yml` file with Conda.
+This will ensure all dependencies are installed for SimuGen.
+
+```bash
+conda env create -f environment.yml -n simugen
+```
+
+* `-f environment.yml` specifies the environment file.
+* `-n simugen` sets the new environment’s name to **simugen**.
+  (This name will be used regardless of the `name:` field in `environment.yml`.)
+
+Activate the environment:
+
+```bash
+conda activate simugen
+```
+
+Now you are ready to run SimuGen!
+If you encounter any dependency installation issues, please copy the error and ask for help.
+
+---
+
 ## How to Run
 
 To generate a Simulink simulation example, simply run:
@@ -69,4 +93,5 @@ You can configure the model and other parameters in `autosim_config.yaml` before
 * For best results, avoid adding `.ipynb_checkpoints`, `.env`, or any sensitive files to version control.
 
 ---
+
 
